@@ -1,2 +1,19 @@
 # ExpenseMate
-ExpenseMate is a simple mobile application designed to help users manage their expenses. It allows users to easily track and categorize their spending, providing an intuitive interface to add and view expenses on the go. The app also supports UPI-based payments, making it a seamless solution for keeping track of financial transactions in real-time.
+
+**ExpenseMate** is a simple expense management app built with **React Native** and **Expo**. The app helps users track their spending by storing and organizing their expenses in a local database. In the future, the app will integrate server-side backend and API functionality for remote storage and enhanced features.
+
+## Features
+- Add and categorize expenses.
+- View and manage a list of all expenses.
+- Simple and intuitive UI for easy tracking.
+- Local database for initial app version (SQLite).
+- Future plans to integrate UPI payment tracking and server-based backend.
+
+## Installation
+
+To run this app locally, follow these steps:
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/yourusername/ExpenseMate.git
+   cd ExpenseMate
