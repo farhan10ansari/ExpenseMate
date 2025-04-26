@@ -59,7 +59,7 @@ type TabBarItemProps = {
 }
 
 function TabBarItem({ route, options, isFocused, navigation }: TabBarItemProps) {
-    const { colors } = useAppTheme();
+    const { colors, dark } = useAppTheme();
     const { buildHref } = useLinkBuilder();
 
     const label = options.title !== undefined
@@ -107,7 +107,7 @@ function TabBarItem({ route, options, isFocused, navigation }: TabBarItemProps) 
             onLongPress={onLongPress}
             style={styles.tabBarItem}
             android_ripple={{
-                color: colors.primary10,
+                color: dark ? colors.primary100 : colors.primary10,
                 borderless: true
             }}
         >
