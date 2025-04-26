@@ -3,6 +3,7 @@ import React from 'react';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import TabBar from '@/components/main/TabBar';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -21,14 +22,17 @@ export default function TabLayout() {
         //   },
         //   default: {},
         // }),
-      }}>
+
+      }}
+      tabBar={props => <TabBar {...props} />}
+    >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="home" color={color} />, 
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="home" color={color} />,
         }}
-      /> 
+      />
       <Tabs.Screen
         name="expenses"
         options={{

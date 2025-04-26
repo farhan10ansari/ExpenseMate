@@ -1,0 +1,87 @@
+import { createContext, useContext } from "react";
+import { colors } from "@/themes";
+import { useColorScheme } from "react-native";
+
+type AppTheme = {
+    dark: boolean,
+    colors: typeof colors & {
+        background: string,
+        card: string,
+        text: string,
+        border: string,
+    },
+}
+
+export const DefaultTheme: AppTheme = {
+    dark: false,
+    colors: {
+        ...colors,
+        background: 'rgb(242, 242, 242)',
+        card: 'rgb(255, 255, 255)',
+        text: 'rgb(28, 28, 30)',
+        border: 'rgb(216, 216, 216)',
+    },
+};
+
+
+export const DarkTheme: AppTheme = {
+    dark: true,
+    colors: {
+        ...colors,
+        background: 'rgb(1, 1, 1)',
+        card: 'rgb(34, 34, 34)',
+        text: 'rgb(229, 229, 231)',
+        border: 'rgb(39, 39, 41)',
+    },
+};
+
+
+const tintColorLight = '#0a7ea4';
+const tintColorDark = '#fff';
+
+// export const Colors = {
+//   light: {
+//     text: '#11181C',
+//     background: '#fff',
+//     tint: tintColorLight,
+//     icon: '#687076',
+//     tabIconDefault: '#687076',
+//     tabIconSelected: tintColorLight,
+//   },
+//   dark: {
+//     text: '#ECEDEE',
+//     background: '#151718',
+//     tint: tintColorDark,
+//     icon: '#9BA1A6',
+//     tabIconDefault: '#9BA1A6',
+//     tabIconSelected: tintColorDark,
+//   },
+// };
+
+const ThemeContext = createContext<AppTheme | null>(null)
+
+function AppThemeProvider({ children }: { children: React.ReactNode }) {
+    const colorScheme = useColorScheme();
+
+    const theme = colorScheme === 'dark' ? DarkTheme : DefaultTheme;
+
+    return (
+        <ThemeContext.Provider value={theme}>
+            {children}
+        </ThemeContext.Provider>
+    )
+}
+
+function useAppTheme() {
+    const theme = useContext(ThemeContext);
+
+    if (theme == null) {
+        throw new Error(
+            "Couldn't find a theme. Is your component inside NavigationContainer or does it have a theme?"
+        );
+    }
+
+    return theme;
+}
+
+export { AppThemeProvider, useAppTheme };
