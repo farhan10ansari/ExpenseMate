@@ -1,11 +1,11 @@
-import { Button, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import db from '@/db/client';
 import React, { useEffect } from 'react';
 import { expensesSchema } from '@/db/schema';
-
+import { Button } from 'react-native-paper';
 const test = async () => {
   // console.log("inside test");
   // const a = await db.insert(expensesSchema).values({
@@ -42,6 +42,9 @@ export default function HomeScreen() {
       {/* <ThemedText>
         {JSON.stringify(rows)}
       </ThemedText> */}
+      <Button icon="camera" mode="contained" onPress={() => console.log('Pressed')}>
+        Press me
+      </Button>
     </ThemedView>
   );
 }
