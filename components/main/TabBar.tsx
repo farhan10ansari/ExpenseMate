@@ -1,17 +1,32 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform, Keyboard } from 'react-native';
 import { NavigationHelpers, NavigationRoute, ParamListBase, useLinkBuilder } from '@react-navigation/native';
 import { PlatformPressable } from '@react-navigation/elements';
 import { BottomTabBarProps, BottomTabNavigationEventMap, BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
 import { useAppTheme } from '@/themes/providers/AppThemeProvider';
 import { ThemedText } from '../base/ThemedText';
+import { useEffect, useState } from 'react';
 
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     const { colors } = useAppTheme();
 
+    const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+    useEffect(() => {
+        const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+        const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+        const showSub = Keyboard.addListener(showEvent, () => setKeyboardVisible(true));
+        const hideSub = Keyboard.addListener(hideEvent, () => setKeyboardVisible(false));
+        return () => {
+            showSub.remove();
+            hideSub.remove();
+        };
+    }, []);
+
+
     const styles = StyleSheet.create({
         tabBar: {
-            position: 'absolute',
-            bottom: 25,
+            position: 'relative',
+            bottom: 20,
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -29,6 +44,8 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
             minHeight: 80,
         }
     })
+
+    if (keyboardVisible) return null;
 
     return (
         <View style={styles.tabBar}>

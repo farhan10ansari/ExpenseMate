@@ -8,10 +8,9 @@
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "db:generate": "drizzle-kit generate:sqlite"
+    "db:generate": "drizzle-kit generate"
   },
   "jest": {
     "preset": "jest-expo"

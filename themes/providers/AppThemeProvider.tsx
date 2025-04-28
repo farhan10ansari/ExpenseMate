@@ -9,6 +9,7 @@ type AppTheme = {
         card: string,
         text: string,
         border: string,
+        muted: string,
     },
 }
 
@@ -20,6 +21,7 @@ export const DefaultTheme: AppTheme = {
         card: 'rgb(255, 255, 255)',
         text: 'rgb(28, 28, 30)',
         border: 'rgb(216, 216, 216)',
+        muted: 'rgb(142, 142, 147)',
     },
 };
 
@@ -32,6 +34,7 @@ export const DarkTheme: AppTheme = {
         card: 'rgb(34, 34, 34)',
         text: 'rgb(229, 229, 231)',
         border: 'rgb(39, 39, 41)',
+        muted: 'rgb(142, 142, 147)',
     },
 };
 

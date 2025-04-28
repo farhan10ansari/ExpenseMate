@@ -22,6 +22,7 @@ export default function TabLayout() {
         //   },
         //   default: {},
         // }),
+        animation:"fade",
 
       }}
       tabBar={props => <TabBar {...props} />}
