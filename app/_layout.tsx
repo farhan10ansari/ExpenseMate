@@ -11,7 +11,7 @@ import { ThemedText } from '@/components/base/ThemedText';
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import ReactNavigationThemeProvider from '@/themes/providers/ReactNavigationThemeProvider';
 import ReactNativePaperProvider from '@/themes/providers/ReactNativePaperProvider';
-import { AppThemeProvider } from '@/themes/providers/AppThemeProvider';
+import { AppThemeProvider, useAppTheme } from '@/themes/providers/AppThemeProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -48,13 +48,43 @@ export default function RootLayout() {
     <AppThemeProvider>
       <ReactNavigationThemeProvider>
         <ReactNativePaperProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
+          <MainLayout />
           <StatusBar style="auto" />
         </ReactNativePaperProvider>
       </ReactNavigationThemeProvider>
     </AppThemeProvider>
   );
+}
+
+
+function MainLayout() {
+  const { colors } = useAppTheme();
+  return (
+    <Stack>
+      <Stack.Screen
+        name="(tabs)"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="payment"
+        options={{
+          title: 'Payment',
+          presentation: 'formSheet',
+          gestureDirection: "vertical",
+          animation: "slide_from_bottom",
+          sheetGrabberVisible: true,
+          sheetInitialDetentIndex: 0,
+          // sheetAllowedDetents: "fitToContents",
+          sheetAllowedDetents: [0.5, 0.75, 0.9],
+          sheetExpandsWhenScrolledToEdge: true,
+          sheetElevation: 24,
+          sheetCornerRadius: 20,
+          contentStyle: {
+            backgroundColor: colors.card,
+          }
+        }}
+      />
+      <Stack.Screen name="+not-found" />
+    </Stack>
+  )
 }

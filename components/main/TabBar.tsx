@@ -5,10 +5,10 @@ import { BottomTabBarProps, BottomTabNavigationEventMap, BottomTabNavigationOpti
 import { useAppTheme } from '@/themes/providers/AppThemeProvider';
 import { ThemedText } from '../base/ThemedText';
 import { useEffect, useState } from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     const { colors } = useAppTheme();
-
     const [keyboardVisible, setKeyboardVisible] = useState(false);
 
     useEffect(() => {
@@ -64,6 +64,17 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
                     />
                 );
             })}
+            <TabBarItem
+                key="payments"
+                route={{ key: 'payment', name: 'payment', params: {} }}
+                options={{
+                    title: 'Payments',
+                    tabBarIcon: ({ color }) => <MaterialIcons size={28} name="add" color={color} />,
+                    tabBarButtonTestID: 'payments-tab-button',
+                }}
+                isFocused={false}
+                navigation={navigation}
+            />
         </View>
     );
 }

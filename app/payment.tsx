@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, View, Platform } from 'react-native';
 import { ThemedText } from '@/components/base/ThemedText';
 import { ThemedView } from '@/components/base/ThemedView';
 import React, { useEffect } from 'react';
@@ -6,13 +6,13 @@ import { useAppTheme } from '@/themes/providers/AppThemeProvider';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Button } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function HomeScreen() {
+export default function PaymentScreen() {
   const { colors } = useAppTheme();
 
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
       padding: 10,
     },
     amountContainer: {
@@ -29,11 +29,9 @@ export default function HomeScreen() {
   });
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type='title'>
-        Home
-      </ThemedText>
-      {/* <ThemedView style={styles.amountContainer}>
+    <View style={styles.container}>
+      <SheetGrabber />
+      <View style={styles.amountContainer}>
         <ThemedText type='defaultSemiBold' style={{ color: colors.muted }}>
           Amount
         </ThemedText>
@@ -49,13 +47,27 @@ export default function HomeScreen() {
             }}
             placeholder="0"
             maxLength={12}
-          // allowFontScaling={false}
           />
         </View>
-      </ThemedView>
-      <ThemedView>
-
-      </ThemedView> */}
-    </ThemedView>
+      </View>
+    </View>
   );
 }
+
+const SheetGrabber = () => {
+  return (
+    Platform.OS === 'android' && (
+      <View style={{ alignItems: 'center', marginBottom: 12 }}>
+        <View
+          style={{
+            width: 40,
+            height: 4,
+            borderRadius: 2,
+            backgroundColor: '#ccc',
+            opacity: 0.6,
+          }}
+        />
+      </View>
+    )
+  )
+} 
