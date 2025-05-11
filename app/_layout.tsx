@@ -75,7 +75,7 @@ function MainLayout() {
           sheetGrabberVisible: true,
           sheetInitialDetentIndex: 0,
           // sheetAllowedDetents: "fitToContents",
-          sheetAllowedDetents: [0.5, 0.75, 0.9],
+          sheetAllowedDetents: [0.5, 0.9],
           sheetExpandsWhenScrolledToEdge: true,
           sheetElevation: 24,
           sheetCornerRadius: 20,
