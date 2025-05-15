@@ -10,7 +10,7 @@ import { Button } from 'react-native-paper';
 export default function PaymentScreen() {
   const { colors } = useAppTheme();
   const inputRef = useRef<TextInput>(null);
-  // payment store 
+  // payment store
   const amount = usePaymentStore((state) => state.amount);
   const setAmount = usePaymentStore((state) => state.setAmount);
   const category = usePaymentStore((state) => state.category);
