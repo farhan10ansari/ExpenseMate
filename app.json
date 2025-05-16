@@ -34,7 +34,8 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true
@@ -44,6 +45,6 @@
       "eas": {
         "projectId": "c90b4130-1211-4ddd-bf2f-e45eaf4a4628"
       }
-    }
+    },
   }
 }

@@ -25,4 +25,12 @@ export const DefaultCategories: Category[] = [
         name: "Travel",
         icon: "walk",
     },
+    {
+        name: "Bills",
+        icon: "file-document",
+    },
+    {
+        name: "Other",
+        icon: "dots-horizontal-circle-outline",
+    }
 ]
