@@ -1,0 +1,81 @@
+import { extractDateLabel } from '@/lib/functions';
+import { useAppTheme } from '@/themes/providers/AppThemeProviders';
+import React, { useCallback, useState } from 'react';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { Button } from 'react-native-paper';
+import { DatePickerModal } from 'react-native-paper-dates';
+import { SingleChange } from 'react-native-paper-dates/lib/typescript/Date/Calendar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+type DateInputProps = {
+    datetime: Date | undefined;
+    setDatetime: (datetime: Date | undefined) => void;
+    style?: StyleProp<ViewStyle>;
+};
+
+export default function DateInput({ datetime, setDatetime, style }: DateInputProps) {
+    const { colors } = useAppTheme();
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+    const styles = StyleSheet.create({
+        button: {
+            borderRadius: 20,
+            borderColor: colors.primary,
+            borderWidth: 1,
+        },
+        dateModalContainer: {
+            justifyContent: 'center',
+            flex: 1,
+            alignItems: 'center'
+        }
+    });
+
+    const onConfirmDate: SingleChange = useCallback(
+        (params) => {
+            if (!params.date) {
+                setDatePickerVisibility(false);
+                return;
+            }
+            const date = new Date(datetime ?? new Date());
+            date.setFullYear(params.date.getFullYear());
+            date.setMonth(params.date.getMonth());
+            date.setDate(params.date.getDate());
+            setDatetime(date);
+            setDatePickerVisibility(false);
+        }, [datetime, setDatetime]);
+
+    const onDismissDate = useCallback(() => {
+        setDatePickerVisibility(false);
+    }, [setDatePickerVisibility]);
+
+    const dateLabel = extractDateLabel(datetime ?? new Date());
+
+    return (
+        <View style={style}>
+            <Button
+                icon="calendar"
+                mode="outlined"
+                onPress={() => setDatePickerVisibility(true)}
+                style={styles.button}
+            >
+                {datetime ? dateLabel : "Set date"}
+            </Button>
+            <SafeAreaProvider>
+                <View style={styles.dateModalContainer}>
+                    <DatePickerModal
+                        locale="en"
+                        mode="single"
+                        visible={isDatePickerVisible}
+                        onConfirm={onConfirmDate}
+                        onDismiss={onDismissDate}
+                        date={datetime}
+                        animationType='slide'
+                        saveLabel="Save"
+                        placeholder='Select date'
+                        label="Select date"
+                    />
+                </View>
+            </SafeAreaProvider>
+        </View>
+    );
+}

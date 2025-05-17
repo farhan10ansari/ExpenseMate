@@ -1,5 +1,5 @@
 //Get a label for the date: "Today", "Yesterday", or a formatted date string
-function getDateLabel(date: Date): string {
+export function extractDateLabel(date: Date): string {
     const now = new Date();
 
     // Strip time from date (set hours, minutes, etc. to 0)
@@ -26,18 +26,10 @@ function getDateLabel(date: Date): string {
 }
 
 
-function getTimeString(date: Date, is24HourClock: boolean): string {
+export function extractTimeString(date: Date, is24HourClock: boolean): string {
     return new Intl.DateTimeFormat(undefined, {
         hour: 'numeric',
         minute: '2-digit',
         hour12: !is24HourClock // force 12h if false, otherwise 24h
     }).format(date);
-}
-
-//Extract formatted date and time from a Date object
-export function extractDateTime(dateObj: Date, is24HourClock: boolean): { date: string; time: string } {
-    const date = getDateLabel(dateObj);
-    const time = getTimeString(dateObj, is24HourClock);
-
-    return { date, time };
 }

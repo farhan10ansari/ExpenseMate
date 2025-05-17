@@ -62,9 +62,9 @@ function MainLayout() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="payment"
+        name="PaymentScreen"
         options={{
-          title: 'Payment',
+          // title: 'Payment',
           presentation: 'formSheet',
           gestureDirection: "vertical",
           animation: "slide_from_bottom",

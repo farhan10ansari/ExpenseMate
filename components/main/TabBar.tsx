@@ -65,8 +65,8 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
                 );
             })}
             <TabBarItem
-                key="payments"
-                route={{ key: 'payment', name: 'payment', params: {} }}
+                key="payment"
+                route={{ key: 'payment', name: 'PaymentScreen', params: {} }}
                 options={{
                     title: 'Payments',
                     tabBarIcon: ({ color }) => <MaterialIcons size={28} name="add" color={color} />,
