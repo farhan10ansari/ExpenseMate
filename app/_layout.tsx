@@ -1,6 +1,7 @@
 import { ThemedText } from '@/components/base/ThemedText';
 import db, { expoClient } from '@/db/client';
 import migrations from '@/drizzle/migrations/migrations';
+import useAppStore from '@/stores/useAppStore';
 import { AppThemeProvider, useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
@@ -17,6 +18,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   // drizzle studio for debugging during development
   useDrizzleStudio(expoClient);
+  const theme = useAppStore(state => state.theme);
   // drizzle migrations for schema changes
   const { success, error } = useMigrations(db, migrations);
 
@@ -45,7 +47,7 @@ export default function RootLayout() {
   return (
     <AppThemeProvider>
       <MainLayout />
-      <StatusBar style="auto" />
+      <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
     </AppThemeProvider>
   );
 }

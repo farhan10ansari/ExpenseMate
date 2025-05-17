@@ -3,13 +3,16 @@ import { createContext, useContext } from "react";
 import { useColorScheme } from "react-native";
 import { PaperProvider } from "react-native-paper";
 import { customDarkTheme, customLightTheme } from "../theme";
+import useAppStore from "@/stores/useAppStore";
 
 const ThemeContext = createContext(customLightTheme)
 
 function AppThemeProvider({ children }: { children: React.ReactNode }) {
     const colorScheme = useColorScheme();
+    const appliedTheme = useAppStore((state) => state.theme);
 
-    const theme = colorScheme === 'dark' ? customDarkTheme : customLightTheme;
+    const theme = appliedTheme === "system" ? (colorScheme === 'dark' ? customDarkTheme : customLightTheme) :
+        (appliedTheme === "dark" ? customDarkTheme : customLightTheme)
 
     return (
         <ThemeContext.Provider value={theme}>
