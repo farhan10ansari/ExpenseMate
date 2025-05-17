@@ -1,11 +1,11 @@
-import { View, StyleSheet, Platform, Keyboard } from 'react-native';
-import { NavigationHelpers, NavigationRoute, ParamListBase, useLinkBuilder } from '@react-navigation/native';
-import { PlatformPressable } from '@react-navigation/elements';
-import { BottomTabBarProps, BottomTabNavigationEventMap, BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
-import { useAppTheme } from '@/themes/providers/AppThemeProvider';
-import { ThemedText } from '../base/ThemedText';
-import { useEffect, useState } from 'react';
+import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { MaterialIcons } from '@expo/vector-icons';
+import { BottomTabBarProps, BottomTabNavigationEventMap, BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
+import { PlatformPressable } from '@react-navigation/elements';
+import { NavigationHelpers, NavigationRoute, ParamListBase, useLinkBuilder } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
+import { Keyboard, Platform, StyleSheet, View } from 'react-native';
+import { ThemedText } from '../base/ThemedText';
 
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     const { colors } = useAppTheme();

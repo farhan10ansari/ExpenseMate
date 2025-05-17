@@ -2,7 +2,7 @@ import { ThemedText } from '@/components/base/ThemedText';
 import { useLocalization } from '@/hooks/useLocalization';
 import useCategoriesStore, { AddCategory, getCategoryRows } from '@/stores/useCategoriesStore';
 import usePaymentStore from '@/stores/usePaymentStore';
-import { useAppTheme } from '@/themes/providers/AppThemeProvider';
+import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import React, { useEffect, useRef, useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';

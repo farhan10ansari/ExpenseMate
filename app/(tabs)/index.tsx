@@ -1,11 +1,8 @@
-import { StyleSheet, TextInput, View } from 'react-native';
 import { ThemedText } from '@/components/base/ThemedText';
 import { ThemedView } from '@/components/base/ThemedView';
-import React, { useEffect } from 'react';
-import { useAppTheme } from '@/themes/providers/AppThemeProvider';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Button } from 'react-native-paper';
+import { useAppTheme } from '@/themes/providers/AppThemeProviders';
+import React from 'react';
+import { StyleSheet } from 'react-native';
 
 export default function HomeScreen() {
   const { colors } = useAppTheme();

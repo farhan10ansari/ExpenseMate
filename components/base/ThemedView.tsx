@@ -1,4 +1,4 @@
-import { useAppTheme } from '@/themes/providers/AppThemeProvider';
+import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { View, type ViewProps } from 'react-native';
 
 export type ThemedViewProps = ViewProps;
