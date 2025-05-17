@@ -1,20 +1,21 @@
 import { ThemedText } from '@/components/base/ThemedText';
 import { useLocalization } from '@/hooks/useLocalization';
+import { extractDateTime } from '@/lib/functions';
 import useCategoriesStore, { AddCategory, getCategoryRows } from '@/stores/useCategoriesStore';
 import usePaymentStore from '@/stores/usePaymentStore';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
-import { CalendarDate, SingleChange } from 'react-native-paper-dates/lib/typescript/Date/Calendar';
+import { SingleChange } from 'react-native-paper-dates/lib/typescript/Date/Calendar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function PaymentScreen() {
   const { uses24HourClock } = useLocalization()
 
-  const { colors, dark } = useAppTheme();
+  const { colors } = useAppTheme();
   const inputRef = useRef<TextInput>(null);
   // payment store
   const amount = usePaymentStore((state) => state.amount);
@@ -100,51 +101,50 @@ export default function PaymentScreen() {
     }
   });
 
+  const onConfirmDate: SingleChange = useCallback(
+    (params) => {
+      // setDatetime(params.date);
+      if (!params.date) {
+        setDatePickerVisibility(false);
+        return;
+      }
+      const date = new Date(datetime ?? new Date());
+      date.setFullYear(params.date.getFullYear());
+      date.setMonth(params.date.getMonth());
+      date.setDate(params.date.getDate());
+      setDatetime(date);
+      setDatePickerVisibility(false);
+    }, [datetime, setDatetime]);
 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-  const showTimePicker = () => {
-    setTimePickerVisibility(true);
-  };
-  const hideTimePicker = () => {
-    setTimePickerVisibility(false);
-  }
-
-  const hideDatePicker = () => {
+  const onDismissDate = useCallback(() => {
     setDatePickerVisibility(false);
-  };
+  }, [setDatePickerVisibility]);
 
-  const handleConfirm = (date: Date) => {
-    console.warn("A date has been picked: ", date);
-    hideDatePicker();
-    hideTimePicker();
+  const onConfirmTime = useCallback((params: {
+    hours: number;
+    minutes: number;
+  }) => {
+    setTimePickerVisibility(false);
+    const date = new Date(datetime ?? new Date());
+    date.setHours(params.hours);
+    date.setMinutes(params.minutes);
+    date.setSeconds(0);
     setDatetime(date);
-  };
+  }, [datetime, setDatetime]);
+
+  const onDismissTime = useCallback(() => {
+    setTimePickerVisibility(false);
+  }, [setTimePickerVisibility]);
+
 
   useEffect(() => {
     setDatetime(new Date())
   }, [])
 
-  const [date, setDate] = React.useState<CalendarDate>(undefined);
-  const [open, setOpen] = React.useState(false);
-  const [visible, setVisible] = React.useState(false);
 
-  const onDismissSingle = React.useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
-
-  const onConfirmSingle: SingleChange = React.useCallback(
-    (params) => {
-      setOpen(false);
-      setDate(params.date);
-    },
-    [setOpen, setDate]
-  );
-
-  // const { date, time } = extractDateTime(datetime ?? new Date(), uses24HourClock);
-
+  const { date, time } = extractDateTime(datetime ?? new Date(), uses24HourClock);
   const categoryRows = getCategoryRows(categories);
+
   return (
     <View style={styles.container}>
       <SheetGrabber />
@@ -172,6 +172,7 @@ export default function PaymentScreen() {
             }}
             placeholder="0"
             maxLength={8}
+            cursorColor={colors.primary}
           />
         </View>
       </Pressable>
@@ -249,25 +250,24 @@ export default function PaymentScreen() {
             <Button
               icon="calendar"
               mode="outlined"
-              onPress={() => setOpen(true)}
+              onPress={() => setDatePickerVisibility(true)}
               style={styles.datetimeButton}
             >
-              {/* {datetime ? date : "Set date"} */}
-              date
+              {datetime ? date : "Set date"}
             </Button>
             <SafeAreaProvider>
               <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
-                {/* <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
-                  Pick single date
-                </Button> */}
                 <DatePickerModal
                   locale="en"
                   mode="single"
-                  visible={open}
-                  onDismiss={onDismissSingle}
-                  date={date}
-                  onConfirm={onConfirmSingle}
-                  
+                  visible={isDatePickerVisible}
+                  onConfirm={onConfirmDate}
+                  onDismiss={onDismissDate}
+                  date={datetime}
+                  animationType='slide'
+                  saveLabel="Save"
+                  placeholder='Select date'
+                  label="Select date"
                 />
               </View>
             </SafeAreaProvider>
@@ -279,25 +279,23 @@ export default function PaymentScreen() {
             <Button
               icon="clock"
               mode="outlined"
-              onPress={()=> setVisible(true)}
+              onPress={() => setTimePickerVisibility(true)}
               style={styles.datetimeButton}
             >
-              {/* {datetime ? time : "Set time"} */}
-              time
+              {datetime ? time : "Set time"}
             </Button>
             <SafeAreaProvider>
               <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
-                {/* <Button onPress={() => setVisible(true)} uppercase={false} mode="outlined">
-                  Pick time
-                </Button> */}
                 <TimePickerModal
-                  visible={visible}
-                  onDismiss={() => setVisible(false)}
-                  onConfirm={()=>{}}
-                  hours={12}
-                  minutes={14}
+                  locale="en"
+                  visible={isTimePickerVisible}
+                  onConfirm={onConfirmTime}
+                  onDismiss={onDismissTime}
+                  hours={datetime?.getHours()}
+                  minutes={datetime?.getMinutes()}
                   animationType='slide'
-                  
+                  use24HourClock={uses24HourClock}
+                  label="Select time"
                 />
               </View>
             </SafeAreaProvider>
