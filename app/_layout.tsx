@@ -1,17 +1,15 @@
+import { ThemedText } from '@/components/base/ThemedText';
+import db, { expoClient } from '@/db/client';
+import migrations from '@/drizzle/migrations/migrations';
+import { AppThemeProvider, useAppTheme } from '@/themes/providers/AppThemeProviders';
+import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
+import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import db, { expoClient } from '@/db/client';
-import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
-import migrations from '@/drizzle/migrations/migrations';
-import { ThemedText } from '@/components/base/ThemedText';
-import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
-import ReactNavigationThemeProvider from '@/themes/providers/ReactNavigationThemeProvider';
-import ReactNativePaperProvider from '@/themes/providers/ReactNativePaperProvider';
-import { AppThemeProvider, useAppTheme } from '@/themes/providers/AppThemeProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -46,12 +44,8 @@ export default function RootLayout() {
 
   return (
     <AppThemeProvider>
-      <ReactNavigationThemeProvider>
-        <ReactNativePaperProvider>
-          <MainLayout />
-          <StatusBar style="auto" />
-        </ReactNativePaperProvider>
-      </ReactNavigationThemeProvider>
+      <MainLayout />
+      <StatusBar style="auto" />
     </AppThemeProvider>
   );
 }

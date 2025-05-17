@@ -8,10 +8,7 @@
     "scheme": "expensemate",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "platforms": [
-      "ios",
-      "android"
-    ],
+    "platforms": ["ios", "android"],
     "ios": {
       "supportsTablet": true
     },
@@ -45,6 +42,6 @@
       "eas": {
         "projectId": "c90b4130-1211-4ddd-bf2f-e45eaf4a4628"
       }
-    },
+    }
   }
 }
