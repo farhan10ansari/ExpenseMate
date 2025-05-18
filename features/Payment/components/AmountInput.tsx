@@ -1,16 +1,18 @@
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { FontAwesome } from "@expo/vector-icons";
 import { useRef } from "react";
-import { Pressable, StyleSheet, TextInput } from "react-native";
+import { NativeSyntheticEvent, Pressable, StyleSheet, TextInput, TextInputFocusEventData } from "react-native";
 
 export type AmountInputProps = {
     amount: number;
     setAmount: (amount: number) => void;
+    onFocus?: ((e: NativeSyntheticEvent<TextInputFocusEventData>) => void)
+    onBlur?: ((e: NativeSyntheticEvent<TextInputFocusEventData>) => void)
 };
 
-export default function AmountInput({ amount, setAmount }: AmountInputProps) {
+export default function AmountInput({ amount, setAmount, onFocus, onBlur }: AmountInputProps) {
     const { colors } = useAppTheme();
-    
+
     const inputRef = useRef<TextInput>(null);
 
     const styles = StyleSheet.create({
@@ -49,6 +51,8 @@ export default function AmountInput({ amount, setAmount }: AmountInputProps) {
                 placeholder="0"
                 maxLength={8}
                 cursorColor={colors.primary}
+                onFocus={onFocus}
+                onBlur={onBlur}
             />
         </Pressable>
     )

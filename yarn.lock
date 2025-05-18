@@ -6121,6 +6121,11 @@ react-native-screens@~4.10.0:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
+react-native-use-keyboard-height@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-use-keyboard-height/-/react-native-use-keyboard-height-0.1.2.tgz#c948b485ece5d3e22d896ef42c5de9835aa7c0c2"
+  integrity sha512-7xWKWYsausrDtbEiRgi/tQKWWTe6uDNQYB0KZOSVXaG1M1dZvZY+UExmOJOW73WqmpkGhWvU0cN+d8G47tDgBw==
+
 react-native-web@~0.20.0:
   version "0.20.0"
   resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.20.0.tgz#3fb0591999ed4b54d7822a2785547415e8a5c031"

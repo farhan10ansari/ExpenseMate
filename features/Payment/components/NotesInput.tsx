@@ -1,12 +1,14 @@
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { StyleSheet, TextInput } from "react-native";
+import { NativeSyntheticEvent, StyleSheet, TextInput, TextInputFocusEventData } from "react-native";
 
 type NotesInputProps = {
     note: string;
     setNote: (description: string) => void;
+    onFocus?: ((e: NativeSyntheticEvent<TextInputFocusEventData>) => void)
+    onBlur?: ((e: NativeSyntheticEvent<TextInputFocusEventData>) => void)
 };
 
-export default function NotesInput({ note, setNote }: NotesInputProps) {
+export default function NotesInput({ note, setNote, onFocus, onBlur }: NotesInputProps) {
     const { colors } = useAppTheme();
 
     const styles = StyleSheet.create({
@@ -30,6 +32,8 @@ export default function NotesInput({ note, setNote }: NotesInputProps) {
             multiline
             numberOfLines={4}
             cursorColor={colors.primary}
+            onFocus={onFocus}
+            onBlur={onBlur}
         />
     )
 }

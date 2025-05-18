@@ -4,9 +4,10 @@ import useCategoriesStore from '@/stores/useCategoriesStore';
 import usePaymentStore from '@/stores/usePaymentStore';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import AmountInput from './components/AmountInput';
 import CategoriesInput from './components/CategoriesInput';
+import ConfirmButton from './components/ConfirmButton';
 import DateInput from './components/DateInput';
 import NotesInput from './components/NotesInput';
 import TimeInput from './components/TimeInput';
@@ -61,6 +62,11 @@ export default function PaymentScreen() {
     }
   });
 
+  const handleConfirm = () => {
+    console.log('Confirm button pressed');
+
+  }
+
   // Set default date and time
   useEffect(() => {
     setDatetime(new Date())
@@ -68,14 +74,17 @@ export default function PaymentScreen() {
 
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <SheetGrabber />
       {/* Amount */}
       <View style={styles.amountContainer}>
         <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
           Amount
         </ThemedText>
-        <AmountInput amount={amount} setAmount={setAmount} />
+        <AmountInput
+          amount={amount}
+          setAmount={setAmount}
+        />
       </View>
       {/* Categories */}
       <View style={styles.categoriesContainer}>
@@ -93,7 +102,10 @@ export default function PaymentScreen() {
         <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
           Notes
         </ThemedText>
-        <NotesInput note={description} setNote={setDescription} />
+        <NotesInput
+          note={description}
+          setNote={setDescription}
+        />
       </View>
       {/* Date & Time */}
       <View style={styles.datetimeContainer}>
@@ -105,6 +117,8 @@ export default function PaymentScreen() {
           <TimeInput datetime={datetime} setDatetime={setDatetime} style={styles.datetimeInputContainer} />
         </View>
       </View>
-    </View>
+      {/* Confirm Button */}
+      <ConfirmButton onPress={handleConfirm} />
+    </ScrollView>
   );
 }
