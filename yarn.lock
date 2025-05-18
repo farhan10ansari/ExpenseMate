@@ -1899,6 +1899,18 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
+"@tanstack/query-core@5.76.0":
+  version "5.76.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.76.0.tgz#3b4d5d34ce307ba0cf7d1a3e90d7adcdc6c46be0"
+  integrity sha512-FN375hb8ctzfNAlex5gHI6+WDXTNpe0nbxp/d2YJtnP+IBM6OUm7zcaoCW6T63BawGOYZBbKC0iPvr41TteNVg==
+
+"@tanstack/react-query@^5.76.1":
+  version "5.76.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.76.1.tgz#ac8a19f99dfec1452a44fe22d46680c396c21152"
+  integrity sha512-YxdLZVGN4QkT5YT1HKZQWiIlcgauIXEIsMOTSjvyD5wLYK8YVvKZUPAysMqossFJJfDpJW3pFn7WNZuPOqq+fw==
+  dependencies:
+    "@tanstack/query-core" "5.76.0"
+
 "@tybys/wasm-util@^0.9.0":
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/@tybys/wasm-util/-/wasm-util-0.9.0.tgz#3e75eb00604c8d6db470bf18c37b7d984a0e3355"
@@ -6120,11 +6132,6 @@ react-native-screens@~4.10.0:
   dependencies:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
-
-react-native-use-keyboard-height@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/react-native-use-keyboard-height/-/react-native-use-keyboard-height-0.1.2.tgz#c948b485ece5d3e22d896ef42c5de9835aa7c0c2"
-  integrity sha512-7xWKWYsausrDtbEiRgi/tQKWWTe6uDNQYB0KZOSVXaG1M1dZvZY+UExmOJOW73WqmpkGhWvU0cN+d8G47tDgBw==
 
 react-native-web@~0.20.0:
   version "0.20.0"

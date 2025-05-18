@@ -1,19 +1,29 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CustomSnackbarProps } from '@/components/ui/CustomSnackbar';
+import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { create } from 'zustand';
-import { createJSONStorage, persist } from "zustand/middleware";
 
-type AppStore = {
-    theme: "light" | "dark" | "system";
-    setTheme: (theme: "light" | "dark" | "system") => void;
+type GlobalSnackbarProps = {
+    message: string;
+    duration: number;
+    actionLabel?: string;
+    actionIcon?: IconSource;
+    type?: CustomSnackbarProps["type"];
+    position?: CustomSnackbarProps["position"];
+    offset?: number;
 }
 
-const useAppStore = create<AppStore>()(persist(
-    (set) => ({
-        theme: "light",
-        setTheme: (theme) => set({ theme }),
-    }), {
-    name: "app-storage", // unique name
-    storage: createJSONStorage(() => AsyncStorage),
+type AppStore = {
+    keyboardHeight: number;
+    setKeyboardHeight: (height: number) => void;
+    globalSnackbar: GlobalSnackbarProps | null;
+    setGlobalSnackbar: (snackbar: GlobalSnackbarProps | null) => void;
+}
+
+const useAppStore = create<AppStore>()((set) => ({
+    keyboardHeight: 0,
+    setKeyboardHeight: (height) => set({ keyboardHeight: height }),
+    globalSnackbar: null,
+    setGlobalSnackbar: (snackbar) => set({ globalSnackbar: snackbar }),
 }))
 
 export default useAppStore;

@@ -9,6 +9,7 @@ type PaymentStore = {
     setDescription: (description: string) => void;
     datetime: Date | undefined;
     setDatetime: (datetime: Date | undefined) => void;
+    resetPaymentStore: () => void;
 }
 
 const usePaymentStore = create<PaymentStore>()((set) => ({
@@ -20,6 +21,12 @@ const usePaymentStore = create<PaymentStore>()((set) => ({
     setDescription: (description) => set({ description }),
     datetime: undefined,
     setDatetime: (datetime) => set({ datetime }),
+    resetPaymentStore: () => set({
+        amount: 0,
+        category: null,
+        description: "",
+        datetime: undefined,
+    })
 }))
 
 export default usePaymentStore;

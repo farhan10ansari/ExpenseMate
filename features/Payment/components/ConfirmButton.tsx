@@ -1,38 +1,23 @@
 import { useEffect, useRef, useState } from "react";
-import { Keyboard, KeyboardEventName, Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { FAB, Portal } from "react-native-paper";
 
 type ConfirmButtonProps = {
     onPress?: () => void;
+    keyboardHeight?: number;
 }
 
-export default function ConfirmButton({ onPress }: ConfirmButtonProps) {
-    const [keyboardHeight, setKeyboardHeight] = useState(0);
+export default function ConfirmButton({ onPress, keyboardHeight = 0 }: ConfirmButtonProps) {
     const [show, setShow] = useState(false);
     const timeout = useRef<number | null>(null);
 
     useEffect(() => {
-        const showEvent: KeyboardEventName =
-            Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-        const hideEvent: KeyboardEventName =
-            Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
-
-        const subShow = Keyboard.addListener(showEvent, e => {
-            console.log("keyboard show", e);
-            setKeyboardHeight(e.endCoordinates.height);
-        });
-        const subHide = Keyboard.addListener(hideEvent, () => {
-            setKeyboardHeight(0);
-        });
-
         // Add a timeout to delay the showing of the FAB
         timeout.current = setTimeout(() => {
             setShow(true);
         }, 500);
 
         return () => {
-            subShow.remove();
-            subHide.remove();
             if (timeout.current) {
                 clearTimeout(timeout.current);
                 timeout.current = null;

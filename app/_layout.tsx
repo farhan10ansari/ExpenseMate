@@ -1,8 +1,10 @@
 import { ThemedText } from '@/components/base/ThemedText';
+import GlobalLevelComponents from '@/components/main/GlobalLevelComponents';
 import db, { expoClient } from '@/db/client';
 import migrations from '@/drizzle/migrations/migrations';
-import useAppStore from '@/stores/useAppStore';
+import usePersistentAppStore from '@/stores/usePersistentAppStore';
 import { AppThemeProvider, useAppTheme } from '@/themes/providers/AppThemeProviders';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { useFonts } from 'expo-font';
@@ -11,6 +13,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+const queryClient = new QueryClient()
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -18,7 +21,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   // drizzle studio for debugging during development
   useDrizzleStudio(expoClient);
-  const theme = useAppStore(state => state.theme);
+  const theme = usePersistentAppStore(state => state.theme);
   // drizzle migrations for schema changes
   const { success, error } = useMigrations(db, migrations);
 
@@ -45,10 +48,13 @@ export default function RootLayout() {
   }
 
   return (
-    <AppThemeProvider>
-      <MainLayout />
-      <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
-    </AppThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <AppThemeProvider>
+        <MainLayout />
+        <GlobalLevelComponents />
+        <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
+      </AppThemeProvider>
+    </QueryClientProvider>
   );
 }
 

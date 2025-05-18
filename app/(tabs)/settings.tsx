@@ -1,11 +1,11 @@
 import { ThemedText } from "@/components/base/ThemedText";
-import useAppStore from "@/stores/useAppStore";
+import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import { View } from "react-native";
 import { Button } from "react-native-paper";
 
 export default function SettingsScreen() {
-  const theme = useAppStore(state => state.theme);
-  const setTheme = useAppStore(state => state.setTheme);
+  const theme = usePersistentAppStore(state => state.theme);
+  const setTheme = usePersistentAppStore(state => state.setTheme);
   return (
     <View style={{ flex: 1, padding: 16 }}>
       <ThemedText type="title" >Theme</ThemedText>

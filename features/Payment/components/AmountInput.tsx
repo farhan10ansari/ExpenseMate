@@ -46,6 +46,10 @@ export default function AmountInput({ amount, setAmount, onFocus, onBlur }: Amou
                         return;
                     }
                     const parsedAmount = parseFloat(text);
+                    if (isNaN(parsedAmount)) {
+                        setAmount(0);
+                        return;
+                    }
                     setAmount(parsedAmount);
                 }}
                 placeholder="0"

@@ -20,8 +20,8 @@ export const expensesSchema  = sqliteTable('expenses', {
   // Payment method (e.g., Cash, Credit Card, UPI, etc.)
   paymentMethod: text('payment_method').notNull(),
 
-  // Tags for categorization, stored as JSON array
-  tags: text('tags', { mode: 'json' }).$type<string[]>(),
+  // Category of the expense (e.g., Food, Travel, etc.)
+  category: text('category').notNull(),
 
   // Recurring expense flag
   recurring: integer('recurring', { mode: 'boolean' }).notNull().default(false),
