@@ -14,14 +14,11 @@ type DateInputProps = {
 };
 
 export default function DateInput({ datetime, setDatetime, style }: DateInputProps) {
-    const { colors } = useAppTheme();
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
     const styles = StyleSheet.create({
         button: {
             borderRadius: 20,
-            borderColor: colors.primary,
-            borderWidth: 1,
         },
         dateModalContainer: {
             justifyContent: 'center',
@@ -54,7 +51,7 @@ export default function DateInput({ datetime, setDatetime, style }: DateInputPro
         <View style={style}>
             <Button
                 icon="calendar"
-                mode="outlined"
+                mode="elevated"
                 onPress={() => setDatePickerVisibility(true)}
                 style={styles.button}
             >
@@ -70,7 +67,7 @@ export default function DateInput({ datetime, setDatetime, style }: DateInputPro
                         onDismiss={onDismissDate}
                         date={datetime}
                         animationType='slide'
-                        saveLabel="Save"
+                        saveLabel="Select"
                         placeholder='Select date'
                         label="Select date"
                     />

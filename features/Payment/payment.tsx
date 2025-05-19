@@ -17,6 +17,7 @@ import CategoriesInput from './components/CategoriesInput';
 import ConfirmButton from './components/ConfirmButton';
 import DateInput from './components/DateInput';
 import NotesInput from './components/NotesInput';
+import PaymentMethodInput from './components/PaymentMethodInput';
 import TimeInput from './components/TimeInput';
 
 export default function PaymentScreen() {
@@ -34,6 +35,8 @@ export default function PaymentScreen() {
   const setDescription = usePaymentStore((state) => state.setDescription);
   const datetime = usePaymentStore((state) => state.datetime);
   const setDatetime = usePaymentStore((state) => state.setDatetime);
+  const paymentMethod = usePaymentStore((state) => state.paymentMethod);
+  const setPaymentMethod = usePaymentStore((state) => state.setPaymentMethod);
   const resetPaymentStore = usePaymentStore((state) => state.resetPaymentStore);
 
 
@@ -101,7 +104,7 @@ export default function PaymentScreen() {
       amount: amount,
       dateTime: datetime,
       description: description,
-      paymentMethod: 'Cash',
+      paymentMethod: paymentMethod,
       category: category,
     }))
 
@@ -170,6 +173,13 @@ export default function PaymentScreen() {
           note={description}
           setNote={setDescription}
         />
+      </View>
+      {/* Payment Method */}
+      <View style={styles.notesContainer}>
+        <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+          Payment Method
+        </ThemedText>
+        <PaymentMethodInput paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} />
       </View>
       {/* Date & Time */}
       <View style={styles.datetimeContainer}>

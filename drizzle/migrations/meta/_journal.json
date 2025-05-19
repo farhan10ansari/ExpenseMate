@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1745660176616,
-      "tag": "0000_typical_war_machine",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1745752747790,
-      "tag": "0001_silly_rocket_raccoon",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1747568356761,
-      "tag": "0002_flowery_wilson_fisk",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1747568734297,
-      "tag": "0003_nappy_stepford_cuckoos",
+      "when": 1747678966214,
+      "tag": "0000_melted_medusa",
       "breakpoints": true
     }
   ]

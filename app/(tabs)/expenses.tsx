@@ -25,9 +25,9 @@ export default function ExpensesScreen() {
     return (
         <ThemedView style={styles.container}>
             <ThemedText type="title">Expenses</ThemedText>
-            <ScrollView style={{ flex: 1, paddingBottom:180 }}>
-                {data?.map((expense,index) => (
-                    <View key={index} style={{ padding: 8, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
+            <ScrollView style={{ flex: 1, paddingBottom: 180 }}>
+                {data?.map((expense) => (
+                    <View key={expense.id} style={{ padding: 8, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
                         <ThemedText>{expense.description}</ThemedText>
                         <ThemedText>{expense.amount}</ThemedText>
                         <ThemedText>{new Date(expense.dateTime).toLocaleDateString()}</ThemedText>

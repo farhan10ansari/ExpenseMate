@@ -1,3 +1,4 @@
+import { PaymentMethod } from '@/lib/types';
 import { create } from 'zustand';
 
 type PaymentStore = {
@@ -9,6 +10,8 @@ type PaymentStore = {
     setDescription: (description: string) => void;
     datetime: Date | undefined;
     setDatetime: (datetime: Date | undefined) => void;
+    paymentMethod: PaymentMethod["name"] | undefined;
+    setPaymentMethod: (paymentMethod: PaymentMethod["name"] | undefined) => void;
     resetPaymentStore: () => void;
 }
 
@@ -21,6 +24,8 @@ const usePaymentStore = create<PaymentStore>()((set) => ({
     setDescription: (description) => set({ description }),
     datetime: undefined,
     setDatetime: (datetime) => set({ datetime }),
+    paymentMethod: undefined,
+    setPaymentMethod: (paymentMethod) => set({ paymentMethod }),
     resetPaymentStore: () => set({
         amount: 0,
         category: null,

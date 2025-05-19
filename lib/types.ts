@@ -4,3 +4,9 @@ export type Category = {
     name: string;
     icon?: IconSource;
 }
+
+export type PaymentMethod = {
+    name: "upi" | "cash" | "bank-transfer" | "credit-card" | "other";
+    label: string;
+    icon: IconSource;
+}

@@ -1,4 +1,4 @@
-import { sqliteTable, integer, real, text } from 'drizzle-orm/sqlite-core';
+import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 /**
  * Drizzle ORM schema for the "expenses" table in SQLite.
  * Tracks user expenses with details like amount, timestamp, notes, etc.
@@ -18,7 +18,7 @@ export const expensesSchema  = sqliteTable('expenses', {
   description: text('description').$type<string | null>(),
 
   // Payment method (e.g., Cash, Credit Card, UPI, etc.)
-  paymentMethod: text('payment_method').notNull(),
+  paymentMethod: text('payment_method').$type<string | null>(),
 
   // Category of the expense (e.g., Food, Travel, etc.)
   category: text('category').notNull(),

@@ -5,7 +5,7 @@ export interface NewExpense {
     amount: number;
     dateTime: Date | string;      // accept Date or ms-timestamp
     description?: string | null;
-    paymentMethod: string;
+    paymentMethod?: string;
     category: string;
     recurring?: boolean;
     receipt?: string | null;
@@ -28,13 +28,13 @@ export const addExpense = async (expense: NewExpense) => {
             category: expense.category,
             recurring: expense.recurring,
             receipt: expense.receipt,
-            currency: expense.currency || 'INR',
+            currency: expense.currency,
         })
         .run();
     return res;
 };
 
-export const getExpenses = async (limit: number = 10): Promise<NewExpense[]> => {
+export const getExpenses = async (limit: number = 10) => {
     const expenses = await db
         .select()
         .from(expensesSchema)

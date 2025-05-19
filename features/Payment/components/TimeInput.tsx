@@ -14,15 +14,12 @@ type TimeInputProps = {
 };
 
 export default function TimeInput({ datetime, setDatetime, style }: TimeInputProps) {
-    const { colors } = useAppTheme();
     const { uses24HourClock } = useLocalization()
     const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
 
     const styles = StyleSheet.create({
         button: {
             borderRadius: 20,
-            borderColor: colors.primary,
-            borderWidth: 1,
         },
         timeModalContainer: {
             justifyContent: 'center',
@@ -53,7 +50,7 @@ export default function TimeInput({ datetime, setDatetime, style }: TimeInputPro
         <View style={style}>
             <Button
                 icon="clock"
-                mode="outlined"
+                mode="elevated"
                 onPress={() => setTimePickerVisibility(true)}
                 style={styles.button}
             >

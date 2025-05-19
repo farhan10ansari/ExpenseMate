@@ -1,4 +1,4 @@
-import { Category } from "./types";
+import { Category, PaymentMethod } from "./types";
 
 export const DefaultCategories: Category[] = [
     {
@@ -34,3 +34,31 @@ export const DefaultCategories: Category[] = [
         icon: "dots-horizontal-circle-outline",
     }
 ]
+
+export const paymentMethods: PaymentMethod[] = [
+    {
+        name: "upi",
+        label: "UPI",
+        icon: "qrcode-scan"
+    },
+    {
+        name: "cash",
+        label: "Cash",
+        icon: "cash"
+    },
+    {
+        name: "bank-transfer",
+        label: "Bank Transfer",
+        icon: "bank"
+    },
+    {
+        name: "credit-card",
+        label: "Credit Card",
+        icon: "credit-card"
+    },
+    {
+        name: "other",
+        label: "Other",
+        icon: "dots-horizontal"
+    }
+];
