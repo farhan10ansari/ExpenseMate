@@ -11,7 +11,7 @@ import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from 'expo-router';
 import React, { useEffect } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Keyboard, StyleSheet, View } from 'react-native';
 import AmountInput from './components/AmountInput';
 import CategoriesInput from './components/CategoriesInput';
 import ConfirmButton from './components/ConfirmButton';
@@ -55,6 +55,7 @@ export default function PaymentScreen() {
     container: {
       paddingVertical: 10,
       paddingHorizontal: 20,
+      flex: 1,
     },
     sectionTitle: {
       color: colors.muted,
@@ -141,56 +142,61 @@ export default function PaymentScreen() {
   }, [])
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <SheetGrabber />
-      {/* Amount */}
-      <View style={styles.amountContainer}>
-        <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
-          Amount
-        </ThemedText>
-        <AmountInput
-          amount={amount}
-          setAmount={setAmount}
-        />
-      </View>
-      {/* Categories */}
-      <View style={styles.categoriesContainer}>
-        <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
-          Categories
-        </ThemedText>
-        <CategoriesInput
-          category={category}
-          setCategory={setCategory}
-          categories={categories}
-        />
-      </View>
-      {/* Notes */}
-      <View style={styles.notesContainer}>
-        <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
-          Notes
-        </ThemedText>
-        <NotesInput
-          note={description}
-          setNote={setDescription}
-        />
-      </View>
-      {/* Payment Method */}
-      <View style={styles.notesContainer}>
-        <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
-          Payment Method
-        </ThemedText>
-        <PaymentMethodInput paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} />
-      </View>
-      {/* Date & Time */}
-      <View style={styles.datetimeContainer}>
-        <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
-          Date & Time
-        </ThemedText>
-        <View style={styles.datetimeMain}>
-          <DateInput datetime={datetime} setDatetime={setDatetime} style={styles.datetimeInputContainer} />
-          <TimeInput datetime={datetime} setDatetime={setDatetime} style={styles.datetimeInputContainer} />
+      <View style={{ flex: 1 }} onTouchStart={() => Keyboard.dismiss()}>
+        {/* Amount */}
+        <View style={styles.amountContainer}>
+          <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+            Amount
+          </ThemedText>
+          <AmountInput
+            amount={amount}
+            setAmount={setAmount}
+          />
         </View>
+        {/* Categories */}
+        <View style={styles.categoriesContainer}>
+          <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
+            Categories
+          </ThemedText>
+          <CategoriesInput
+            category={category}
+            setCategory={setCategory}
+            categories={categories}
+          />
+        </View>
+        {/* Notes */}
+        <View style={styles.notesContainer}>
+          <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+            Notes
+          </ThemedText>
+          <NotesInput
+            note={description}
+            setNote={setDescription}
+          />
+        </View>
+        {/* Payment Method */}
+        <View style={styles.notesContainer}>
+          <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+            Payment Method
+          </ThemedText>
+          <PaymentMethodInput paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} />
+        </View>
+        {/* Date & Time */}
+        <View style={styles.datetimeContainer}>
+          <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+            Date & Time
+          </ThemedText>
+          <View style={styles.datetimeMain}>
+            <DateInput datetime={datetime} setDatetime={setDatetime} style={styles.datetimeInputContainer} />
+            <TimeInput datetime={datetime} setDatetime={setDatetime} style={styles.datetimeInputContainer} />
+          </View>
+        </View>
+
       </View>
+
+
       {/* Confirm Button */}
       {!isSnackbarVisible && <ConfirmButton onPress={handleAddExpense} keyboardHeight={keyboardHeight} />}
 
@@ -211,6 +217,6 @@ export default function PaymentScreen() {
       >
         {errorText}
       </CustomSnackbar>
-    </ScrollView>
+    </View>
   );
 }
