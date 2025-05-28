@@ -1,7 +1,7 @@
+import TabBar from '@/components/main/TabBar';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Tabs } from 'expo-router';
 import React from 'react';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import TabBar from '@/components/main/TabBar';
 
 export default function TabLayout() {
 
@@ -19,7 +19,7 @@ export default function TabLayout() {
         //   },
         //   default: {},
         // }),
-        animation:"fade",
+        // animation:"fade",
 
       }}
       tabBar={props => <TabBar {...props} />}

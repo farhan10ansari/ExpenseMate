@@ -1,5 +1,5 @@
 import { Category } from '@/lib/types';
-import { AddCategory, getCategoryRows } from '@/stores/useCategoriesStore';
+import useCategoriesStore, { AddCategory, getCategoryRows } from '@/stores/useCategoriesStore';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
@@ -7,11 +7,12 @@ import { Button } from 'react-native-paper';
 type CategoryInputProps = {
     category: string | null;
     setCategory: (category: string) => void;
-    categories: Category[];
 };
 
-export default function CategoriesInput({ category, setCategory, categories }: CategoryInputProps) {
+export default function CategoriesInput({ category, setCategory }: CategoryInputProps) {
     const { colors } = useAppTheme();
+    // categories store
+    const categories = useCategoriesStore((state) => state.categories);
 
     const styles = StyleSheet.create({
         categoriesMain: {
@@ -51,7 +52,7 @@ export default function CategoriesInput({ category, setCategory, categories }: C
                                     setCategory(c.name);
                                 }}
                             >
-                                {c.name}
+                                {c.label}
                             </Button>
                         ))}
                         {rowIndex === categoryRows.length - 1 && (
@@ -67,7 +68,7 @@ export default function CategoriesInput({ category, setCategory, categories }: C
                                 // disabled
                                 textColor={colors.muted}
 
-                            >{AddCategory.name}
+                            >{AddCategory.label}
                             </Button>)
                         }
                     </View>

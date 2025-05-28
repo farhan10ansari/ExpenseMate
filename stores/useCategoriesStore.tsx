@@ -4,15 +4,21 @@ import { DefaultCategories } from '@/lib/constants';
 
 type CategoriesStore = {
     categories: Category[],
+    categoryMapping: Record<string, Category>,
 }
 
 export const AddCategory: Category = {
-    name: "Add Category",
+    name: "add category",
     icon: "plus",
+    label: "Add Category",
 }
 
 const useCategoriesStore = create<CategoriesStore>()((set) => ({
     categories: [...DefaultCategories],
+    categoryMapping: DefaultCategories.reduce((acc, category) => {
+        acc[category.name] = category;
+        return acc;
+    }, {} as Record<string, Category>),
 }))
 
 export default useCategoriesStore;

@@ -1,3 +1,4 @@
+import { InferInsertModel } from 'drizzle-orm';
 import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 /**
  * Drizzle ORM schema for the "expenses" table in SQLite.
@@ -32,3 +33,5 @@ export const expensesSchema  = sqliteTable('expenses', {
   // Currency code (e.g., INR, USD)
   currency: text('currency').notNull().default('INR'),
 });
+
+export type Expense = InferInsertModel<typeof expensesSchema>;

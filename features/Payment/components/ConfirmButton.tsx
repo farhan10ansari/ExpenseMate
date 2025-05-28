@@ -31,7 +31,7 @@ export default function ConfirmButton({ onPress, keyboardHeight = 0 }: ConfirmBu
             position: 'absolute',
             margin: 16,
             right: 0,
-            bottom: keyboardHeight + 20
+            bottom: keyboardHeight
         },
     })
 

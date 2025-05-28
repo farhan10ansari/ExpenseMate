@@ -1,3 +1,4 @@
+import { ThemedText } from '@/components/base/ThemedText';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { MaterialIcons } from '@expo/vector-icons';
 import { BottomTabBarProps, BottomTabNavigationEventMap, BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
@@ -5,11 +6,13 @@ import { PlatformPressable } from '@react-navigation/elements';
 import { NavigationHelpers, NavigationRoute, ParamListBase, useLinkBuilder } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { Keyboard, Platform, StyleSheet, View } from 'react-native';
-import { ThemedText } from '../base/ThemedText';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 
 export default function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     const { colors } = useAppTheme();
     const [keyboardVisible, setKeyboardVisible] = useState(false);
+    const insets = useSafeAreaInsets()
 
     useEffect(() => {
         const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
@@ -22,59 +25,59 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
         };
     }, []);
 
-
     const styles = StyleSheet.create({
+        container: {
+            height: insets.bottom,
+            position: "relative",
+            backgroundColor: colors.card
+        },
         tabBar: {
-            position: 'relative',
-            bottom: 20,
+            position: 'absolute',
+            bottom: insets.bottom,
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
             backgroundColor: colors.card,
-            marginHorizontal: 20,
-            borderRadius: 25,
-            borderCurve: "continuous",
-            shadowColor: 'black',
-            shadowOffset: {
-                width: 0,
-                height: 10,
-            },
-            shadowRadius: 10,
-            shadowOpacity: 0.1,
+            borderColor: colors.border,
+            borderWidth: 1,
             minHeight: 80,
-        }
+            borderTopRightRadius: 20,
+            borderTopLeftRadius: 20,
+            elevation: 0.01
+        },
     })
 
     if (keyboardVisible) return null;
 
     return (
-        <View style={styles.tabBar}>
-            {state.routes.map((route, index) => {
-                const { options } = descriptors[route.key];
-                const isFocused = state.index === index;
-                const Icon = options.tabBarIcon;
+        <View style={styles.container}>
+            <View style={styles.tabBar}>
+                {state.routes.map((route, index) => {
+                    const { options } = descriptors[route.key];
+                    const isFocused = state.index === index;
 
-                return (
-                    <TabBarItem
-                        key={route.key}
-                        route={route}
-                        options={options}
-                        isFocused={isFocused}
-                        navigation={navigation}
-                    />
-                );
-            })}
-            <TabBarItem
-                key="payment"
-                route={{ key: 'payment', name: 'PaymentScreen', params: {} }}
-                options={{
-                    title: 'Payments',
-                    tabBarIcon: ({ color }) => <MaterialIcons size={28} name="add" color={color} />,
-                    tabBarButtonTestID: 'payments-tab-button',
-                }}
-                isFocused={false}
-                navigation={navigation}
-            />
+                    return (
+                        <TabBarItem
+                            key={route.key}
+                            route={route}
+                            options={options}
+                            isFocused={isFocused}
+                            navigation={navigation}
+                        />
+                    );
+                })}
+                <TabBarItem
+                    key="payment"
+                    route={{ key: 'payment', name: 'PaymentScreen', params: {} }}
+                    options={{
+                        title: 'Payments',
+                        tabBarIcon: ({ color }) => <MaterialIcons size={28} name="add" color={color} />,
+                        tabBarButtonTestID: 'payments-tab-button',
+                    }}
+                    isFocused={false}
+                    navigation={navigation}
+                />
+            </View>
         </View>
     );
 }
@@ -136,7 +139,7 @@ function TabBarItem({ route, options, isFocused, navigation }: TabBarItemProps) 
             style={styles.tabBarItem}
             android_ripple={{
                 color: dark ? colors.primary100 : colors.primary10,
-                borderless: true
+                borderless: true,
             }}
         >
             {

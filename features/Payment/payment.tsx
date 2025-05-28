@@ -40,8 +40,6 @@ export default function PaymentScreen() {
   const resetPaymentStore = usePaymentStore((state) => state.resetPaymentStore);
 
 
-  // categories store
-  const categories = useCategoriesStore((state) => state.categories);
 
   // Snackbar
   const [isSnackbarVisible, setSnackbarVisibility] = React.useState(false);
@@ -163,7 +161,6 @@ export default function PaymentScreen() {
           <CategoriesInput
             category={category}
             setCategory={setCategory}
-            categories={categories}
           />
         </View>
         {/* Notes */}

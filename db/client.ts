@@ -7,7 +7,7 @@ export const expoClient = openDatabaseSync('db.db');
 
 const db = drizzle(expoClient, {
     schema,
-    logger: true,
+    // logger: true,
 });
 
 export default db;

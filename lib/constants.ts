@@ -2,35 +2,43 @@ import { Category, PaymentMethod } from "./types";
 
 export const DefaultCategories: Category[] = [
     {
-        name: "Food",
+        name: "food",
+        label: "Food",
         icon: "food",
     },
     {
-        name: "Transport",
+        name: "transport",
+        label: "Transport",
         icon: "train-car",
     },
     {
-        name: "Shopping",
+        name: "shopping",
+        label: "Shopping",
         icon: "shopping",
     },
     {
-        name: "Entertainment",
+        name: "entertainment",
+        label: "Entertainment",
         icon: "movie",
     },
     {
-        name: "Health",
+        name: "health",
+        label: "Health",
         icon: "heart",
     },
     {
-        name: "Travel",
+        name: "travel",
+        label: "Travel",
         icon: "walk",
     },
     {
-        name: "Bills",
+        name: "bills",
+        label: "Bills",
         icon: "file-document",
     },
     {
-        name: "Other",
+        name: "other",
+        label: "Other",
         icon: "dots-horizontal-circle-outline",
     }
 ]
@@ -62,3 +70,8 @@ export const paymentMethods: PaymentMethod[] = [
         icon: "dots-horizontal"
     }
 ];
+
+export const paymentMethodsMapping = paymentMethods.reduce((acc, paymentMethod) => {
+    acc[paymentMethod.name] = paymentMethod;
+    return acc;
+}, {} as Record<string, PaymentMethod>);
