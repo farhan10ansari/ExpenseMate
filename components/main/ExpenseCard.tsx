@@ -3,15 +3,16 @@ import { paymentMethodsMapping } from "@/lib/constants";
 import useCategoriesStore from "@/stores/useCategoriesStore";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import CustomChip from "@/components/ui/CustomChip";
 
 type ExpenseCardProps = {
     expense: Expense;
+    onPress?: (id: number) => void;
 };
 
-export default function ExpenseCard({ expense }: ExpenseCardProps) {
+export default function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
     const { colors } = useAppTheme();
 
     // Get the category mapping from the categories store
@@ -59,9 +60,12 @@ export default function ExpenseCard({ expense }: ExpenseCardProps) {
         },
     });
 
+    const handleOnPress = () => {
+        if (onPress && expense.id) onPress(expense.id)
+    }
 
     return (
-        <View style={[styles.card]}>
+        <Pressable style={[styles.card]} onPress={handleOnPress}>
             <View style={styles.topRow}>
                 <View style={styles.amountContainer}>
                     <MaterialCommunityIcons name="currency-inr" size={20} color={colors.primary} />
@@ -92,7 +96,7 @@ export default function ExpenseCard({ expense }: ExpenseCardProps) {
                     {formattedDate} • {formattedTime}
                 </ThemedText>
             </View>
-        </View>
+        </Pressable>
     );
 }
 

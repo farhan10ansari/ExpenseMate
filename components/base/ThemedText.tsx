@@ -2,15 +2,19 @@ import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { StyleSheet, Text, type TextProps } from 'react-native';
 
 export type ThemedTextProps = TextProps & {
-  lightColor?: string;
-  darkColor?: string;
+  color?: string; // Optional color prop for custom text color for light and dark themes
+  lightColor?: string; // Optional color for light theme. If provided, it will override the color prop in light mode
+  darkColor?: string; // Optional color for dark theme. If provided, it will override the color prop in dark mode
+  fontSize?: number; // Optional font size, can be used to override default sizes
   type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
 };
 
 export function ThemedText({
   style,
+  color,
   lightColor,
   darkColor,
+  fontSize,
   type = 'default',
   ...rest
 }: ThemedTextProps) {
@@ -26,6 +30,10 @@ export function ThemedText({
         type === 'subtitle' ? styles.subtitle : undefined,
         type === 'link' ? styles.link : undefined,
         style,
+        color ? { color } : undefined,
+        lightColor ? { color: lightColor } : undefined,
+        darkColor ? { color: darkColor } : undefined,
+        fontSize ? { fontSize } : undefined,
       ]}
       {...rest}
     />

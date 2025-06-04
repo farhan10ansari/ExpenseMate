@@ -4,12 +4,15 @@ import ExpenseCard from "@/components/main/ExpenseCard";
 import { getExpensesPaginated } from "@/repositories/expenses";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useNavigation } from "expo-router";
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FlatList, StyleSheet, View } from "react-native";
-
+import { RootStackParamList } from "@/lib/types";
 
 const PageSize = 10;
 
 export default function ExpensesScreen() {
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const { colors } = useAppTheme();
     const {
         data,
@@ -37,13 +40,17 @@ export default function ExpensesScreen() {
 
     const expenses = data?.pages.flatMap((page) => page.expenses) || [];
 
+    const onPressExpenseCard = (id: number) => {
+        navigation.navigate('ExpenseInfoScreen', { id });
+    }
+
     return (
         <ThemedView style={styles.container}>
             {/* <ThemedText type="title">Expenses</ThemedText> */}
             <FlatList
                 data={expenses}
                 keyExtractor={(item) => item.id?.toString() || Math.random().toString(36)}
-                renderItem={({ item }) => <ExpenseCard expense={item} />}
+                renderItem={({ item }) => <ExpenseCard expense={item} onPress={onPressExpenseCard} />}
                 contentContainerStyle={{ paddingBottom: 180 }}
                 onEndReachedThreshold={0.5}
                 onEndReached={() => {

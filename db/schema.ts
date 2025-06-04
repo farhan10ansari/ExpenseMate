@@ -7,7 +7,7 @@ import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const expensesSchema  = sqliteTable('expenses', {
   // Primary key
-  id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
+  id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }).notNull(),
 
   // Expense amount
   amount: real('amount').notNull(),

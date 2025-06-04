@@ -86,6 +86,25 @@ function MainLayout() {
           }
         }}
       />
+      <Stack.Screen
+        name="ExpenseInfoScreen"
+        options={{
+          // title: 'Payment',
+          presentation: 'formSheet',
+          gestureDirection: "vertical",
+          animation: "slide_from_bottom",
+          sheetGrabberVisible: true,
+          sheetInitialDetentIndex: 0,
+          sheetAllowedDetents: "fitToContents",
+          // sheetAllowedDetents: [0.75, 1],
+          sheetExpandsWhenScrolledToEdge: true,
+          sheetElevation: 24,
+          sheetCornerRadius: 20,
+          contentStyle: {
+            backgroundColor: colors.card,
+          }
+        }}
+      />
       <Stack.Screen name="+not-found" />
     </Stack>
   )

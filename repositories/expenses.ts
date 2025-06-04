@@ -1,6 +1,6 @@
 import db from '@/db/client';
 import { Expense, expensesSchema } from '@/db/schema';
-import { desc } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 
 export interface NewExpense {
   amount: number;
@@ -35,23 +35,7 @@ export const addExpense = async (expense: NewExpense) => {
   return res;
 };
 
-export const getExpenses = async (limit: number = 10): Promise<Expense[]> => {
-  const expenses = await db
-    .select()
-    .from(expensesSchema)
-    .orderBy(expensesSchema.dateTime)
-    .limit(limit)
-    .all();
-
-  return expenses
-};
-
-// repositories/expenses.ts
-
-
-
 const PAGE_SIZE = 10;
-
 export const getExpensesPaginated = async ({
   page = 0,
   pageSize = PAGE_SIZE
@@ -77,29 +61,7 @@ export const getExpensesPaginated = async ({
     .limit(1) // fetch 1 more to detect hasMore
     .offset(offset + pageSize); // check if there's more than the current page
 
-
-  const total = await db
-    .select()
-    .from(expensesSchema)
-
-  console.log("Total expenses:", total);
-
-
   const hasMore = checkMore && checkMore?.length > 0;
-  console.log("Check more results:", checkMore);
-
-  //delay(1000); // Simulate network delay for testing
-
-  // return new Promise((resolve) => {
-  //   setTimeout(() => {
-  //     resolve({
-  //       expenses: results,
-  //       hasMore,
-  //       page: page
-  //     }); 
-  //   }
-  //   , 5000); // Simulate network delay for testing
-  // });
 
   return {
     expenses: results,
@@ -107,3 +69,24 @@ export const getExpensesPaginated = async ({
     page: page
   };
 };
+
+
+export const getExpenseById = async (id: string | number): Promise<Expense | undefined> => {
+  const numericId = Number(id); // Convert string to number
+  if (isNaN(numericId)) {
+    throw new Error('Invalid ID format. ID must be a number.');
+  }
+
+  const result = await db
+    .select()
+    .from(expensesSchema)
+    .where(eq(expensesSchema.id, numericId))
+    .limit(1)
+    .execute();
+
+  if (!result || result.length === 0) {
+    throw new Error(`Expense with ID ${id} not found.`);
+  }
+
+  return result[0] as Expense;
+}

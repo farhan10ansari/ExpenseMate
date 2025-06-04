@@ -11,3 +11,7 @@ export type PaymentMethod = {
     label: string;
     icon: IconSource;
 }
+
+export type RootStackParamList = {
+    ExpenseInfoScreen: { id: number };
+}
