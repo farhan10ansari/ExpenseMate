@@ -2,7 +2,9 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import CustomChip from "@/components/ui/CustomChip";
 import SheetGrabber from "@/components/ui/SheetGrabber";
+import { useLocalization } from "@/hooks/useLocalization";
 import { paymentMethodsMapping } from "@/lib/constants";
+import { extractDateLabel, extractTimeString } from "@/lib/functions";
 import { getExpenseById } from "@/repositories/expenses";
 import useCategoriesStore from "@/stores/useCategoriesStore";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
@@ -18,16 +20,12 @@ export default function ExpenseInfoScreen() {
     const { colors } = useAppTheme();
     const { id } = useLocalSearchParams<{ id: string }>();
     const categoryMapping = useCategoriesStore((state) => state.categoryMapping);
+    const { uses24HourClock } = useLocalization()
 
     const { data: expense, isLoading, isError, error } = useQuery({
         queryKey: ['expense', id],
         queryFn: async () => getExpenseById(id),
         enabled: !!id,
-    });
-
-    const formattedDateTime = new Date(expense?.dateTime ?? "").toLocaleString(undefined, {
-        year: 'numeric', month: 'long', day: 'numeric',
-        hour: '2-digit', minute: '2-digit', hour12: true
     });
 
     const styles = StyleSheet.create({
@@ -61,7 +59,7 @@ export default function ExpenseInfoScreen() {
             maxWidth: 200,
         },
     });
-    
+
     if (isError) {
         return (
             <ThemedView style={[styles.container, { minHeight: 200 }]}>
@@ -70,6 +68,11 @@ export default function ExpenseInfoScreen() {
             </ThemedView>
         );
     }
+
+
+    const timeString = expense?.dateTime ? extractTimeString(expense?.dateTime, uses24HourClock) : "";
+    const dateLabel = expense?.dateTime ? extractDateLabel(expense?.dateTime) : ""
+    const formattedDateTime = expense?.dateTime ? `${dateLabel} at ${timeString}` : "Not Provided";
 
     return (
         <ThemedView style={styles.container}>
