@@ -13,5 +13,5 @@ export type PaymentMethod = {
 }
 
 export type RootStackParamList = {
-    ExpenseInfoScreen: { id: number };
+    ExpenseInfoScreen: { id: string };
 }

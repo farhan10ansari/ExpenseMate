@@ -1,18 +1,19 @@
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import ExpenseCard from "@/components/main/ExpenseCard";
-import { getExpensesPaginated } from "@/repositories/expenses";
-import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useNavigation } from "expo-router";
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { FlatList, StyleSheet, View } from "react-native";
 import { RootStackParamList } from "@/lib/types";
+import { getExpenseById, getExpensesPaginated } from "@/repositories/expenses";
+import { useAppTheme } from "@/themes/providers/AppThemeProviders";
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigation } from "expo-router";
+import { FlatList, StyleSheet, View } from "react-native";
 
 const PageSize = 10;
 
 export default function ExpensesScreen() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const queryClient = useQueryClient()
     const { colors } = useAppTheme();
     const {
         data,
@@ -40,13 +41,20 @@ export default function ExpensesScreen() {
 
     const expenses = data?.pages.flatMap((page) => page.expenses) || [];
 
-    const onPressExpenseCard = (id: number) => {
-        navigation.navigate('ExpenseInfoScreen', { id });
+    const onPressExpenseCard = async (id: number) => {
+        //Prefetch data so that formsheet size do not change on data load
+        queryClient.prefetchQuery({
+            queryKey: ['expense', id.toString()],
+            queryFn: async () => getExpenseById(id),
+        }).then(() => {
+            navigation.navigate('ExpenseInfoScreen', { id: id.toString() });
+        }).catch(() => {
+            //Route to an error screen with reload option
+        })
     }
 
     return (
         <ThemedView style={styles.container}>
-            {/* <ThemedText type="title">Expenses</ThemedText> */}
             <FlatList
                 data={expenses}
                 keyExtractor={(item) => item.id?.toString() || Math.random().toString(36)}
@@ -77,6 +85,5 @@ export default function ExpensesScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // paddingBottom:30
     }
 });

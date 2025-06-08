@@ -12,9 +12,9 @@ import { FontAwesome } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
-
+import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
 
 export default function ExpenseInfoScreen() {
     const { colors } = useAppTheme();
@@ -26,6 +26,7 @@ export default function ExpenseInfoScreen() {
         queryKey: ['expense', id],
         queryFn: async () => getExpenseById(id),
         enabled: !!id,
+        staleTime: Infinity,
     });
 
     const styles = StyleSheet.create({
@@ -58,6 +59,21 @@ export default function ExpenseInfoScreen() {
             width: '45%',
             maxWidth: 200,
         },
+        editButton: {
+            // backgroundColor: colors.primary,
+            // color: colors.onPrimary,
+        },
+        editBUttonText: {
+            // color: colors.onPrimary,
+            // fontWeight: 'bold',
+            // fontSize: 16,
+        },
+        deleteButton: {
+            backgroundColor: colors.error,
+        },
+        deleteButtonText: {
+            color: colors.onError,
+        },
     });
 
     if (isError) {
@@ -68,7 +84,6 @@ export default function ExpenseInfoScreen() {
             </ThemedView>
         );
     }
-
 
     const timeString = expense?.dateTime ? extractTimeString(expense?.dateTime, uses24HourClock) : "";
     const dateLabel = expense?.dateTime ? extractDateLabel(expense?.dateTime) : ""
@@ -108,7 +123,9 @@ export default function ExpenseInfoScreen() {
                     content={expense?.description ? <ThemedText>
                         {expense?.description}
                     </ThemedText> : "Not Provided"}
-                    fullWidthContent={expense?.description ? true : false}
+                    layout={expense?.description ? "vertical" : "horizontal"}
+                    scrollable
+                    height={100}
                 />
 
                 {/* Payment Method */}
@@ -124,8 +141,21 @@ export default function ExpenseInfoScreen() {
                 <InfoRow label="Date & Time" content={formattedDateTime} />
                 {/* Action */}
                 <View style={styles.buttonContainer}>
-                    <Button mode="elevated" style={styles.button}>Edit</Button>
-                    <Button mode="elevated" style={styles.button}>Delete</Button>
+                    <Button
+                        mode="elevated"
+                        style={[styles.button, styles.editButton]}
+                        labelStyle={styles.editBUttonText}
+                        rippleColor={colors.primary}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        mode="elevated"
+                        style={[styles.button, styles.deleteButton]}
+                        labelStyle={styles.deleteButtonText}
+                    >
+                        Delete
+                    </Button>
                 </View>
             </View>
         </ThemedView>
@@ -133,15 +163,17 @@ export default function ExpenseInfoScreen() {
 }
 
 
-const InfoRow = ({ label, content, fullWidthContent = false }: {
+const InfoRow = ({ label, content, layout = "horizontal", scrollable = false, height }: {
     label: string,
     content: React.ReactNode | string,
-    fullWidthContent?: boolean
+    layout?: "horizontal" | "vertical",
+    scrollable?: boolean,
+    height?: number
 }) => {
     const { colors } = useAppTheme();
     const styles = StyleSheet.create({
         infoRow: {
-            flexDirection: fullWidthContent ? "column" : 'row',
+            flexDirection: layout === "vertical" ? "column" : 'row',
             justifyContent: 'space-between',
             paddingVertical: 10,
             borderBottomWidth: 1,
@@ -150,22 +182,31 @@ const InfoRow = ({ label, content, fullWidthContent = false }: {
         label: {
             fontSize: 16,
             fontWeight: '500',
-            width: fullWidthContent ? "100%" : '50%', // Adjust width as needed
+            width: layout === "vertical" ? "100%" : '50%', // Adjust width as needed
         },
         textContent: {
             color: colors.text,
-            width: fullWidthContent ? "100%" : '50%',
-            textAlign: fullWidthContent ? "left" : "right",
+            width: layout === "vertical" ? "100%" : '50%',
+            textAlign: layout === "vertical" ? "left" : "right",
         },
         contentContainer: {
             flexDirection: "row",
-            width: fullWidthContent ? "100%" : '50%',
-            justifyContent: fullWidthContent ? 'flex-start' : 'flex-end',
-        }
+            width: layout === "vertical" ? "100%" : '50%',
+            justifyContent: layout === "vertical" ? 'flex-start' : 'flex-end',
+        },
+        scrollableContentContainer: {
+            // flexDirection: "row",
+            // width: layout === "vertical" ? "100%" : '50%',
+            // justifyContent: layout === "vertical" ? 'flex-start' : 'flex-end',
+            maxHeight: height
+        },
+
 
     });
 
     const isStringContent = typeof content === 'string';
+
+    const ContentViewComponent = scrollable ? ScrollView : View
 
     return (
         <View style={styles.infoRow}>
@@ -175,11 +216,22 @@ const InfoRow = ({ label, content, fullWidthContent = false }: {
                     <ThemedText style={styles.textContent}>
                         {content}
                     </ThemedText>
-                ) : (
-                    <View style={styles.contentContainer}>
+                ) : scrollable ? (
+                    // Using React Native Gesture handler ScrollView to fix formsheet close on scroll
+                    <GestureScrollView
+                        keyboardShouldPersistTaps="handled"
+                        bounces={false}
+                        contentContainerStyle={{ paddingBottom: 40 }}
+                        style={styles.scrollableContentContainer}
+                    >
                         {content}
-                    </View>
+                    </GestureScrollView>
                 )
+                    : (
+                        <View style={styles.contentContainer}>
+                            {content}
+                        </View>
+                    )
             }
         </View>
     )
