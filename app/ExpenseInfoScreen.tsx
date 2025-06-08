@@ -12,7 +12,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
 import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
 
@@ -181,7 +181,7 @@ const InfoRow = ({ label, content, layout = "horizontal", scrollable = false, he
         },
         label: {
             fontSize: 16,
-            fontWeight: '500',
+            fontWeight: '600',
             width: layout === "vertical" ? "100%" : '50%', // Adjust width as needed
         },
         textContent: {
@@ -205,8 +205,6 @@ const InfoRow = ({ label, content, layout = "horizontal", scrollable = false, he
     });
 
     const isStringContent = typeof content === 'string';
-
-    const ContentViewComponent = scrollable ? ScrollView : View
 
     return (
         <View style={styles.infoRow}>
