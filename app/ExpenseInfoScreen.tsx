@@ -218,8 +218,6 @@ const InfoRow = ({ label, content, layout = "horizontal", scrollable = false, he
                     // Using React Native Gesture handler ScrollView to fix formsheet close on scroll
                     <GestureScrollView
                         keyboardShouldPersistTaps="handled"
-                        bounces={false}
-                        contentContainerStyle={{ paddingBottom: 40 }}
                         style={styles.scrollableContentContainer}
                     >
                         {content}
