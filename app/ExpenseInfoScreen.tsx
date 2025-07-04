@@ -16,6 +16,7 @@ import { StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
 import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
 import { tryCatch } from "@/lib/try-catch";
+import useAppStore from "@/stores/useAppStore";
 
 export default function ExpenseInfoScreen() {
     const { colors } = useAppTheme();
@@ -24,6 +25,7 @@ export default function ExpenseInfoScreen() {
     const { uses24HourClock } = useLocalization();
     const queryClient = useQueryClient();
     const navigation = useNavigation()
+    const setGlobalSnackbar = useAppStore((state) => state.setGlobalSnackbar);
 
     const { data: expense, isLoading, isError, error } = useQuery({
         queryKey: ['expense', id],
@@ -76,9 +78,29 @@ export default function ExpenseInfoScreen() {
 
     const handleDelete = async () => {
         const { error } = await tryCatch(softDeleteExpenseById(id))
-        if (!error) {
+        if (error) {
+            setGlobalSnackbar({
+                message: 'Error in deleting expense',
+                duration: 2000,
+                actionLabel: 'Dismiss',
+                actionIcon: 'close',
+                type: 'error',
+                position: 'bottom',
+                offset: 80,
+            });
+        }
+        else {
             queryClient.invalidateQueries({ queryKey: ['expenses'] });
-            navigation.goBack();
+            navigation.goBack()
+            setGlobalSnackbar({
+                message: 'Successfully deleted expense',
+                duration: 2000,
+                actionLabel: 'Dismiss',
+                actionIcon: 'close',
+                type: 'success',
+                position: 'bottom',
+                offset: 80,
+            });
         }
     }
 
