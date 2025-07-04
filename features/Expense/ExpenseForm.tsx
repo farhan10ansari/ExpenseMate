@@ -5,7 +5,6 @@ import useKeyboardHeight from '@/hooks/useKeyboardHeight';
 import { tryCatch } from '@/lib/try-catch';
 import { addExpense } from '@/repositories/expenses';
 import useAppStore from '@/stores/useAppStore';
-import useCategoriesStore from '@/stores/useCategoriesStore';
 import usePaymentStore from '@/stores/usePaymentStore';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { useQueryClient } from '@tanstack/react-query';
@@ -20,7 +19,7 @@ import NotesInput from './components/NotesInput';
 import PaymentMethodInput from './components/PaymentMethodInput';
 import TimeInput from './components/TimeInput';
 
-export default function PaymentScreen() {
+export default function ExpenseForm() {
   const navigation = useNavigation();
   const queryCLient = useQueryClient();
   const { colors } = useAppTheme();

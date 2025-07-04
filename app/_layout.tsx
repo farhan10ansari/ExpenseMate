@@ -71,7 +71,7 @@ function MainLayout() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="PaymentScreen"
+        name="expense/new"
         options={{
           // title: 'Payment',
           presentation: 'formSheet',
@@ -100,6 +100,25 @@ function MainLayout() {
           sheetInitialDetentIndex: 0,
           sheetAllowedDetents: "fitToContents",
           // sheetAllowedDetents: [0.75, 1],
+          sheetExpandsWhenScrolledToEdge: true,
+          sheetElevation: 24,
+          sheetCornerRadius: 20,
+          contentStyle: {
+            backgroundColor: colors.card,
+          }
+        }}
+      />
+      <Stack.Screen
+        name="expense/[id]/edit"
+        options={{
+          // title: 'Payment',
+          presentation: 'formSheet',
+          gestureDirection: "vertical",
+          animation: "slide_from_bottom",
+          sheetGrabberVisible: true,
+          sheetInitialDetentIndex: 0,
+          // sheetAllowedDetents: "fitToContents",
+          sheetAllowedDetents: [0.75, 1],
           sheetExpandsWhenScrolledToEdge: true,
           sheetElevation: 24,
           sheetCornerRadius: 20,
