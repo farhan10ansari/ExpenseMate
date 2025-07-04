@@ -32,6 +32,9 @@ export const expensesSchema  = sqliteTable('expenses', {
 
   // Currency code (e.g., INR, USD)
   currency: text('currency').notNull().default('INR'),
+
+  // Trash flag to mark expenses as deleted without removing them
+  isTrashed: integer('is_trashed', { mode: 'boolean' }).notNull().default(false),
 });
 
 export type Expense = InferInsertModel<typeof expensesSchema>;

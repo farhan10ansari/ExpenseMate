@@ -8,6 +8,13 @@
       "when": 1747678966214,
       "tag": "0000_melted_medusa",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1751647331938,
+      "tag": "0001_silent_nemesis",
+      "breakpoints": true
     }
   ]
 }

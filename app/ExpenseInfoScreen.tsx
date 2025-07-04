@@ -5,22 +5,25 @@ import SheetGrabber from "@/components/ui/SheetGrabber";
 import { useLocalization } from "@/hooks/useLocalization";
 import { paymentMethodsMapping } from "@/lib/constants";
 import { extractDateLabel, extractTimeString } from "@/lib/functions";
-import { getExpenseById } from "@/repositories/expenses";
+import { softDeleteExpenseById, getExpenseById } from "@/repositories/expenses";
 import useCategoriesStore from "@/stores/useCategoriesStore";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { FontAwesome } from "@expo/vector-icons";
-import { useQuery } from "@tanstack/react-query";
-import { useLocalSearchParams } from "expo-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
 import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
+import { tryCatch } from "@/lib/try-catch";
 
 export default function ExpenseInfoScreen() {
     const { colors } = useAppTheme();
     const { id } = useLocalSearchParams<{ id: string }>();
     const categoryMapping = useCategoriesStore((state) => state.categoryMapping);
-    const { uses24HourClock } = useLocalization()
+    const { uses24HourClock } = useLocalization();
+    const queryClient = useQueryClient();
+    const navigation = useNavigation()
 
     const { data: expense, isLoading, isError, error } = useQuery({
         queryKey: ['expense', id],
@@ -60,13 +63,8 @@ export default function ExpenseInfoScreen() {
             maxWidth: 200,
         },
         editButton: {
-            // backgroundColor: colors.primary,
-            // color: colors.onPrimary,
         },
         editBUttonText: {
-            // color: colors.onPrimary,
-            // fontWeight: 'bold',
-            // fontSize: 16,
         },
         deleteButton: {
             backgroundColor: colors.error,
@@ -75,6 +73,14 @@ export default function ExpenseInfoScreen() {
             color: colors.onError,
         },
     });
+
+    const handleDelete = async () => {
+        const { error } = await tryCatch(softDeleteExpenseById(id))
+        if (!error) {
+            queryClient.invalidateQueries({ queryKey: ['expenses'] });
+            navigation.goBack();
+        }
+    }
 
     if (isError) {
         return (
@@ -153,6 +159,7 @@ export default function ExpenseInfoScreen() {
                         mode="elevated"
                         style={[styles.button, styles.deleteButton]}
                         labelStyle={styles.deleteButtonText}
+                        onPress={handleDelete}
                     >
                         Delete
                     </Button>

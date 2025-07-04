@@ -13,6 +13,7 @@ export interface NewExpense {
   currency?: string;
 }
 
+//Add a new expense to the database
 export const addExpense = async (expense: NewExpense) => {
   // Drizzle expects a Date for timestamp columns
   const dt: Date = expense.dateTime instanceof Date
@@ -35,6 +36,7 @@ export const addExpense = async (expense: NewExpense) => {
   return res;
 };
 
+// Get paginated expenses
 const PAGE_SIZE = 10;
 export const getExpensesPaginated = async ({
   page = 0,
@@ -42,26 +44,28 @@ export const getExpensesPaginated = async ({
 }: {
   page: number,
   pageSize: number
-}
-
-): Promise<{ expenses: Expense[]; hasMore: boolean; page: number }> => {
+}): Promise<{ expenses: Expense[]; hasMore: boolean; page: number }> => {
   const offset = page * pageSize;
-  // Fetch one extra item to determine if more data exists
+
+  // Fetch expenses that are not trashed
   const results = await db
     .select()
     .from(expensesSchema)
+    .where(eq(expensesSchema.isTrashed, false))
     .orderBy(desc(expensesSchema.dateTime))
-    .limit(pageSize) // fetch 1 more to detect hasMore
+    .limit(pageSize)
     .offset(offset);
 
+  // Check if more non-trashed items exist beyond the current page
   const checkMore = await db
     .select()
     .from(expensesSchema)
+    .where(eq(expensesSchema.isTrashed, false))
     .orderBy(desc(expensesSchema.dateTime))
     .limit(1) // fetch 1 more to detect hasMore
     .offset(offset + pageSize); // check if there's more than the current page
 
-  const hasMore = checkMore && checkMore?.length > 0;
+  const hasMore = checkMore && checkMore.length > 0;
 
   return {
     expenses: results,
@@ -70,7 +74,7 @@ export const getExpensesPaginated = async ({
   };
 };
 
-
+// Get a single expense by ID
 export const getExpenseById = async (id: string | number): Promise<Expense | undefined> => {
   const numericId = Number(id); // Convert string to number
   if (isNaN(numericId)) {
@@ -89,4 +93,23 @@ export const getExpenseById = async (id: string | number): Promise<Expense | und
   }
 
   return result[0] as Expense;
+}
+
+// Delete an expense by ID
+export const softDeleteExpenseById = async (id: string | number): Promise<void> => {
+  const numericId = Number(id); // Convert string to number
+  if (isNaN(numericId)) {
+    throw new Error('Invalid ID format. ID must be a number.');
+  }
+  
+  // mark as trashed instead of deleting
+  const result = await db
+    .update(expensesSchema)
+    .set({ isTrashed: true })
+    .where(eq(expensesSchema.id, numericId))
+    .run();
+
+  if (result.changes === 0) {
+    throw new Error(`Expense with ID ${id} not found or already deleted.`);
+  }
 }
