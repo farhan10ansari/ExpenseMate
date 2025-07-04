@@ -1,20 +1,20 @@
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import ExpenseCard from "@/components/main/ExpenseCard";
-import { RootStackParamList } from "@/lib/types";
 import { getExpenseById, getExpensesPaginated } from "@/repositories/expenses";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigation } from "expo-router";
-import { FlatList, StyleSheet, View } from "react-native";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 
 const PageSize = 10;
 
 export default function ExpensesScreen() {
-    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const router = useRouter()
     const queryClient = useQueryClient()
     const { colors } = useAppTheme();
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const {
         data,
         error,
@@ -47,11 +47,18 @@ export default function ExpensesScreen() {
             queryKey: ['expense', id.toString()],
             queryFn: async () => getExpenseById(id),
         }).then(() => {
-            navigation.navigate('ExpenseInfoScreen', { id: id.toString() });
+            router.push(`/expense/${id}`);
         }).catch(() => {
             //Route to an error screen with reload option
         })
     }
+
+    const handleRefresh = () => {
+        setIsRefreshing(true);
+        queryClient.invalidateQueries({ queryKey: ['expenses'] }).finally(() => {
+            setIsRefreshing(false);
+        });
+    };
 
     return (
         <ThemedView style={styles.container}>
@@ -76,6 +83,9 @@ export default function ExpensesScreen() {
                             Loading more...
                         </ThemedText>
                     ) : null
+                }
+                refreshControl={
+                    <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
                 }
             />
         </ThemedView>

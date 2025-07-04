@@ -90,7 +90,7 @@ function MainLayout() {
         }}
       />
       <Stack.Screen
-        name="ExpenseInfoScreen"
+        name="expense/[id]"
         options={{
           // title: 'Payment',
           presentation: 'formSheet',

@@ -36,7 +36,6 @@ export default function ExpenseInfoScreen() {
 
     const styles = StyleSheet.create({
         container: {
-            // flex: 1,
             backgroundColor: colors.card,
             paddingHorizontal: 20,
             paddingTop: 10, // Adjusted padding for SheetGrabber
@@ -224,9 +223,6 @@ const InfoRow = ({ label, content, layout = "horizontal", scrollable = false, he
             justifyContent: layout === "vertical" ? 'flex-start' : 'flex-end',
         },
         scrollableContentContainer: {
-            // flexDirection: "row",
-            // width: layout === "vertical" ? "100%" : '50%',
-            // justifyContent: layout === "vertical" ? 'flex-start' : 'flex-end',
             maxHeight: height
         },
 
