@@ -7,7 +7,7 @@ import { Button } from "react-native-paper";
 
 
 type PaymentMethodInputProps = {
-    paymentMethod: string | undefined;
+    paymentMethod: string | undefined | null;
     setPaymentMethod: (method: PaymentMethod["name"] | undefined) => void;
 }
 

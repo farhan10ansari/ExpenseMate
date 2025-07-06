@@ -6,7 +6,7 @@ export interface NewExpense {
   amount: number;
   dateTime: Date | string;      // accept Date or ms-timestamp
   description?: string | null;
-  paymentMethod?: string;
+  paymentMethod?: string | null;
   category: string;
   recurring?: boolean;
   receipt?: string | null;

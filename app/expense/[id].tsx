@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import CustomChip from "@/components/ui/CustomChip";
@@ -11,9 +12,8 @@ import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { FontAwesome } from "@expo/vector-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Button } from "react-native-paper";
+import { Button, Dialog, Portal } from "react-native-paper";
 import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
 import { tryCatch } from "@/lib/try-catch";
 import useAppStore from "@/stores/useAppStore";
@@ -26,6 +26,7 @@ export default function ExpenseInfoScreen() {
     const queryClient = useQueryClient();
     const navigation = useNavigation()
     const setGlobalSnackbar = useAppStore((state) => state.setGlobalSnackbar);
+    const [showDeleteConfirmationDialog, setShowDeleteConfirmationDialog] = useState(false);
 
     const { data: expense, isLoading, isError, error } = useQuery({
         queryKey: ['expense', id],
@@ -180,12 +181,24 @@ export default function ExpenseInfoScreen() {
                         mode="elevated"
                         style={[styles.button, styles.deleteButton]}
                         labelStyle={styles.deleteButtonText}
-                        onPress={handleDelete}
+                        onPress={() => setShowDeleteConfirmationDialog(true)}
                     >
                         Delete
                     </Button>
                 </View>
             </View>
+            <Portal>
+                <Dialog visible={showDeleteConfirmationDialog} onDismiss={() => setShowDeleteConfirmationDialog(false)}>
+                    <Dialog.Title>Delete Expense?</Dialog.Title>
+                    <Dialog.Content>
+                        <ThemedText>Are you sure you want to delete this expense? This action cannot be undone.</ThemedText>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button onPress={() => setShowDeleteConfirmationDialog(false)}>Cancel</Button>
+                        <Button onPress={handleDelete} textColor={colors.error}>Delete</Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
         </ThemedView>
     );
 }

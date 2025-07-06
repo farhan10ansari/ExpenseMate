@@ -1,14 +1,7 @@
 import { ThemedText } from '@/components/base/ThemedText';
-import CustomSnackbar from '@/components/ui/CustomSnackbar';
 import SheetGrabber from '@/components/ui/SheetGrabber';
 import useKeyboardHeight from '@/hooks/useKeyboardHeight';
-import { tryCatch } from '@/lib/try-catch';
-import { addExpense } from '@/repositories/expenses';
-import useAppStore from '@/stores/useAppStore';
-import usePaymentStore from '@/stores/usePaymentStore';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import { useQueryClient } from '@tanstack/react-query';
-import { useNavigation } from 'expo-router';
 import React, { useEffect } from 'react';
 import { Keyboard, StyleSheet, View } from 'react-native';
 import AmountInput from './components/AmountInput';
@@ -18,35 +11,19 @@ import DateInput from './components/DateInput';
 import NotesInput from './components/NotesInput';
 import PaymentMethodInput from './components/PaymentMethodInput';
 import TimeInput from './components/TimeInput';
+import { ExpenseData, useExpenseStore } from './ExpenseStoreProvider';
 
-export default function ExpenseForm() {
-  const navigation = useNavigation();
-  const queryCLient = useQueryClient();
+type ExpenseFormProps = {
+  showSubmitButton?: boolean;
+  onSubmit?: (expense: ExpenseData) => void;
+}
+
+export default function ExpenseForm({ showSubmitButton, onSubmit }: ExpenseFormProps) {
   const { colors } = useAppTheme();
-  const { keyboardHeight, setKeyboardHeight } = useKeyboardHeight();
+  const { keyboardHeight } = useKeyboardHeight();
 
-  // Payment store
-  const amount = usePaymentStore((state) => state.amount);
-  const setAmount = usePaymentStore((state) => state.setAmount);
-  const category = usePaymentStore((state) => state.category);
-  const setCategory = usePaymentStore((state) => state.setCategory);
-  const description = usePaymentStore((state) => state.description);
-  const setDescription = usePaymentStore((state) => state.setDescription);
-  const datetime = usePaymentStore((state) => state.datetime);
-  const setDatetime = usePaymentStore((state) => state.setDatetime);
-  const paymentMethod = usePaymentStore((state) => state.paymentMethod);
-  const setPaymentMethod = usePaymentStore((state) => state.setPaymentMethod);
-  const resetPaymentStore = usePaymentStore((state) => state.resetPaymentStore);
-
-
-
-  // Snackbar
-  const [isSnackbarVisible, setSnackbarVisibility] = React.useState(false);
-  const onDismissSnackBar = () => setSnackbarVisibility(false);
-  const [errorText, setErrorText] = React.useState('');
-
-  // Global Snackbar
-  const setGlobalSnackbar = useAppStore((state) => state.setGlobalSnackbar);
+  const expense = useExpenseStore((state) => state.expense);
+  const updateExpense = useExpenseStore((state) => state.updateExpense);
 
   const styles = StyleSheet.create({
     container: {
@@ -80,63 +57,17 @@ export default function ExpenseForm() {
     },
     datetimeInputContainer: {
       flex: 1,
-    },
-    snackbar: {
-      backgroundColor: colors.error,
-    },
+    }
   });
-
-  const handleAddExpense = async () => {
-    const missingFields = [];
-    if (!amount) missingFields.push('amount');
-    if (!category) missingFields.push('category');
-    if (!datetime) missingFields.push('datetime');
-    if (!amount || !category || !datetime) {
-
-      setErrorText(`Please fill the missing fields i.e. ${missingFields.join(', ')}`);
-      setSnackbarVisibility(true)
-      return;
-    }
-
-    const { data, error } = await tryCatch(addExpense({
-      amount: amount,
-      dateTime: datetime,
-      description: description,
-      paymentMethod: paymentMethod,
-      category: category,
-    }))
-
-    if (error) {
-      setErrorText('Failed to add expense. Please try again.');
-      setSnackbarVisibility(true)
-      return;
-    }
-    // Reset the payment store
-    resetPaymentStore()
-    // Show snackbar
-    setGlobalSnackbar({
-      message: 'Expense added successfully',
-      duration: 2000,
-      actionLabel: 'Dismiss',
-      actionIcon: 'close',
-      type: 'success',
-      position: 'bottom',
-      offset: 80,
-    });
-
-    setKeyboardHeight(0);
-    // Navigate back to the previous screen
-    navigation.goBack();
-    // Invalidate the query to refetch expenses
-    queryCLient.invalidateQueries({
-      queryKey: ['expenses'],
-    });
-  }
 
   // Set default date and time
   useEffect(() => {
-    setDatetime(new Date())
+    if (!expense.datetime) {
+      updateExpense({ datetime: new Date() });
+    }
   }, [])
+
+  const handleSubmit = () => onSubmit?.(expense);
 
   return (
     <View style={styles.container}>
@@ -148,8 +79,8 @@ export default function ExpenseForm() {
             Amount
           </ThemedText>
           <AmountInput
-            amount={amount}
-            setAmount={setAmount}
+            amount={expense.amount}
+            setAmount={(amount) => updateExpense({ amount })}
           />
         </View>
         {/* Categories */}
@@ -158,8 +89,8 @@ export default function ExpenseForm() {
             Categories
           </ThemedText>
           <CategoriesInput
-            category={category}
-            setCategory={setCategory}
+            category={expense.category}
+            setCategory={(category) => updateExpense({ category })}
           />
         </View>
         {/* Notes */}
@@ -168,8 +99,8 @@ export default function ExpenseForm() {
             Notes
           </ThemedText>
           <NotesInput
-            note={description}
-            setNote={setDescription}
+            note={expense.description}
+            setNote={(description => updateExpense({ description }))}
           />
         </View>
         {/* Payment Method */}
@@ -177,7 +108,7 @@ export default function ExpenseForm() {
           <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
             Payment Method
           </ThemedText>
-          <PaymentMethodInput paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} />
+          <PaymentMethodInput paymentMethod={expense.paymentMethod} setPaymentMethod={(paymentMethod => updateExpense({ paymentMethod }))} />
         </View>
         {/* Date & Time */}
         <View style={styles.datetimeContainer}>
@@ -185,34 +116,16 @@ export default function ExpenseForm() {
             Date & Time
           </ThemedText>
           <View style={styles.datetimeMain}>
-            <DateInput datetime={datetime} setDatetime={setDatetime} style={styles.datetimeInputContainer} />
-            <TimeInput datetime={datetime} setDatetime={setDatetime} style={styles.datetimeInputContainer} />
+            <DateInput datetime={expense.datetime ?? undefined} setDatetime={(datetime => updateExpense({ datetime }))} style={styles.datetimeInputContainer} />
+            <TimeInput datetime={expense.datetime ?? undefined} setDatetime={(datetime => updateExpense({ datetime }))} style={styles.datetimeInputContainer} />
           </View>
         </View>
-
       </View>
 
 
       {/* Confirm Button */}
-      {!isSnackbarVisible && <ConfirmButton onPress={handleAddExpense} keyboardHeight={keyboardHeight} />}
+      {showSubmitButton && <ConfirmButton onPress={handleSubmit} keyboardHeight={keyboardHeight} />}
 
-      {/* Error Snackbar */}
-      <CustomSnackbar
-        usePortal
-        visible={isSnackbarVisible}
-        onDismiss={onDismissSnackBar}
-        duration={2000}
-        style={styles.snackbar}
-        action={{
-          label: 'Dismiss',
-          icon: 'close',
-        }}
-        type='error'
-        position='bottom'
-        offset={keyboardHeight}
-      >
-        {errorText}
-      </CustomSnackbar>
     </View>
   );
 }
