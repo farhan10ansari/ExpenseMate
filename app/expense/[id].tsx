@@ -11,7 +11,7 @@ import useCategoriesStore from "@/stores/useCategoriesStore";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { FontAwesome } from "@expo/vector-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { Button, Dialog, Portal } from "react-native-paper";
 import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
@@ -24,9 +24,10 @@ export default function ExpenseInfoScreen() {
     const categoryMapping = useCategoriesStore((state) => state.categoryMapping);
     const { uses24HourClock } = useLocalization();
     const queryClient = useQueryClient();
-    const navigation = useNavigation()
+    const navigation = useNavigation();
     const setGlobalSnackbar = useAppStore((state) => state.setGlobalSnackbar);
     const [showDeleteConfirmationDialog, setShowDeleteConfirmationDialog] = useState(false);
+    const router = useRouter();
 
     const { data: expense, isLoading, isError, error } = useQuery({
         queryKey: ['expense', id],
@@ -39,7 +40,6 @@ export default function ExpenseInfoScreen() {
         container: {
             backgroundColor: colors.card,
             paddingHorizontal: 20,
-            paddingTop: 10, // Adjusted padding for SheetGrabber
             paddingBottom: 20, // Space at the bottom
         },
         title: {
@@ -102,6 +102,10 @@ export default function ExpenseInfoScreen() {
                 offset: 80,
             });
         }
+    }
+
+    const handleEdit = () => {
+        router.push(`/expense/${id}/edit`);
     }
 
     if (isError) {
@@ -174,6 +178,7 @@ export default function ExpenseInfoScreen() {
                         style={[styles.button, styles.editButton]}
                         labelStyle={styles.editBUttonText}
                         rippleColor={colors.primary}
+                        onPress={handleEdit}
                     >
                         Edit
                     </Button>

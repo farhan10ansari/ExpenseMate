@@ -5,9 +5,10 @@ import { FAB, Portal } from "react-native-paper";
 type ConfirmButtonProps = {
     onPress?: () => void;
     keyboardHeight?: number;
+    type: 'create' | 'edit';
 }
 
-export default function ConfirmButton({ onPress, keyboardHeight = 0 }: ConfirmButtonProps) {
+export default function ConfirmButton({ onPress, keyboardHeight = 0, type }: ConfirmButtonProps) {
     const [show, setShow] = useState(false);
     const timeout = useRef<number | null>(null);
 
@@ -42,6 +43,7 @@ export default function ConfirmButton({ onPress, keyboardHeight = 0 }: ConfirmBu
                     icon="check"
                     onPress={onPress}
                     style={styles.fab}
+                    label={type === "edit" ? "Update" : undefined}
                 />
             )}
         </Portal>

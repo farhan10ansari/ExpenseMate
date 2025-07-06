@@ -113,3 +113,33 @@ export const softDeleteExpenseById = async (id: string | number): Promise<void> 
     throw new Error(`Expense with ID ${id} not found or already deleted.`);
   }
 }
+
+export const updateExpenseById = async (id: string | number, expense: NewExpense): Promise<void> => {
+  const numericId = Number(id); // Convert string to number
+  if (isNaN(numericId)) {
+    throw new Error('Invalid ID format. ID must be a number.');
+  }
+
+  const dt: Date = expense.dateTime instanceof Date
+    ? expense.dateTime
+    : new Date(expense.dateTime);
+
+  const result = await db
+    .update(expensesSchema)
+    .set({
+      amount: expense.amount,
+      dateTime: dt,
+      description: expense.description,
+      paymentMethod: expense.paymentMethod,
+      category: expense.category,
+      recurring: expense.recurring,
+      receipt: expense.receipt,
+      currency: expense.currency,
+    })
+    .where(eq(expensesSchema.id, numericId))
+    .run();
+
+  if (result.changes === 0) {
+    throw new Error(`Expense with ID ${id} not found or no changes made.`);
+  }
+}

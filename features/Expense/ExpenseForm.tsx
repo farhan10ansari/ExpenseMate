@@ -16,9 +16,10 @@ import { ExpenseData, useExpenseStore } from './ExpenseStoreProvider';
 type ExpenseFormProps = {
   showSubmitButton?: boolean;
   onSubmit?: (expense: ExpenseData) => void;
+  type?: 'create' | 'edit';
 }
 
-export default function ExpenseForm({ showSubmitButton, onSubmit }: ExpenseFormProps) {
+export default function ExpenseForm({ showSubmitButton, onSubmit, type = "create" }: ExpenseFormProps) {
   const { colors } = useAppTheme();
   const { keyboardHeight } = useKeyboardHeight();
 
@@ -71,7 +72,6 @@ export default function ExpenseForm({ showSubmitButton, onSubmit }: ExpenseFormP
 
   return (
     <View style={styles.container}>
-      <SheetGrabber />
       <View style={{ flex: 1 }} onTouchStart={() => Keyboard.dismiss()}>
         {/* Amount */}
         <View style={styles.amountContainer}>
@@ -124,7 +124,7 @@ export default function ExpenseForm({ showSubmitButton, onSubmit }: ExpenseFormP
 
 
       {/* Confirm Button */}
-      {showSubmitButton && <ConfirmButton onPress={handleSubmit} keyboardHeight={keyboardHeight} />}
+      {showSubmitButton && <ConfirmButton onPress={handleSubmit} keyboardHeight={keyboardHeight} type={type} />}
 
     </View>
   );

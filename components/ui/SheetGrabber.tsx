@@ -6,7 +6,8 @@ const SheetGrabber = () => {
   const styles = StyleSheet.create({
     container: {
       alignItems: 'center',
-      marginBottom: 12,
+      paddingVertical: 10,
+
     },
     grabber: {
       width: 40,

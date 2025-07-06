@@ -1,4 +1,5 @@
 import CustomSnackbar from "@/components/ui/CustomSnackbar";
+import SheetGrabber from "@/components/ui/SheetGrabber";
 import ExpenseForm from "@/features/Expense/ExpenseForm";
 import { ExpenseData, ExpenseStoreProvider } from "@/features/Expense/ExpenseStoreProvider";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
@@ -50,7 +51,7 @@ export default function NewExpenseScreen() {
             setSnackbarVisibility(true)
             return;
         }
-        
+
         // Show snackbar
         setGlobalSnackbar({
             message: 'Expense added successfully',
@@ -80,6 +81,7 @@ export default function NewExpenseScreen() {
 
     return (
         <ExpenseStoreProvider>
+            <SheetGrabber />
             <ExpenseForm
                 showSubmitButton={!isSnackbarVisible}
                 onSubmit={handleAddExpense}
