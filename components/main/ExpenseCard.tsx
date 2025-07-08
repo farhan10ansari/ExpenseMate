@@ -13,7 +13,7 @@ type ExpenseCardProps = {
 };
 
 export default function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
-    const { colors } = useAppTheme();
+    const { colors, dark } = useAppTheme();
 
     // Get the category mapping from the categories store
     const categoryMapping = useCategoriesStore((state) => state.categoryMapping);
@@ -25,9 +25,13 @@ export default function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
     });
 
     const styles = StyleSheet.create({
+        wrapper: {
+            marginVertical: 8,
+            borderRadius: 12,
+            overflow: "hidden",
+        },
         card: {
             padding: 16,
-            marginVertical: 8,
             borderWidth: 1,
             borderRadius: 12,
             borderColor: colors.border,
@@ -65,38 +69,46 @@ export default function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
     }
 
     return (
-        <Pressable style={[styles.card]} onPress={handleOnPress}>
-            <View style={styles.topRow}>
-                <View style={styles.amountContainer}>
-                    <MaterialCommunityIcons name="currency-inr" size={20} color={colors.primary} />
-                    <ThemedText type="title" style={[styles.amountText]}>
-                        {expense.amount}
-                    </ThemedText>
-                </View>
-                <View style={styles.chipsContainer}>
-                    <CustomChip
-                        size="small"
-                        variant="primary"
-                        icon={categoryMapping?.[expense.category]?.icon ?? undefined}
-                        label={categoryMapping?.[expense.category]?.label}
-                    />
-                    {expense?.paymentMethod &&
+        <View style={styles.wrapper}>
+            <Pressable
+                onPress={handleOnPress}
+                android_ripple={{ color: dark ? colors.primary100 : colors.primary10 }}
+                style={styles.card}
+            >
+                <View style={styles.topRow}>
+                    <View style={styles.amountContainer}>
+                        <MaterialCommunityIcons
+                            name="currency-inr"
+                            size={20}
+                            color={colors.primary}
+                        />
+                        <ThemedText type="title" style={styles.amountText}>
+                            {expense.amount}
+                        </ThemedText>
+                    </View>
+                    <View style={styles.chipsContainer}>
                         <CustomChip
                             size="small"
-                            variant="tertiary"
-                            icon={paymentMethodsMapping?.[expense.paymentMethod]?.icon}
-                            label={paymentMethodsMapping?.[expense.paymentMethod]?.label}
+                            variant="primary"
+                            icon={categoryMapping?.[expense.category]?.icon}
+                            label={categoryMapping?.[expense.category]?.label}
                         />
-                    }
+                        {expense.paymentMethod && (
+                            <CustomChip
+                                size="small"
+                                variant="tertiary"
+                                icon={paymentMethodsMapping?.[expense.paymentMethod]?.icon}
+                                label={paymentMethodsMapping?.[expense.paymentMethod]?.label}
+                            />
+                        )}
+                    </View>
                 </View>
-            </View>
-
-            <View style={styles.bottomRow}>
-                <ThemedText type="default" style={styles.dateText}>
-                    {formattedDate} • {formattedTime}
-                </ThemedText>
-            </View>
-        </Pressable>
+                <View style={styles.bottomRow}>
+                    <ThemedText type="default" style={styles.dateText}>
+                        {formattedDate} • {formattedTime}
+                    </ThemedText>
+                </View>
+            </Pressable>
+        </View>
     );
 }
-
