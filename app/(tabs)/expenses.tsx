@@ -53,11 +53,13 @@ export default function ExpensesScreen() {
         })
     }
 
-    const handleRefresh = () => {
+    const handleRefresh = async () => {
         setIsRefreshing(true);
-        queryClient.invalidateQueries({ queryKey: ['expenses'] }).finally(() => {
+        try {
+            await queryClient.refetchQueries({ queryKey: ['expenses'] });
+        } finally {
             setIsRefreshing(false);
-        });
+        }
     };
 
     return (

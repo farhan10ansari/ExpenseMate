@@ -73,13 +73,12 @@ function MainLayout() {
       <Stack.Screen
         name="expense/new"
         options={{
-          // title: 'Payment',
+          title: 'Create Expense',
           presentation: 'formSheet',
           gestureDirection: "vertical",
           animation: "slide_from_bottom",
           sheetGrabberVisible: true,
           sheetInitialDetentIndex: 0,
-          // sheetAllowedDetents: "fitToContents",
           sheetAllowedDetents: [0.75, 1],
           sheetExpandsWhenScrolledToEdge: true,
           sheetElevation: 24,
@@ -92,14 +91,13 @@ function MainLayout() {
       <Stack.Screen
         name="expense/[id]"
         options={{
-          // title: 'Payment',
+          title: 'Expense Details',
           presentation: 'formSheet',
           gestureDirection: "vertical",
           animation: "slide_from_bottom",
           sheetGrabberVisible: true,
           sheetInitialDetentIndex: 0,
           sheetAllowedDetents: "fitToContents",
-          // sheetAllowedDetents: [0.75, 1],
           sheetExpandsWhenScrolledToEdge: true,
           sheetElevation: 24,
           sheetCornerRadius: 20,
@@ -111,13 +109,12 @@ function MainLayout() {
       <Stack.Screen
         name="expense/[id]/edit"
         options={{
-          // title: 'Payment',
+          title: 'Edit Expense',
           presentation: 'formSheet',
           gestureDirection: "vertical",
           animation: "slide_from_bottom",
           sheetGrabberVisible: true,
           sheetInitialDetentIndex: 0,
-          // sheetAllowedDetents: "fitToContents",
           sheetAllowedDetents: [0.75, 1],
           sheetExpandsWhenScrolledToEdge: true,
           sheetElevation: 24,
@@ -127,6 +124,27 @@ function MainLayout() {
           }
         }}
       />
+
+      {/* Helper Screens */}
+      <Stack.Screen
+        name="helper-screens/select-insights-period"
+        options={{
+          title: 'Select Period',
+          presentation: 'formSheet',
+          gestureDirection: "vertical",
+          animation: "slide_from_bottom",
+          sheetGrabberVisible: true,
+          sheetInitialDetentIndex: 0,
+          sheetAllowedDetents: "fitToContents",
+          sheetExpandsWhenScrolledToEdge: true,
+          sheetElevation: 24,
+          sheetCornerRadius: 20,
+          contentStyle: {
+            backgroundColor: colors.card,
+          }
+        }}
+      />
+
       <Stack.Screen name="+not-found" />
     </Stack>
   )

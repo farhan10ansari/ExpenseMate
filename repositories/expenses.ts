@@ -1,6 +1,8 @@
 import db from '@/db/client';
 import { Expense, expensesSchema } from '@/db/schema';
-import { desc, eq } from 'drizzle-orm';
+import { and, desc, eq, gte, sql } from 'drizzle-orm';
+import { getStartDate } from './lib/helpers';
+import { InsightPeriod } from '@/lib/types';
 
 export interface NewExpense {
   amount: number;
@@ -101,7 +103,7 @@ export const softDeleteExpenseById = async (id: string | number): Promise<void> 
   if (isNaN(numericId)) {
     throw new Error('Invalid ID format. ID must be a number.');
   }
-  
+
   // mark as trashed instead of deleting
   const result = await db
     .update(expensesSchema)
@@ -143,3 +145,47 @@ export const updateExpenseById = async (id: string | number, expense: NewExpense
     throw new Error(`Expense with ID ${id} not found or no changes made.`);
   }
 }
+
+
+
+/**
+ * Returns total spend and average per-day spend over the given period.
+*/
+export interface PeriodExpenseStats {
+  period: InsightPeriod;
+  total: number;        // total spend in the period
+  avgPerDay: number;    // average spend per calendar day
+}
+
+export const getExpenseStatsByPeriod = async (
+  period: InsightPeriod
+): Promise<PeriodExpenseStats> => {
+  // 1. figure out the period start and how many days have elapsed (inclusive)
+  const startDate = getStartDate(period);
+  const now = new Date();
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const days =
+    Math.floor((now.getTime() - startDate.getTime()) / msPerDay) + 1;
+
+  // 2. fetch total spend in one query
+  const [{ total = 0 }] = await db
+    .select({ total: sql<number>`SUM(${expensesSchema.amount})` })
+    .from(expensesSchema)
+    .where(
+      and(
+        eq(expensesSchema.isTrashed, false),
+        gte(expensesSchema.dateTime, startDate)
+      )
+    )
+    .limit(1);
+
+  // 3. compute avg per day and round to 2 decimal places
+  const rawAvg = days > 0 ? total / days : 0;
+  const avgPerDay = parseFloat(rawAvg.toFixed(2));
+
+  return {
+    period,
+    total,
+    avgPerDay,
+  };
+};

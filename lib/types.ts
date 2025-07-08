@@ -15,3 +15,8 @@ export type PaymentMethod = {
 export type RootStackParamList = {
     ExpenseInfoScreen: { id: string };
 }
+
+/**
+ * Supported period keys for filtering total expenses.
+ */
+export type InsightPeriod = "today" | "this-week" | "this-month" | "this-year";
