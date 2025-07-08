@@ -1,18 +1,16 @@
 import { ThemedView } from '@/components/base/ThemedView';
 import InsightCard from '@/features/Insights/InsightCard';
 import PeriodCard from '@/features/Insights/PeriodCard';
-import { InsightPeriod } from '@/lib/types';
 import { getExpenseStatsByPeriod } from '@/repositories/expenses';
 import useInsightsStore from '@/stores/useInsightsStore';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import { FontAwesome } from '@expo/vector-icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
-import { Card, Text, ActivityIndicator } from 'react-native-paper';
-
-
-
+import { FontAwesome } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 export default function HomeScreen() {
   const { colors } = useAppTheme()
@@ -20,7 +18,7 @@ export default function HomeScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data, error } = useQuery({
+  const { data: expenseStats, error } = useQuery({
     queryKey: ['insights', "expense-stats-in-a-period", expensesPeriod.value],
     queryFn: () => getExpenseStatsByPeriod(expensesPeriod.value),
   })
@@ -33,7 +31,7 @@ export default function HomeScreen() {
     scrollContainer: {
       flex: 1,
       padding: 16,
-      flexDirection:"column",
+      flexDirection: "column",
     },
     row: {
       flexDirection: 'row',
@@ -62,22 +60,52 @@ export default function HomeScreen() {
           <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
         }
       >
-        <PeriodCard/>
+        <PeriodCard />
         <View style={styles.row}>
           <InsightCard
             title="Total Expenses"
             value={<>
-              <FontAwesome name="rupee" size={18} color={colors.text} />
-              {data?.total ?? 0}
+              <FontAwesome name="rupee" size={18} color={colors.onPrimary} />
+              {expenseStats?.total ?? 0}
             </>
             }
-            icon={<FontAwesome name="rupee" size={24} color={colors.primary} />}
+            icon={<FontAwesome name="rupee" size={24} color={colors.onPrimary} />}
+            cardStyle={{
+              backgroundColor: colors.primary80,
+            }}
+            textStyle={{
+              color: colors.onPrimary
+            }}
           />
           <InsightCard
-            title="Avg Per Day"
-            value={data?.avgPerDay ?? 0}
-            icon={<FontAwesome name="dollar" size={24} color={colors.primary} />}
+            title="Transactions"
+            value={expenseStats?.count ?? 0}
+            icon={<Feather name="pie-chart" size={24} color={colors.accent} />}
+            cardStyle={{
+              backgroundColor: colors.onSecondary,
+            }}
           />
+        </View>
+        <View style={styles.row}>
+          <InsightCard
+            title="Daily Avg"
+            value={<>
+              <FontAwesome name="rupee" size={18} color={colors.text} />
+              {expenseStats?.avgPerDay ?? 0}
+            </>}
+            icon={<MaterialIcons name="trending-up" size={24} color={colors.accent} />}
+          />
+          <InsightCard
+            title="Max/Min Spend"
+            value={<>
+              <FontAwesome name="rupee" size={18} color={colors.text} />
+              {expenseStats?.max ?? 0}/
+              <FontAwesome name="rupee" size={18} color={colors.text} />
+              {expenseStats?.min ?? 0}
+            </>}
+            icon={<MaterialCommunityIcons name="chart-timeline-variant" size={24} color={colors.accent} />}
+          />
+
         </View>
       </ScrollView>
     </ThemedView>

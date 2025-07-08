@@ -1,16 +1,18 @@
 import React from "react";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { StyleSheet, Text, View } from "react-native";
+import { Animated, StyleProp, StyleSheet, Text, TextProps, View, ViewStyle } from "react-native";
 import { Card } from "react-native-paper";
 
 type InsightCardProps = {
     title: string;
     value: React.ReactNode | string | number;
     icon?: React.ReactNode;
+    cardStyle?: Animated.WithAnimatedValue<StyleProp<ViewStyle>>;
+    textStyle?: TextProps["style"]
 };
 
-const InsightCard = ({ title, value, icon }: InsightCardProps) => {
+const InsightCard = ({ title, value, icon, cardStyle, textStyle }: InsightCardProps) => {
     const { colors } = useAppTheme()
 
     const styles = StyleSheet.create({
@@ -26,11 +28,10 @@ const InsightCard = ({ title, value, icon }: InsightCardProps) => {
             gap: 8,
             paddingHorizontal: 4,
         },
-        primaryCardTitle: {
+        cardTitle: {
             fontSize: 16,
-            color: colors.text,
         },
-        primaryCardValue: {
+        cardValue: {
             fontSize: 20,
             fontWeight: '700',
             color: colors.text,
@@ -38,15 +39,15 @@ const InsightCard = ({ title, value, icon }: InsightCardProps) => {
     });
 
     return (
-        <Card style={styles.card}>
+        <Card style={[styles.card, cardStyle]}>
             <Card.Content>
                 <View style={styles.cardHeader}>
                     {icon}
-                    <ThemedText type="defaultSemiBold" style={styles.primaryCardTitle}>{title}</ThemedText>
+                    <ThemedText type="defaultSemiBold" style={[styles.cardTitle, textStyle]}>{title}</ThemedText>
                 </View>
-                <Text style={styles.primaryCardValue}>
+                <ThemedText style={[styles.cardValue, textStyle]}>
                     {value}
-                </Text>
+                </ThemedText>
             </Card.Content>
         </Card>
     )

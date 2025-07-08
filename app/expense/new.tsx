@@ -70,6 +70,9 @@ export default function NewExpenseScreen() {
         queryCLient.invalidateQueries({
             queryKey: ['expenses'],
         });
+        queryCLient.invalidateQueries({
+            queryKey: ['insights'],
+        });
     }
 
     const styles = StyleSheet.create({

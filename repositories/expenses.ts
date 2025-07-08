@@ -146,30 +146,38 @@ export const updateExpenseById = async (id: string | number, expense: NewExpense
   }
 }
 
-
-
-/**
- * Returns total spend and average per-day spend over the given period.
-*/
 export interface PeriodExpenseStats {
   period: InsightPeriod;
   total: number;        // total spend in the period
-  avgPerDay: number;    // average spend per calendar day
+  avgPerDay: number;    // average spend per calendar day (2 d.p.)
+  count: number;        // total number of transactions in the period
+  max: number;          // largest single transaction
+  min: number;          // smallest single transaction
 }
 
 export const getExpenseStatsByPeriod = async (
   period: InsightPeriod
 ): Promise<PeriodExpenseStats> => {
-  // 1. figure out the period start and how many days have elapsed (inclusive)
+  // 1. period start & days elapsed (inclusive)
   const startDate = getStartDate(period);
   const now = new Date();
   const msPerDay = 1000 * 60 * 60 * 24;
   const days =
     Math.floor((now.getTime() - startDate.getTime()) / msPerDay) + 1;
 
-  // 2. fetch total spend in one query
-  const [{ total = 0 }] = await db
-    .select({ total: sql<number>`SUM(${expensesSchema.amount})` })
+  // 2. fetch total, count, max, min in one query
+  const [{
+    total = 0,
+    count = 0,
+    max: maxAmount = 0,
+    min: minAmount = 0
+  }] = await db
+    .select({
+      total: sql<number>`SUM(${expensesSchema.amount})`,
+      count: sql<number>`COUNT(*)`,
+      max:   sql<number>`MAX(${expensesSchema.amount})`,
+      min:   sql<number>`MIN(${expensesSchema.amount})`,
+    })
     .from(expensesSchema)
     .where(
       and(
@@ -179,13 +187,16 @@ export const getExpenseStatsByPeriod = async (
     )
     .limit(1);
 
-  // 3. compute avg per day and round to 2 decimal places
+  // 3. compute avg/day and round
   const rawAvg = days > 0 ? total / days : 0;
   const avgPerDay = parseFloat(rawAvg.toFixed(2));
 
   return {
     period,
     total,
+    count,
     avgPerDay,
+    max: maxAmount,
+    min: minAmount,
   };
 };

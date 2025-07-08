@@ -98,6 +98,9 @@ export default function EditExpenseScreen() {
         queryCLient.invalidateQueries({
             queryKey: ['expense', id],
         });
+        queryCLient.invalidateQueries({
+            queryKey: ['insights'],
+        });
     };
 
     const styles = StyleSheet.create({

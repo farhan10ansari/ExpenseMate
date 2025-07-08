@@ -1,7 +1,7 @@
 import React from "react";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import { Card } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
@@ -18,9 +18,7 @@ const PeriodCard = ({ }: PeriodCardProps) => {
 
     const styles = StyleSheet.create({
         card: {
-            flex: 1,
-            overflow: 'hidden', // Needed for proper elevation rendering on Android
-            // margin: 5,
+            backgroundColor: colors.onSecondary,
         },
         cardContent: {
             flexDirection: 'row',
@@ -49,8 +47,6 @@ const PeriodCard = ({ }: PeriodCardProps) => {
             </Card>
         </Pressable>
     )
-
-
 };
 
 export default PeriodCard;
