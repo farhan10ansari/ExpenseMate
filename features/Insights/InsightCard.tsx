@@ -1,25 +1,32 @@
 import React from "react";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { Animated, StyleProp, StyleSheet, Text, TextProps, View, ViewStyle } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Card } from "react-native-paper";
 
 type InsightCardProps = {
     title: string;
     value: React.ReactNode | string | number;
     icon?: React.ReactNode;
-    cardStyle?: Animated.WithAnimatedValue<StyleProp<ViewStyle>>;
-    textStyle?: TextProps["style"]
+    /** Background color of the card */
+    backgroundColor?: string;
+    /** Color for all text inside the card */
+    textColor?: string;
 };
 
-const InsightCard = ({ title, value, icon, cardStyle, textStyle }: InsightCardProps) => {
-    const { colors } = useAppTheme()
+const InsightCard = ({
+    title,
+    value,
+    icon,
+    backgroundColor,
+    textColor,
+}: InsightCardProps) => {
+    const { colors } = useAppTheme();
 
     const styles = StyleSheet.create({
         card: {
             flex: 1,
-            overflow: 'hidden', // Needed for proper elevation rendering on Android
-            // margin: 5,
+            overflow: 'hidden',
         },
         cardHeader: {
             flexDirection: 'row',
@@ -34,25 +41,30 @@ const InsightCard = ({ title, value, icon, cardStyle, textStyle }: InsightCardPr
         cardValue: {
             fontSize: 20,
             fontWeight: '700',
-            color: colors.text,
         },
     });
 
+    // Fallback to theme text color if none provided
+    const resolvedTextColor = textColor ?? colors.text;
+
     return (
-        <Card style={[styles.card, cardStyle]}>
+        <Card style={[styles.card, backgroundColor && { backgroundColor }]}>
             <Card.Content>
                 <View style={styles.cardHeader}>
                     {icon}
-                    <ThemedText type="defaultSemiBold" style={[styles.cardTitle, textStyle]}>{title}</ThemedText>
+                    <ThemedText
+                        type="defaultSemiBold"
+                        style={[styles.cardTitle, { color: resolvedTextColor }]}
+                    >
+                        {title}
+                    </ThemedText>
                 </View>
-                <ThemedText style={[styles.cardValue, textStyle]}>
+                <ThemedText style={[styles.cardValue, { color: resolvedTextColor }]}>
                     {value}
                 </ThemedText>
             </Card.Content>
         </Card>
-    )
-
-
+    );
 };
 
 export default InsightCard;
