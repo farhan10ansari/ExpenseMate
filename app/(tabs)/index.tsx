@@ -11,6 +11,7 @@ import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import useInsightsStore from '@/stores/useInsightsStore';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getExpenseStatsByPeriod } from '@/repositories/expenses';
+import CategoryBreakdownChart from '@/features/Insights/CategoryBreakdownChart';
 
 export default function HomeScreen() {
   const { colors } = useAppTheme();
@@ -27,10 +28,13 @@ export default function HomeScreen() {
     container: {
       flex: 1,
     },
-    scrollContainer: {
+    scrollView: {
       flex: 1,
+    },
+    scrollContainer: {
       padding: 16,
-      flexDirection: "column",
+      paddingBottom: 100,
+      flexGrow: 1,
     },
     row: {
       flexDirection: 'row',
@@ -38,9 +42,9 @@ export default function HomeScreen() {
       alignItems: 'center',
       gap: 12,
       marginTop: 12,
-    }
-  })
+    },
 
+  })
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -51,10 +55,13 @@ export default function HomeScreen() {
     }
   };
 
+
+
   return (
     <ThemedView style={styles.container}>
       <ScrollView
-        style={styles.scrollContainer}
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContainer}
         refreshControl={
           <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
         }
@@ -106,6 +113,7 @@ export default function HomeScreen() {
             textColor={colors.text}
           />
         </View>
+        <CategoryBreakdownChart data={expenseStats?.categories} />
       </ScrollView>
     </ThemedView>
   );

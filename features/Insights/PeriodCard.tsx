@@ -1,7 +1,7 @@
 import React from "react";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { Card } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
@@ -12,13 +12,14 @@ type PeriodCardProps = {
 };
 
 const PeriodCard = ({ }: PeriodCardProps) => {
-    const { colors } = useAppTheme()
+    const { colors, dark } = useAppTheme()
     const router = useRouter();
     const period = useInsightsStore((state) => state.period);
 
     const styles = StyleSheet.create({
         card: {
             backgroundColor: colors.onSecondary,
+            overflow: 'hidden', // to ensure the android ripple effect doesn't overflow
         },
         cardContent: {
             flexDirection: 'row',
@@ -34,18 +35,19 @@ const PeriodCard = ({ }: PeriodCardProps) => {
     };
 
     return (
-        <Pressable
-            onPress={handlePress}
-        >
-            <Card style={styles.card}>
+        <Card style={styles.card}>
+            <Pressable
+                onPress={handlePress}
+                android_ripple={{ color: dark ? colors.primary100 : colors.primary10 }}
+            >
                 <Card.Content style={styles.cardContent}>
                     <ThemedText type="defaultSemiBold">
                         {period.label}
                     </ThemedText>
                     <FontAwesome name="chevron-down" size={18} color={colors.primary} />
                 </Card.Content>
-            </Card>
-        </Pressable>
+            </Pressable>
+        </Card>
     )
 };
 

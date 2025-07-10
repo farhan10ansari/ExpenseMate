@@ -5,41 +5,49 @@ export const DefaultCategories: Category[] = [
         name: "food",
         label: "Food",
         icon: "food",
+        color: "#A8D0E6"
     },
     {
         name: "transport",
         label: "Transport",
         icon: "train-car",
+        color: "#F76C6C"
     },
     {
         name: "shopping",
         label: "Shopping",
         icon: "shopping",
+        color: "#F8E9A1"
     },
     {
         name: "entertainment",
         label: "Entertainment",
         icon: "movie",
+        color: "#8BC6A3"
     },
     {
         name: "health",
         label: "Health",
         icon: "heart",
+        color: "#CBAACB"
     },
     {
         name: "travel",
         label: "Travel",
         icon: "walk",
+        color: "#FFBCB3"
     },
     {
         name: "bills",
         label: "Bills",
         icon: "file-document",
+        color: "#D3D3D3"
     },
     {
         name: "other",
         label: "Other",
         icon: "dots-horizontal-circle-outline",
+        color: "#B0BEC5"
     }
 ]
 

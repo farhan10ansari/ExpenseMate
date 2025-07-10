@@ -2,7 +2,7 @@ import db from '@/db/client';
 import { Expense, expensesSchema } from '@/db/schema';
 import { and, desc, eq, gte, sql } from 'drizzle-orm';
 import { getStartDate } from './lib/helpers';
-import { InsightPeriod } from '@/lib/types';
+import { InsightPeriod, PeriodExpenseStats } from '@/lib/types';
 
 export interface NewExpense {
   amount: number;
@@ -146,15 +146,7 @@ export const updateExpenseById = async (id: string | number, expense: NewExpense
   }
 }
 
-export interface PeriodExpenseStats {
-  period: InsightPeriod;
-  total: number;        // total spend in the period
-  avgPerDay: number;    // average spend per calendar day (2 d.p.)
-  count: number;        // total number of transactions in the period
-  max: number;          // largest single transaction
-  min: number;          // smallest single transaction
-}
-
+// Insights 
 export const getExpenseStatsByPeriod = async (
   period: InsightPeriod
 ): Promise<PeriodExpenseStats> => {
@@ -175,8 +167,8 @@ export const getExpenseStatsByPeriod = async (
     .select({
       total: sql<number>`SUM(${expensesSchema.amount})`,
       count: sql<number>`COUNT(*)`,
-      max:   sql<number>`MAX(${expensesSchema.amount})`,
-      min:   sql<number>`MIN(${expensesSchema.amount})`,
+      max: sql<number>`MAX(${expensesSchema.amount})`,
+      min: sql<number>`MIN(${expensesSchema.amount})`,
     })
     .from(expensesSchema)
     .where(
@@ -187,16 +179,33 @@ export const getExpenseStatsByPeriod = async (
     )
     .limit(1);
 
-  // 3. compute avg/day and round
+  // 3. fetch category breakdown (sum + count)
+  const categories = await db
+    .select({
+      category: expensesSchema.category,
+      total: sql<number>`SUM(${expensesSchema.amount})`,
+      count: sql<number>`COUNT(*)`
+    })
+    .from(expensesSchema)
+    .where(
+      and(
+        eq(expensesSchema.isTrashed, false),
+        gte(expensesSchema.dateTime, startDate)
+      )
+    )
+    .groupBy(expensesSchema.category);
+
+  // 4. compute avg/day and round
   const rawAvg = days > 0 ? total / days : 0;
   const avgPerDay = parseFloat(rawAvg.toFixed(2));
 
   return {
     period,
-    total,
+    total: parseFloat(total.toFixed(2)), // format total to 2 decimal places
     count,
     avgPerDay,
     max: maxAmount,
     min: minAmount,
+    categories,
   };
 };
