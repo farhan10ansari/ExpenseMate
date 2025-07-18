@@ -112,7 +112,7 @@ export default function CategoryBreakdownChart({ data }: CategoryBreakdownData) 
     tooltip: {
       padding: 8,
       borderRadius: 4,
-      shadowColor: '#000',
+      shadowColor: colors.shadow,
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.2,
       shadowRadius: 4,
@@ -156,8 +156,8 @@ export default function CategoryBreakdownChart({ data }: CategoryBreakdownData) 
               <PieChart
                 data={chartData}
                 donut
-                radius={chartSize * 0.3}
-                innerRadius={chartSize * 0.2}
+                radius={chartSize * 0.25}
+                innerRadius={chartSize * 0.18}
                 showValuesAsLabels
                 labelsPosition="outward"
                 labelLineConfig={{ length: 12, tailLength: 6, color: colors.text, thickness: 1 }}
