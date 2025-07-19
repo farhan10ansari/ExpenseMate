@@ -1,8 +1,9 @@
 import db from '@/db/client';
 import { Expense, expensesSchema } from '@/db/schema';
-import { and, desc, eq, gte, sql } from 'drizzle-orm';
+import { and, desc, eq, gte, sql, lte, lt } from 'drizzle-orm';
 import { getStartDate } from './lib/helpers';
 import { InsightPeriod, PeriodExpenseStats } from '@/lib/types';
+import { startOfMonth, endOfMonth, subMonths, format, differenceInCalendarMonths } from 'date-fns';
 
 export interface NewExpense {
   amount: number;
@@ -39,42 +40,114 @@ export const addExpense = async (expense: NewExpense) => {
 };
 
 // Get paginated expenses
-const PAGE_SIZE = 10;
-export const getExpensesPaginated = async ({
-  page = 0,
-  pageSize = PAGE_SIZE
+export const getExpensesByMonthPaginated = async ({
+  offsetMonth = 0,
 }: {
-  page: number,
-  pageSize: number
-}): Promise<{ expenses: Expense[]; hasMore: boolean; page: number }> => {
-  const offset = page * pageSize;
+  offsetMonth: number;
+}): Promise<{
+  expenses: Expense[];
+  hasMore: boolean;
+  offsetMonth: number;
+  month: string;
+}> => {
+  const now = new Date();
+  // 1) Compute the requested month’s start/end
+  const requestedTarget = subMonths(now, offsetMonth);
+  const requestedStart = startOfMonth(requestedTarget);
+  const requestedEnd   = endOfMonth(requestedTarget);
 
-  // Fetch expenses that are not trashed
-  const results = await db
+  // 2) Try fetching that month
+  let expenses = await db
     .select()
     .from(expensesSchema)
-    .where(eq(expensesSchema.isTrashed, false))
-    .orderBy(desc(expensesSchema.dateTime))
-    .limit(pageSize)
-    .offset(offset);
+    .where(
+      and(
+        eq(expensesSchema.isTrashed, false),
+        gte(expensesSchema.dateTime, requestedStart),
+        lte(expensesSchema.dateTime, requestedEnd),
+      )
+    )
+    .orderBy(desc(expensesSchema.dateTime));
 
-  // Check if more non-trashed items exist beyond the current page
-  const checkMore = await db
+  let actualOffset = offsetMonth;
+  let actualStart  = requestedStart;
+
+  if (expenses.length === 0) {
+    // ───────────────────────────────────────────────────────────────────────
+    // Empty requested month → look for any older expense
+    // ───────────────────────────────────────────────────────────────────────
+    const olderRec = await db
+      .select({ dt: expensesSchema.dateTime })
+      .from(expensesSchema)
+      .where(
+        and(
+          eq(expensesSchema.isTrashed, false),
+          lt(expensesSchema.dateTime, requestedStart),
+        )
+      )
+      .orderBy(desc(expensesSchema.dateTime))
+      .limit(1);
+
+    if (olderRec.length === 0) {
+      // no data older than this month either → we’re done
+      return {
+        expenses: [],
+        hasMore: false,
+        offsetMonth,
+        month: format(requestedStart, 'MMMM yyyy'),
+      };
+    }
+
+    // ───────────────────────────────────────────────────────────────────────
+    // Found an "older" expense → figure out its month
+    // ───────────────────────────────────────────────────────────────────────
+    const firstOlderDate: Date = olderRec[0].dt;
+    // how many calendar months between now and that date?
+    actualOffset = differenceInCalendarMonths(
+      startOfMonth(now),
+      startOfMonth(firstOlderDate)
+    );
+    // recompute the start/end for that month
+    const actualTarget = subMonths(now, actualOffset);
+    actualStart = startOfMonth(actualTarget);
+    const actualEnd = endOfMonth(actualTarget);
+
+    // fetch expenses for the *new* month
+    expenses = await db
+      .select()
+      .from(expensesSchema)
+      .where(
+        and(
+          eq(expensesSchema.isTrashed, false),
+          gte(expensesSchema.dateTime, actualStart),
+          lte(expensesSchema.dateTime, actualEnd),
+        )
+      )
+      .orderBy(desc(expensesSchema.dateTime));
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Finally, compute hasMore by checking anything older than actualStart
+  // ─────────────────────────────────────────────────────────────────────────
+  const olderAny = await db
     .select()
     .from(expensesSchema)
-    .where(eq(expensesSchema.isTrashed, false))
-    .orderBy(desc(expensesSchema.dateTime))
-    .limit(1) // fetch 1 more to detect hasMore
-    .offset(offset + pageSize); // check if there's more than the current page
-
-  const hasMore = checkMore && checkMore.length > 0;
+    .where(
+      and(
+        eq(expensesSchema.isTrashed, false),
+        lt(expensesSchema.dateTime, actualStart),
+      )
+    )
+    .limit(1);
 
   return {
-    expenses: results,
-    hasMore,
-    page: page
+    expenses,
+    hasMore: olderAny.length > 0,
+    offsetMonth: actualOffset,
+    month: format(actualStart, 'MMMM yyyy'),
   };
 };
+
 
 // Get a single expense by ID
 export const getExpenseById = async (id: string | number): Promise<Expense | undefined> => {
