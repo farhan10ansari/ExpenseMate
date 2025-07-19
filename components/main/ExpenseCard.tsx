@@ -7,6 +7,8 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import CustomChip from "@/components/ui/CustomChip";
 import { memo } from "react";
+import { extractDateLabel, extractTimeString } from "@/lib/functions";
+import { useLocalization } from "@/hooks/useLocalization";
 
 type ExpenseCardProps = {
     expense: Expense;
@@ -15,15 +17,14 @@ type ExpenseCardProps = {
 
 function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
     const { colors, dark } = useAppTheme();
+    const { uses24HourClock } = useLocalization()
+
 
     // Get the category mapping from the categories store
     const categoryMapping = useCategoriesStore((state) => state.categoryMapping);
 
-    const formattedDate = new Date(expense.dateTime).toLocaleDateString();
-    const formattedTime = new Date(expense.dateTime).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-    });
+    const formattedDate = extractDateLabel(expense.dateTime)
+    const formattedTime = extractTimeString(expense.dateTime, uses24HourClock)
 
     const styles = StyleSheet.create({
         wrapper: {

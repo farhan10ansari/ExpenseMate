@@ -1,5 +1,4 @@
 import { ThemedText } from '@/components/base/ThemedText';
-import SheetGrabber from '@/components/ui/SheetGrabber';
 import useKeyboardHeight from '@/hooks/useKeyboardHeight';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import React, { useEffect } from 'react';

@@ -71,6 +71,7 @@ export default function ExpensesScreen() {
         <ThemedView style={styles.container}>
             <FlatList
                 data={expenses}
+                // showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item.id?.toString()!}
                 renderItem={renderItem}
                 contentContainerStyle={{ paddingBottom: 180 }}
