@@ -8,7 +8,7 @@ export const useScrollToTop = (scrollElementRef: React.RefObject<any>) => {
     // track last scroll offset to detect direction
     const lastOffsetY = useRef(0);
     // handle scroll event to show/hide FAB
-    const THRESHOLD = 100;
+    const THRESHOLD = 200;
     const handleScroll = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
         // Only show FAB when:
         //  - currentOffset > THRESHOLD
