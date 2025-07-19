@@ -1,12 +1,13 @@
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import ExpenseCard from "@/components/main/ExpenseCard";
+import { Expense } from "@/db/schema";
 import { getExpenseById, getExpensesPaginated } from "@/repositories/expenses";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
+import { useCallback, useMemo, useState } from "react";
+import { FlatList, ListRenderItem, RefreshControl, StyleSheet, View } from "react-native";
 
 const PageSize = 10;
 
@@ -39,9 +40,9 @@ export default function ExpensesScreen() {
         },
     })
 
-    const expenses = data?.pages.flatMap((page) => page.expenses) || [];
+    const expenses = useMemo(() => data?.pages.flatMap((page) => page.expenses) ?? [], [data])
 
-    const onPressExpenseCard = async (id: number) => {
+    const onPressExpenseCard = useCallback(async (id: number) => {
         //Prefetch data so that formsheet size do not change on data load
         queryClient.prefetchQuery({
             queryKey: ['expense', id.toString()],
@@ -51,7 +52,7 @@ export default function ExpensesScreen() {
         }).catch(() => {
             //Route to an error screen with reload option
         })
-    }
+    }, [])
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
@@ -62,14 +63,18 @@ export default function ExpensesScreen() {
         }
     };
 
+    const renderItem: ListRenderItem<Expense> = useCallback(({ item }) => (
+        <ExpenseCard expense={item} onPress={onPressExpenseCard} />
+    ), [onPressExpenseCard]);
+
     return (
         <ThemedView style={styles.container}>
             <FlatList
                 data={expenses}
-                keyExtractor={(item) => item.id?.toString() || Math.random().toString(36)}
-                renderItem={({ item }) => <ExpenseCard expense={item} onPress={onPressExpenseCard} />}
+                keyExtractor={(item) => item.id?.toString()!}
+                renderItem={renderItem}
                 contentContainerStyle={{ paddingBottom: 180 }}
-                onEndReachedThreshold={0.5}
+                onEndReachedThreshold={3}
                 onEndReached={() => {
                     if (hasNextPage && !isFetchingNextPage) {
                         fetchNextPage();
@@ -77,7 +82,7 @@ export default function ExpensesScreen() {
                 }}
                 style={{ padding: 10 }}
                 ItemSeparatorComponent={() => (
-                    <View style={{ height: 1, backgroundColor: colors.border, marginVertical: 4 }} />
+                    <View style={{ height: 1, backgroundColor: colors.border, marginVertical: 10 }} />
                 )}
                 ListFooterComponent={
                     isFetchingNextPage ? (

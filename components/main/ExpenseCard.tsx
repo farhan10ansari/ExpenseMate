@@ -6,13 +6,14 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import CustomChip from "@/components/ui/CustomChip";
+import { memo } from "react";
 
 type ExpenseCardProps = {
     expense: Expense;
     onPress?: (id: number) => void;
 };
 
-export default function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
+function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
     const { colors, dark } = useAppTheme();
 
     // Get the category mapping from the categories store
@@ -26,11 +27,11 @@ export default function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
 
     const styles = StyleSheet.create({
         wrapper: {
-            marginVertical: 8,
             borderRadius: 12,
             overflow: "hidden",
         },
         card: {
+            height: 100,
             padding: 16,
             borderWidth: 1,
             borderRadius: 12,
@@ -112,3 +113,5 @@ export default function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
         </View>
     );
 }
+
+export default memo(ExpenseCard)
