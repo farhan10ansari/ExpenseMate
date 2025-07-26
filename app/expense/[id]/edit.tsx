@@ -59,7 +59,7 @@ export default function EditExpenseScreen() {
 
         // Check if anything has changed
         const hasChanged =
-            expense.amount !== amount ||
+            expense.amount !== actualAmount ||
             expense.category !== category ||
             expense.description !== description ||
             new Date(expense.dateTime).getTime() !== new Date(datetime).getTime() ||
@@ -73,7 +73,7 @@ export default function EditExpenseScreen() {
 
         const { error } = await tryCatch(
             updateExpenseById(id, {
-                amount,
+                amount: actualAmount,
                 dateTime: datetime,
                 description,
                 paymentMethod,
