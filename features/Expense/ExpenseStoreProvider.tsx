@@ -4,7 +4,7 @@ import { createContext, PropsWithChildren, useContext, useState } from 'react'
 import { createStore, StoreApi, useStore } from 'zustand'
 
 export type ExpenseData = {
-    amount: number;
+    amount: string;
     category: string | null;
     description: string;
     datetime: Date | undefined | null;
@@ -26,7 +26,7 @@ export function ExpenseStoreProvider({ initialExpense, children }: ExpenseStoreP
     const [store] = useState(() =>
         createStore<ExpenseStore>((set) => ({
             expense: {
-                amount: initialExpense ? initialExpense.amount : 0,
+                amount: initialExpense ? initialExpense.amount.toString() : '',
                 category: initialExpense ? initialExpense.category : null,
                 description: initialExpense ? (initialExpense.description ?? "") : "",
                 datetime: initialExpense ? new Date(initialExpense.dateTime) : undefined,

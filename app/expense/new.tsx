@@ -30,6 +30,13 @@ export default function NewExpenseScreen() {
         const { amount, category, description, datetime, paymentMethod } = expense;
         const missingFields = [];
         if (!amount) missingFields.push('amount');
+        const actualAmount = parseFloat(amount ? amount : '0');
+        if (actualAmount < 1) {
+            setErrorText('Minimum amount should be ₹1');
+            setSnackbarVisibility(true);
+            return;
+        }
+
         if (!category) missingFields.push('category');
         if (!datetime) missingFields.push('datetime');
         if (!amount || !category || !datetime) {
@@ -39,7 +46,7 @@ export default function NewExpenseScreen() {
         }
 
         const { data, error } = await tryCatch(addExpense({
-            amount: amount,
+            amount: actualAmount,
             dateTime: datetime,
             description: description,
             paymentMethod: paymentMethod,

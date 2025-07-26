@@ -42,6 +42,13 @@ export default function EditExpenseScreen() {
         const { amount, category, description, datetime, paymentMethod } = updated;
         const missingFields = [];
         if (!amount) missingFields.push('amount');
+        const actualAmount = parseFloat(amount ? amount : '0');
+        if (actualAmount < 1) {
+            setErrorText('Minimum amount should be ₹1');
+            setSnackbarVisibility(true);
+            return;
+        }
+
         if (!category) missingFields.push('category');
         if (!datetime) missingFields.push('datetime');
         if (!amount || !category || !datetime) {
