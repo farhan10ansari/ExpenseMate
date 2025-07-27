@@ -1,4 +1,5 @@
 import { CustomSnackbarProps } from '@/components/ui/CustomSnackbar';
+import { Screens } from '@/lib/types';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { create } from 'zustand';
 
@@ -10,6 +11,7 @@ type GlobalSnackbarProps = {
     type?: CustomSnackbarProps["type"];
     position?: CustomSnackbarProps["position"];
     offset?: number;
+    screens?: Screens[]; // Optional array of screens where this snackbar should be shown
 }
 
 type AppStore = {
@@ -17,6 +19,8 @@ type AppStore = {
     setKeyboardHeight: (height: number) => void;
     globalSnackbar: GlobalSnackbarProps | null;
     setGlobalSnackbar: (snackbar: GlobalSnackbarProps | null) => void;
+    currentScreen: Screens | null;
+    setCurrentScreen: (screen: Screens | null) => void;
 }
 
 const useAppStore = create<AppStore>()((set) => ({
@@ -24,6 +28,8 @@ const useAppStore = create<AppStore>()((set) => ({
     setKeyboardHeight: (height) => set({ keyboardHeight: height }),
     globalSnackbar: null,
     setGlobalSnackbar: (snackbar) => set({ globalSnackbar: snackbar }),
+    currentScreen: null,
+    setCurrentScreen: (screen) => set({ currentScreen: screen }),
 }))
 
 export default useAppStore;

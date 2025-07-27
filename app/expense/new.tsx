@@ -4,6 +4,7 @@ import ExpenseForm from "@/features/Expense/ExpenseForm";
 import { ExpenseData, ExpenseStoreProvider } from "@/features/Expense/ExpenseStoreProvider";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
 import { tryCatch } from "@/lib/try-catch";
+import { Screens } from "@/lib/types";
 import { addExpense } from "@/repositories/expenses";
 import useAppStore from "@/stores/useAppStore";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
@@ -68,6 +69,7 @@ export default function NewExpenseScreen() {
             type: 'success',
             position: 'bottom',
             offset: 80,
+            screens: [Screens.Home, Screens.AllExpenses, Screens.Income, Screens.Settings],
         });
 
         setKeyboardHeight(0);

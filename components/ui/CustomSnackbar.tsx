@@ -1,4 +1,5 @@
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
+import { memo } from "react";
 import { Portal, Snackbar, SnackbarProps } from "react-native-paper";
 
 export interface CustomSnackbarProps extends SnackbarProps {
@@ -8,7 +9,7 @@ export interface CustomSnackbarProps extends SnackbarProps {
     offset?: number;
 }
 
-export default function CustomSnackbar(props: CustomSnackbarProps) {
+function CustomSnackbar(props: CustomSnackbarProps) {
     const {
         type = "info",
         usePortal = false,
@@ -52,3 +53,9 @@ export default function CustomSnackbar(props: CustomSnackbarProps) {
         ) : (<Component />)
     )
 }
+
+export default memo(CustomSnackbar, (prevProps, nextProps) => {
+    return (
+        prevProps.visible === nextProps.visible // Only re-render if visibility changes
+    )
+});

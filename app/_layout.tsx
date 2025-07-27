@@ -14,6 +14,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import useCurrentScreenTracker from '@/hooks/useCurrentScreenTracker';
 const queryClient = new QueryClient()
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -64,6 +65,9 @@ export default function RootLayout() {
 
 function MainLayout() {
   const { colors } = useAppTheme();
+
+  // Track the current screen using the custom hook
+  useCurrentScreenTracker()
   return (
     <Stack>
       <Stack.Screen

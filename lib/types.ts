@@ -37,3 +37,13 @@ export interface PeriodExpenseStats {
   min: number;          // smallest single transaction
   categories: CategoryStat[]; // breakdown by category (sum + count)
 }
+
+export enum Screens {
+    Home = "Home",
+    AllExpenses = "AllExpenses",
+    NewExpense = "NewExpense",
+    Income = "Income", // Example for income screen
+    ExpenseInfo = "ExpenseInfo",
+    Settings = "Settings",
+    EditExpense = "EditExpense",
+}
