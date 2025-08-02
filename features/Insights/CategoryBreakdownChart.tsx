@@ -5,7 +5,7 @@ import { PieChart, BarChart } from 'react-native-gifted-charts';
 import { Card, Switch } from 'react-native-paper';
 import { ThemedText } from '@/components/base/ThemedText';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import useCategoriesStore from '@/stores/useCategoriesStore';
+import useExpenseCategoriesStore from '@/stores/useCategoriesStore';
 import { CategoryStat } from '@/lib/types';
 
 type CategoryBreakdownData = { data?: CategoryStat[] };
@@ -14,7 +14,7 @@ export default function CategoryBreakdownChart({ data }: CategoryBreakdownData) 
   const { colors, dark } = useAppTheme();
   const { width: windowWidth } = useWindowDimensions();
   const chartSize = windowWidth - 54;
-  const categoryMapping = useCategoriesStore((state) => state.categoryMapping);
+  const categoryMapping = useExpenseCategoriesStore((state) => state.categoryMapping);
 
   const [showAbsolute, setShowAbsolute] = useState(true);
   const [chartType, setChartType] = useState<'pie' | 'bar'>('pie');

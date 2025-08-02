@@ -10,7 +10,7 @@ import InsightCard from '@/features/Insights/InsightCard';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import useInsightsStore from '@/stores/useInsightsStore';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getExpenseStatsByPeriod } from '@/repositories/expenses';
+import { getExpenseStatsByPeriod } from '@/repositories/ExpenseRepo';
 import CategoryBreakdownChart from '@/features/Insights/CategoryBreakdownChart';
 
 export default function HomeScreen() {

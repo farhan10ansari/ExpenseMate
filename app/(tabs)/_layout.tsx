@@ -42,7 +42,7 @@ export default function TabLayout() {
         name="income"
         options={{
           title: 'Income',
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="attach-money" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="currency-rupee" color={color} />,
         }}
       />
       <Tabs.Screen

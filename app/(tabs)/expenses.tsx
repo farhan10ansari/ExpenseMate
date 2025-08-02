@@ -2,7 +2,7 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import ExpenseCard from "@/components/main/ExpenseCard";
 import { Expense } from "@/db/schema";
-import { getExpenseById, getExpensesByMonthPaginated } from "@/repositories/expenses";
+import { getExpenseById, getExpensesByMonthPaginated } from "@/repositories/ExpenseRepo";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";

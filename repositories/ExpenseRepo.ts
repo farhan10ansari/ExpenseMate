@@ -28,12 +28,12 @@ export const addExpense = async (expense: NewExpense) => {
     .values({
       amount: expense.amount,
       dateTime: dt,
-      description: expense.description,
+      description: expense.description ?? null,
       paymentMethod: expense.paymentMethod,
       category: expense.category,
-      recurring: expense.recurring,
-      receipt: expense.receipt,
-      currency: expense.currency,
+      recurring: expense.recurring ?? false,
+      receipt: expense.receipt ?? null,
+      currency: expense.currency || 'INR', // default to INR if not provided
     })
     .run();
   return res;

@@ -1,6 +1,6 @@
 import { Category, PaymentMethod } from "./types";
 
-export const DefaultCategories: Category[] = [
+export const DefaultExpenseCategories: Category[] = [
     {
         name: "food",
         label: "Food",
@@ -50,6 +50,71 @@ export const DefaultCategories: Category[] = [
         color: "#B0BEC5"
     }
 ]
+
+
+export const DefaultIncomeCategories: Category[] = [
+    {
+        name: "salary",
+        label: "Salary",
+        icon: "cash",
+        color: "#8BC34A"
+    },
+    {
+        name: "business",
+        label: "Business",
+        icon: "briefcase",
+        color: "#4FC3F7"
+    },
+    {
+        name: "freelance",
+        label: "Freelance",
+        icon: "laptop",
+        color: "#FFB300"
+    },
+    {
+        name: "investment",
+        label: "Investment",
+        icon: "chart-line",
+        color: "#9575CD"
+    },
+    {
+        name: "rental",
+        label: "Rental",
+        icon: "home-city",
+        color: "#FFD54F"
+    },
+    {
+        name: "gift",
+        label: "Gift",
+        icon: "gift",
+        color: "#E57373"
+    },
+    {
+        name: "bonus",
+        label: "Bonus",
+        icon: "star",
+        color: "#F06292"
+    },
+    {
+        name: "refund",
+        label: "Refund",
+        icon: "undo",
+        color: "#A1887F"
+    },
+    {
+        name: "pension",
+        label: "Pension",
+        icon: "account-tie",
+        color: "#90A4AE"
+    },
+    {
+        name: "other",
+        label: "Other",
+        icon: "dots-horizontal-circle-outline",
+        color: "#B0BEC5"
+    }
+];
+
 
 export const paymentMethods: PaymentMethod[] = [
     {

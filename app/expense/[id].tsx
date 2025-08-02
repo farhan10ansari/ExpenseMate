@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import CustomChip from "@/components/ui/CustomChip";
-import SheetGrabber from "@/components/ui/SheetGrabber";
 import { useLocalization } from "@/hooks/useLocalization";
 import { paymentMethodsMapping } from "@/lib/constants";
 import { extractDateLabel, extractTimeString } from "@/lib/functions";
-import { softDeleteExpenseById, getExpenseById } from "@/repositories/expenses";
-import useCategoriesStore from "@/stores/useCategoriesStore";
+import { softDeleteExpenseById, getExpenseById } from "@/repositories/ExpenseRepo";
+import useExpenseCategoriesStore from "@/stores/useCategoriesStore";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { FontAwesome } from "@expo/vector-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -17,11 +16,12 @@ import { Button, Dialog, Portal } from "react-native-paper";
 import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
 import { tryCatch } from "@/lib/try-catch";
 import useAppStore from "@/stores/useAppStore";
+import FormSheetHeader from "@/components/main/FormSheetHeader";
 
 export default function ExpenseInfoScreen() {
     const { colors } = useAppTheme();
     const { id } = useLocalSearchParams<{ id: string }>();
-    const categoryMapping = useCategoriesStore((state) => state.categoryMapping);
+    const categoryMapping = useExpenseCategoriesStore((state) => state.categoryMapping);
     const { uses24HourClock } = useLocalization();
     const queryClient = useQueryClient();
     const navigation = useNavigation();
@@ -37,9 +37,13 @@ export default function ExpenseInfoScreen() {
     });
 
     const styles = StyleSheet.create({
-        container: {
+        container:{
             backgroundColor: colors.card,
+
+        },
+        mainContainer: {
             paddingHorizontal: 20,
+            paddingTop: 10,
             paddingBottom: 20, // Space at the bottom
         },
         title: {
@@ -111,7 +115,7 @@ export default function ExpenseInfoScreen() {
 
     if (isError) {
         return (
-            <ThemedView style={[styles.container, { minHeight: 200 }]}>
+            <ThemedView style={[styles.mainContainer, { minHeight: 200 }]}>
                 <ThemedText type="title" style={styles.title} color={colors.error}>Error</ThemedText>
                 <ThemedText>{error instanceof Error ? error.message : "An unexpected error occurred."}</ThemedText>
             </ThemedView>
@@ -124,87 +128,91 @@ export default function ExpenseInfoScreen() {
 
     return (
         <ThemedView style={styles.container}>
-            <SheetGrabber />
-            <View>
-                <ThemedText type="title" style={styles.title}>Expense Details</ThemedText>
-                {/* Amount */}
-                <InfoRow
-                    label="Amount"
-                    content={
-                        <View style={styles.amountContentContainer}>
-                            <FontAwesome name="rupee" size={24} color={colors.primary} />
-                            <ThemedText type="defaultSemiBold" color={colors.primary} fontSize={24}>
-                                {expense?.amount ? expense.amount.toLocaleString() : "Not Provided"}
-                            </ThemedText>
-                        </View>
-                    }
-                />
-                {/* Category */}
-                <InfoRow
-                    label="Category"
-                    content={expense?.category ?
+            <FormSheetHeader
+                title="Expense Info"
+                onClose={() => navigation.goBack()}
+            />
+            <View style={styles.mainContainer}>
+                <View>
+                    {/* Amount */}
+                    <InfoRow
+                        label="Amount"
+                        content={
+                            <View style={styles.amountContentContainer}>
+                                <FontAwesome name="rupee" size={24} color={colors.primary} />
+                                <ThemedText type="defaultSemiBold" color={colors.primary} fontSize={24}>
+                                    {expense?.amount ? expense.amount.toLocaleString() : "Not Provided"}
+                                </ThemedText>
+                            </View>
+                        }
+                    />
+                    {/* Category */}
+                    <InfoRow
+                        label="Category"
+                        content={expense?.category ?
+                            <CustomChip
+                                size="default"
+                                variant="primary"
+                                icon={categoryMapping?.[expense.category]?.icon ?? undefined}
+                                label={categoryMapping?.[expense.category]?.label}
+                            /> : "Not Provided"}
+                    />
+                    {/* Notes */}
+                    <InfoRow
+                        label="Notes"
+                        content={expense?.description ? <ThemedText>
+                            {expense?.description}
+                        </ThemedText> : "Not Provided"}
+                        layout={expense?.description ? "vertical" : "horizontal"}
+                        scrollable
+                        height={100}
+                    />
+
+                    {/* Payment Method */}
+                    <InfoRow label="Payment Method" content={expense?.paymentMethod ?
                         <CustomChip
                             size="default"
-                            variant="primary"
-                            icon={categoryMapping?.[expense.category]?.icon ?? undefined}
-                            label={categoryMapping?.[expense.category]?.label}
-                        /> : "Not Provided"}
-                />
-                {/* Notes */}
-                <InfoRow
-                    label="Notes"
-                    content={expense?.description ? <ThemedText>
-                        {expense?.description}
-                    </ThemedText> : "Not Provided"}
-                    layout={expense?.description ? "vertical" : "horizontal"}
-                    scrollable
-                    height={100}
-                />
-
-                {/* Payment Method */}
-                <InfoRow label="Payment Method" content={expense?.paymentMethod ?
-                    <CustomChip
-                        size="default"
-                        variant="tertiary"
-                        icon={paymentMethodsMapping?.[expense.paymentMethod]?.icon}
-                        label={paymentMethodsMapping?.[expense.paymentMethod]?.label}
-                    /> : "Not Provided"
-                } />
-                {/* Date & Time */}
-                <InfoRow label="Date & Time" content={formattedDateTime} />
-                {/* Action */}
-                <View style={styles.buttonContainer}>
-                    <Button
-                        mode="elevated"
-                        style={[styles.button, styles.editButton]}
-                        labelStyle={styles.editBUttonText}
-                        rippleColor={colors.primary}
-                        onPress={handleEdit}
-                    >
-                        Edit
-                    </Button>
-                    <Button
-                        mode="elevated"
-                        style={[styles.button, styles.deleteButton]}
-                        labelStyle={styles.deleteButtonText}
-                        onPress={() => setShowDeleteConfirmationDialog(true)}
-                    >
-                        Delete
-                    </Button>
+                            variant="tertiary"
+                            icon={paymentMethodsMapping?.[expense.paymentMethod]?.icon}
+                            label={paymentMethodsMapping?.[expense.paymentMethod]?.label}
+                        /> : "Not Provided"
+                    } />
+                    {/* Date & Time */}
+                    <InfoRow label="Date & Time" content={formattedDateTime} />
+                    {/* Action */}
+                    <View style={styles.buttonContainer}>
+                        <Button
+                            mode="elevated"
+                            style={[styles.button, styles.editButton]}
+                            labelStyle={styles.editBUttonText}
+                            rippleColor={colors.primary}
+                            onPress={handleEdit}
+                        >
+                            Edit
+                        </Button>
+                        <Button
+                            mode="elevated"
+                            style={[styles.button, styles.deleteButton]}
+                            labelStyle={styles.deleteButtonText}
+                            onPress={() => setShowDeleteConfirmationDialog(true)}
+                        >
+                            Delete
+                        </Button>
+                    </View>
                 </View>
+                <Portal>
+                    <Dialog visible={showDeleteConfirmationDialog} onDismiss={() => setShowDeleteConfirmationDialog(false)}>
+                        <Dialog.Title>Delete Expense?</Dialog.Title>
+                        <Dialog.Content>
+                            <ThemedText>Are you sure you want to delete this expense? This action cannot be undone.</ThemedText>
+                        </Dialog.Content>
+                        <Dialog.Actions>
+                            <Button onPress={() => setShowDeleteConfirmationDialog(false)}>Cancel</Button>
+                            <Button onPress={handleDelete} textColor={colors.error}>Delete</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+                </Portal>
             </View>
-            <Portal>
-                <Dialog visible={showDeleteConfirmationDialog} onDismiss={() => setShowDeleteConfirmationDialog(false)}>
-                    <Dialog.Title>Delete Expense?</Dialog.Title>
-                    <Dialog.Content>
-                        <ThemedText>Are you sure you want to delete this expense? This action cannot be undone.</ThemedText>
-                    </Dialog.Content>
-                    <Dialog.Actions>
-                        <Button onPress={() => setShowDeleteConfirmationDialog(false)}>Cancel</Button>
-                        <Button onPress={handleDelete} textColor={colors.error}>Delete</Button>
-                    </Dialog.Actions>
-                </Dialog>
-            </Portal>
         </ThemedView>
     );
 }

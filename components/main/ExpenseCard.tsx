@@ -1,6 +1,6 @@
 import { Expense } from "@/db/schema";
 import { paymentMethodsMapping } from "@/lib/constants";
-import useCategoriesStore from "@/stores/useCategoriesStore";
+import useExpenseCategoriesStore from "@/stores/useCategoriesStore";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -21,7 +21,7 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
 
 
     // Get the category mapping from the categories store
-    const categoryMapping = useCategoriesStore((state) => state.categoryMapping);
+    const categoryMapping = useExpenseCategoriesStore((state) => state.categoryMapping);
 
     const formattedDate = extractDateLabel(expense.dateTime)
     const formattedTime = extractTimeString(expense.dateTime, uses24HourClock)

@@ -3,14 +3,15 @@ import useKeyboardHeight from '@/hooks/useKeyboardHeight';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import React, { useEffect } from 'react';
 import { Keyboard, StyleSheet, View } from 'react-native';
-import AmountInput from './components/AmountInput';
-import CategoriesInput from './components/CategoriesInput';
-import ConfirmButton from './components/ConfirmButton';
-import DateInput from './components/DateInput';
-import NotesInput from './components/NotesInput';
-import PaymentMethodInput from './components/PaymentMethodInput';
-import TimeInput from './components/TimeInput';
+import AmountInput from '@/components/input/AmountInput';
+import CategoriesInput from '@/components/input/CategoriesInput';
+import ConfirmButton from '@/components/input/ConfirmButton';
+import DateInput from '@/components/input/DateInput';
+import NotesInput from '@/components/input/NotesInput';
+import PaymentMethodInput from '@/components/input/PaymentMethodInput';
+import TimeInput from '@/components/input/TimeInput';
 import { ExpenseData, useExpenseStore } from './ExpenseStoreProvider';
+import useExpenseCategoriesStore from '@/stores/useCategoriesStore';
 
 type ExpenseFormProps = {
   showSubmitButton?: boolean;
@@ -24,6 +25,8 @@ export default function ExpenseForm({ showSubmitButton, onSubmit, type = "create
 
   const expense = useExpenseStore((state) => state.expense);
   const updateExpense = useExpenseStore((state) => state.updateExpense);
+  const categories = useExpenseCategoriesStore((state) => state.categories);
+
 
   const styles = StyleSheet.create({
     container: {
@@ -88,6 +91,7 @@ export default function ExpenseForm({ showSubmitButton, onSubmit, type = "create
             Categories
           </ThemedText>
           <CategoriesInput
+            categories={categories}
             category={expense.category}
             setCategory={(category) => updateExpense({ category })}
           />

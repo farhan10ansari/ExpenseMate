@@ -1,6 +1,6 @@
 import db from '@/db/client';
 import { expensesSchema } from '@/db/schema';
-import { DefaultCategories, paymentMethods } from '@/lib/constants';
+import { DefaultExpenseCategories, paymentMethods } from '@/lib/constants';
 
 /**
  * Seeds the `expenses` table with random dummy data for testing.
@@ -11,7 +11,7 @@ export const seedDummyExpenses = async (count: number): Promise<void> => {
   const startOfYear = new Date(now.getFullYear(), 0, 1);
 
   // Extract exactly the `name` values (lowercase, no spaces) from your constants
-  const categoryNames = DefaultCategories.map(({ name }) => name);
+  const categoryNames = DefaultExpenseCategories.map(({ name }) => name);
   const paymentMethodNames = paymentMethods.map(({ name }) => name);
   console.log("categoryNames", categoryNames);
   console.log("paymentMethodNames", paymentMethodNames);

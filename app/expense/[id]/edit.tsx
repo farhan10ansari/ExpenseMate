@@ -1,3 +1,4 @@
+import FormSheetHeader from "@/components/main/FormSheetHeader";
 import CustomSnackbar from "@/components/ui/CustomSnackbar";
 import SheetGrabber from "@/components/ui/SheetGrabber";
 import ExpenseForm from "@/features/Expense/ExpenseForm";
@@ -5,7 +6,7 @@ import { ExpenseData, ExpenseStoreProvider } from "@/features/Expense/ExpenseSto
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
 import { tryCatch } from "@/lib/try-catch";
 import { Screens } from "@/lib/types";
-import { getExpenseById, updateExpenseById } from "@/repositories/expenses";
+import { getExpenseById, updateExpenseById } from "@/repositories/ExpenseRepo";
 import useAppStore from "@/stores/useAppStore";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -121,7 +122,10 @@ export default function EditExpenseScreen() {
 
     return (
         <ExpenseStoreProvider initialExpense={expense}>
-            <SheetGrabber />
+            <FormSheetHeader
+                title="Edit Expense"
+                onClose={() => navigation.goBack()}
+            />
             <ExpenseForm
                 showSubmitButton={!isSnackbarVisible}
                 onSubmit={handleUpdateExpense}

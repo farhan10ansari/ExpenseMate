@@ -35,7 +35,7 @@ export default function AmountInput({ amount, setAmount, onFocus, onBlur }: Amou
         <Pressable style={styles.inputContainer} onPress={() => inputRef.current?.focus()}>
             <FontAwesome name="rupee" size={20} color={colors.text} />
             <TextInput
-                autoFocus
+                // autoFocus
                 ref={inputRef}
                 style={styles.input}
                 placeholderTextColor={colors.muted}
