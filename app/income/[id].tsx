@@ -3,10 +3,9 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import CustomChip from "@/components/ui/CustomChip";
 import { useLocalization } from "@/hooks/useLocalization";
-import { paymentMethodsMapping } from "@/lib/constants";
 import { extractDateLabel, extractTimeString } from "@/lib/functions";
-import { softDeleteExpenseById, getExpenseById } from "@/repositories/ExpenseRepo";
-import useExpenseCategoriesStore from "@/stores/useExpenseCategoriesStore";
+import { softDeleteIncomeById, getIncomeById } from "@/repositories/IncomeRepo";
+import { DefaultIncomeSources } from "@/lib/constants";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { FontAwesome } from "@expo/vector-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -18,10 +17,12 @@ import { tryCatch } from "@/lib/try-catch";
 import useAppStore from "@/stores/useAppStore";
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 
-export default function ExpenseInfoScreen() {
+// Build source mapping for icons/labels/colors
+const sourceMapping = Object.fromEntries(DefaultIncomeSources.map(cat => [cat.name, cat]));
+
+export default function IncomeInfoScreen() {
     const { colors } = useAppTheme();
     const { id } = useLocalSearchParams<{ id: string }>();
-    const categoryMapping = useExpenseCategoriesStore((state) => state.categoryMapping);
     const { uses24HourClock } = useLocalization();
     const queryClient = useQueryClient();
     const navigation = useNavigation();
@@ -29,29 +30,28 @@ export default function ExpenseInfoScreen() {
     const [showDeleteConfirmationDialog, setShowDeleteConfirmationDialog] = useState(false);
     const router = useRouter();
 
-    const { data: expense, isLoading, isError, error } = useQuery({
-        queryKey: ['expense', id],
-        queryFn: async () => getExpenseById(id),
+    const { data: income, isLoading, isError, error } = useQuery({
+        queryKey: ['income', id],
+        queryFn: async () => getIncomeById(id),
         enabled: !!id,
         staleTime: Infinity,
     });
 
     const styles = StyleSheet.create({
-        container:{
+        container: {
             backgroundColor: colors.card,
-
         },
         mainContainer: {
             paddingHorizontal: 20,
             paddingTop: 10,
-            paddingBottom: 20, // Space at the bottom
+            paddingBottom: 20,
         },
         title: {
             fontSize: 24,
             fontWeight: 'bold',
             marginBottom: 20,
             textAlign: 'center',
-            color: colors.primary
+            color: colors.tertiary
         },
         amountContentContainer: {
             flexDirection: 'row',
@@ -68,10 +68,8 @@ export default function ExpenseInfoScreen() {
             width: '45%',
             maxWidth: 200,
         },
-        editButton: {
-        },
-        editBUttonText: {
-        },
+        editButton: {},
+        editButtonText: {},
         deleteButton: {
             backgroundColor: colors.error,
         },
@@ -81,10 +79,10 @@ export default function ExpenseInfoScreen() {
     });
 
     const handleDelete = async () => {
-        const { error } = await tryCatch(softDeleteExpenseById(id))
+        const { error } = await tryCatch(softDeleteIncomeById(id));
         if (error) {
             setGlobalSnackbar({
-                message: 'Error in deleting expense',
+                message: 'Error in deleting income',
                 duration: 2000,
                 actionLabel: 'Dismiss',
                 actionIcon: 'close',
@@ -92,13 +90,12 @@ export default function ExpenseInfoScreen() {
                 position: 'bottom',
                 offset: 80,
             });
-        }
-        else {
-            queryClient.invalidateQueries({ queryKey: ['expenses'] });
+        } else {
+            queryClient.invalidateQueries({ queryKey: ['incomes'] });
             queryClient.invalidateQueries({ queryKey: ['insights'] });
-            navigation.goBack()
+            navigation.goBack();
             setGlobalSnackbar({
-                message: 'Successfully deleted expense',
+                message: 'Successfully deleted income',
                 duration: 2000,
                 actionLabel: 'Dismiss',
                 actionIcon: 'close',
@@ -110,7 +107,7 @@ export default function ExpenseInfoScreen() {
     }
 
     const handleEdit = () => {
-        router.push(`/expense/${id}/edit`);
+        router.push(`/income/${id}/edit`);
     }
 
     if (isError) {
@@ -122,14 +119,15 @@ export default function ExpenseInfoScreen() {
         );
     }
 
-    const timeString = expense?.dateTime ? extractTimeString(expense?.dateTime, uses24HourClock) : "";
-    const dateLabel = expense?.dateTime ? extractDateLabel(expense?.dateTime) : ""
-    const formattedDateTime = expense?.dateTime ? `${dateLabel} at ${timeString}` : "Not Provided";
+    const timeString = income?.dateTime ? extractTimeString(income?.dateTime, uses24HourClock) : "";
+    const dateLabel = income?.dateTime ? extractDateLabel(income?.dateTime) : "";
+    const formattedDateTime = income?.dateTime ? `${dateLabel} at ${timeString}` : "Not Provided";
+    const sourceDef = income?.source ? sourceMapping[income.source] || sourceMapping["other"] : null;
 
     return (
         <ThemedView style={styles.container}>
             <FormSheetHeader
-                title="Expense Info"
+                title="Income Info"
                 onClose={() => navigation.goBack()}
             />
             <View style={styles.mainContainer}>
@@ -139,53 +137,57 @@ export default function ExpenseInfoScreen() {
                         label="Amount"
                         content={
                             <View style={styles.amountContentContainer}>
-                                <FontAwesome name="rupee" size={24} color={colors.primary} />
-                                <ThemedText type="defaultSemiBold" color={colors.primary} fontSize={24}>
-                                    {expense?.amount ? expense.amount.toLocaleString() : "Not Provided"}
+                                <FontAwesome name="rupee" size={24} color={colors.tertiary || colors.primary} />
+                                <ThemedText type="defaultSemiBold" color={colors.tertiary || colors.primary} fontSize={24}>
+                                    {income?.amount ? income.amount.toLocaleString() : "Not Provided"}
                                 </ThemedText>
                             </View>
                         }
                     />
-                    {/* Category */}
+                    {/* Source */}
                     <InfoRow
-                        label="Category"
-                        content={expense?.category ?
+                        label="Source"
+                        content={income?.source ?
                             <CustomChip
                                 size="default"
                                 variant="primary"
-                                icon={categoryMapping?.[expense.category]?.icon ?? undefined}
-                                label={categoryMapping?.[expense.category]?.label}
+                                icon={sourceDef?.icon}
+                                label={sourceDef?.label ?? ""}
+                            // color={sourceDef?.color}
                             /> : "Not Provided"}
                     />
-                    {/* Notes */}
+                    {/* Description */}
                     <InfoRow
-                        label="Notes"
-                        content={expense?.description ? <ThemedText>
-                            {expense?.description}
-                        </ThemedText> : "Not Provided"}
-                        layout={expense?.description ? "vertical" : "horizontal"}
+                        label="Description"
+                        content={income?.description ? <ThemedText>{income?.description}</ThemedText> : "Not Provided"}
+                        layout={income?.description ? "vertical" : "horizontal"}
                         scrollable
                         height={100}
                     />
-
-                    {/* Payment Method */}
-                    <InfoRow label="Payment Method" content={expense?.paymentMethod ?
-                        <CustomChip
-                            size="default"
-                            variant="tertiary"
-                            icon={paymentMethodsMapping?.[expense.paymentMethod]?.icon}
-                            label={paymentMethodsMapping?.[expense.paymentMethod]?.label}
-                        /> : "Not Provided"
-                    } />
+                    {/* Recurring */}
+                    <InfoRow
+                        label="Recurring"
+                        content={income?.recurring ? (
+                            <CustomChip size="default" variant="secondary" icon="repeat" label="Recurring" />
+                        ) : "No"}
+                    />
+                    {/* Currency */}
+                    <InfoRow
+                        label="Currency"
+                        content={income?.currency || "INR"}
+                    />
                     {/* Date & Time */}
-                    <InfoRow label="Date & Time" content={formattedDateTime} />
+                    <InfoRow
+                        label="Date & Time"
+                        content={formattedDateTime}
+                    />
                     {/* Action */}
                     <View style={styles.buttonContainer}>
                         <Button
                             mode="elevated"
                             style={[styles.button, styles.editButton]}
-                            labelStyle={styles.editBUttonText}
-                            rippleColor={colors.primary}
+                            labelStyle={styles.editButtonText}
+                            rippleColor={colors.tertiary || colors.primary}
                             onPress={handleEdit}
                         >
                             Edit
@@ -202,9 +204,9 @@ export default function ExpenseInfoScreen() {
                 </View>
                 <Portal>
                     <Dialog visible={showDeleteConfirmationDialog} onDismiss={() => setShowDeleteConfirmationDialog(false)}>
-                        <Dialog.Title>Delete Expense?</Dialog.Title>
+                        <Dialog.Title>Delete Income?</Dialog.Title>
                         <Dialog.Content>
-                            <ThemedText>Are you sure you want to delete this expense? This action cannot be undone.</ThemedText>
+                            <ThemedText>Are you sure you want to delete this income? This action cannot be undone.</ThemedText>
                         </Dialog.Content>
                         <Dialog.Actions>
                             <Button onPress={() => setShowDeleteConfirmationDialog(false)}>Cancel</Button>
@@ -237,7 +239,7 @@ const InfoRow = ({ label, content, layout = "horizontal", scrollable = false, he
         label: {
             fontSize: 16,
             fontWeight: '600',
-            width: layout === "vertical" ? "100%" : '50%', // Adjust width as needed
+            width: layout === "vertical" ? "100%" : '50%',
         },
         textContent: {
             color: colors.text,
@@ -252,8 +254,6 @@ const InfoRow = ({ label, content, layout = "horizontal", scrollable = false, he
         scrollableContentContainer: {
             maxHeight: height
         },
-
-
     });
 
     const isStringContent = typeof content === 'string';
@@ -267,21 +267,18 @@ const InfoRow = ({ label, content, layout = "horizontal", scrollable = false, he
                         {content}
                     </ThemedText>
                 ) : scrollable ? (
-                    // Using React Native Gesture handler ScrollView to fix formsheet close on scroll
                     <GestureScrollView
                         keyboardShouldPersistTaps="handled"
                         style={styles.scrollableContentContainer}
                     >
                         {content}
                     </GestureScrollView>
+                ) : (
+                    <View style={styles.contentContainer}>
+                        {content}
+                    </View>
                 )
-                    : (
-                        <View style={styles.contentContainer}>
-                            {content}
-                        </View>
-                    )
             }
         </View>
     )
 };
-

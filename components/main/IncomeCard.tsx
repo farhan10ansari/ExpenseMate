@@ -1,6 +1,4 @@
-import { Expense } from "@/db/schema";
-import { paymentMethodsMapping } from "@/lib/constants";
-import useExpenseCategoriesStore from "@/stores/useExpenseCategoriesStore";
+import { Income } from "@/db/schema";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
@@ -8,24 +6,30 @@ import CustomChip from "@/components/ui/CustomChip";
 import { memo } from "react";
 import { extractDateLabel, extractTimeString } from "@/lib/functions";
 import { useLocalization } from "@/hooks/useLocalization";
+import useIncomeSourcesStore from "@/stores/useIncomeSourcesStore";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import Color from "color";
+import Color from 'color';
 
-type ExpenseCardProps = {
-    expense: Expense;
+// If you want to speed up lookups by name:
+// const sourceMapping = Object.fromEntries(DefaultIncomeCategories.map(cat => [cat.name, cat]));
+
+type IncomeCardProps = {
+    income: Income;
     onPress?: (id: number) => void;
 };
 
-function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
+function IncomeCard({ income, onPress }: IncomeCardProps) {
     const { colors } = useAppTheme();
-    const { uses24HourClock } = useLocalization()
+    const { uses24HourClock } = useLocalization();
 
+    // Get the source mapping from the income sources store
+    const sourceMapping = useIncomeSourcesStore((state) => state.sourceMapping);
 
-    // Get the category mapping from the categories store
-    const categoryMapping = useExpenseCategoriesStore((state) => state.categoryMapping);
+    const formattedDate = extractDateLabel(income.dateTime);
+    const formattedTime = extractTimeString(income.dateTime, uses24HourClock);
 
-    const formattedDate = extractDateLabel(expense.dateTime)
-    const formattedTime = extractTimeString(expense.dateTime, uses24HourClock)
+    // Lookup the source definition (icon, label, color) by income.source (string)
+    const sourceDef = sourceMapping[income.source];
 
     const styles = StyleSheet.create({
         wrapper: {
@@ -53,7 +57,7 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
         amountText: {
             fontWeight: "bold",
             fontSize: 24,
-            color: colors.primary
+            color: colors.tertiary
         },
         chipsContainer: {
             flexDirection: "row",
@@ -69,36 +73,36 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
     });
 
     const handleOnPress = () => {
-        if (onPress && expense.id) onPress(expense.id)
+        if (onPress && income.id) onPress(income.id)
     }
 
     return (
         <View style={styles.wrapper}>
             <Pressable
                 onPress={handleOnPress}
-                android_ripple={{ color: Color(colors.primary).alpha(0.12).rgb().string() }}
+                android_ripple={{ color: Color(colors.tertiary).alpha(0.12).rgb().string() }}
                 style={styles.card}
             >
                 <View style={styles.topRow}>
                     <View style={styles.amountContainer}>
-                        <FontAwesome name="rupee" size={24} color={colors.primary} />
+                        <FontAwesome name="rupee" size={24} color={colors.tertiary} />
                         <ThemedText type="title" style={styles.amountText}>
-                            {expense.amount}
+                            {income.amount}
                         </ThemedText>
                     </View>
                     <View style={styles.chipsContainer}>
                         <CustomChip
                             size="small"
-                            variant="primary"
-                            icon={categoryMapping?.[expense.category]?.icon}
-                            label={categoryMapping?.[expense.category]?.label}
+                            variant="tertiary"
+                            icon={sourceDef.icon}
+                            label={sourceDef.label}
                         />
-                        {expense.paymentMethod && (
+                        {income.recurring && (
                             <CustomChip
                                 size="small"
-                                variant="tertiary"
-                                icon={paymentMethodsMapping?.[expense.paymentMethod]?.icon}
-                                label={paymentMethodsMapping?.[expense.paymentMethod]?.label}
+                                variant="secondary"
+                                icon="repeat"
+                                label="Recurring"
                             />
                         )}
                     </View>
@@ -113,4 +117,4 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
     );
 }
 
-export default memo(ExpenseCard)
+export default memo(IncomeCard)

@@ -10,7 +10,7 @@ const PathToScreenMap: Record<string, Screens> = {
     "expense/new": Screens.NewExpense,
     "expense/[id]": Screens.ExpenseInfo,
     "expense/[id]/edit": Screens.EditExpense,
-    "(tabs)/income": Screens.Income,
+    "(tabs)/incomes": Screens.Incomes,
     "(tabs)/settings": Screens.Settings,
     // Add more mappings as needed
 }
@@ -25,7 +25,6 @@ export default function useCurrentScreenTracker() {
 
     useEffect(() => {
         const path_name = segments.join("/");
-
         const screen = PathToScreenMap[path_name] || null;
         if (screen !== currentScreen) {
             setCurrentScreen(screen);

@@ -14,7 +14,8 @@ const colors = {
     primary90: "#0f6750",
     primary100: "#093d30",
     primaryDark: "#169976",
-    accent: "#FE7743",
+    
+    // accent: "#FE7743",
 }
 
 export default colors;

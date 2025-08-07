@@ -10,7 +10,8 @@ import ConfirmButton from '@/components/input/ConfirmButton';
 import DateInput from '@/components/input/DateInput';
 import NotesInput from '@/components/input/NotesInput';
 import TimeInput from '@/components/input/TimeInput';
-import { DefaultIncomeCategories } from '@/lib/constants';
+import { DefaultIncomeSources } from '@/lib/constants';
+// import RecurringInput from '@/components/input/RecurringInput';
 type IncomeFormProps = {
     showSubmitButton?: boolean;
     onSubmit?: (income: IncomeData) => void;
@@ -72,6 +73,7 @@ export default function IncomeForm({ showSubmitButton, onSubmit, type = "create"
                     <AmountInput
                         amount={income.amount}
                         setAmount={(amount) => updateIncome({ amount })}
+                        colorType='tertiary'
                     />
                 </View>
                 {/* Source */}
@@ -80,9 +82,10 @@ export default function IncomeForm({ showSubmitButton, onSubmit, type = "create"
                         Source
                     </ThemedText>
                     <CategoriesInput
-                        categories={DefaultIncomeCategories}
+                        categories={DefaultIncomeSources}
                         category={income.source}
                         setCategory={(category) => updateIncome({ source: category })}
+                        colorType='tertiary'
                     />
                 </View>
                 {/* Description (Notes) */}
@@ -93,10 +96,18 @@ export default function IncomeForm({ showSubmitButton, onSubmit, type = "create"
                     <NotesInput
                         note={income.description}
                         setNote={(description => updateIncome({ description }))}
+                        colorType='tertiary'
                     />
                 </View>
                 {/* Recurring (add a switch or checkbox if desired) */}
-                {/* Receipt (add file picker if needed) */}
+                {/* <View style={styles.inputSection}>
+                    <RecurringInput
+                        value={!!income.recurring}
+                        onValueChange={(val) => updateIncome({ recurring: val })}
+                        label="Recurring Income"
+                    />
+                </View> */}
+
                 {/* Date & Time */}
                 <View style={styles.inputSection}>
                     <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>

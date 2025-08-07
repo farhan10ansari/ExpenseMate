@@ -4,6 +4,7 @@ import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
+import ThemedButton from "../ui/ThemedButton";
 
 
 type PaymentMethodInputProps = {
@@ -22,19 +23,19 @@ export default function PaymentMethodInput({ paymentMethod, setPaymentMethod }: 
         },
         buttonStyle: {
             borderRadius: 20,
-            backgroundColor: colors.onTertiary,
+            // backgroundColor: colors.onTertiary,
             paddingHorizontal: 5
         },
         buttonLabelStyle: {
             marginVertical: 8,
             marginHorizontal: 10,
-            color: colors.tertiary
+            // color: colors.tertiary
         },
         selectedButton: {
-            backgroundColor: colors.tertiary,
+            // backgroundColor: colors.tertiary,
         },
         selectedButtonLabel: {
-            color: colors.onTertiary
+            // color: colors.onTertiary
         }
     });
 
@@ -43,11 +44,12 @@ export default function PaymentMethodInput({ paymentMethod, setPaymentMethod }: 
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.container}>
                 {paymentMethods.map((method) => (
-                    <Button
+                    <ThemedButton
                         compact
                         key={method.name}
                         mode={paymentMethod === method.name ? "contained" : "elevated"}
                         icon={method.icon}
+                        colorType="tertiary"
                         style={[
                             styles.buttonStyle,
                             paymentMethod === method.name && styles.selectedButton
@@ -59,7 +61,7 @@ export default function PaymentMethodInput({ paymentMethod, setPaymentMethod }: 
                         onPress={() => setPaymentMethod(method.name)}
                     >
                         {method.label}
-                    </Button>
+                    </ThemedButton>
                 ))}
             </View>
         </ScrollView>

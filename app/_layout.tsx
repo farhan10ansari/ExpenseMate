@@ -149,9 +149,48 @@ function MainLayout() {
           contentStyle: {
             backgroundColor: colors.card,
           }
-          
+
         }}
       />
+
+      <Stack.Screen
+        name="income/[id]"
+        options={{
+          title: 'Income Details',
+          presentation: 'formSheet',
+          gestureDirection: "vertical",
+          animation: "slide_from_bottom",
+          sheetGrabberVisible: true,
+          sheetInitialDetentIndex: 0,
+          sheetAllowedDetents: "fitToContents",
+          sheetExpandsWhenScrolledToEdge: true,
+          sheetElevation: 24,
+          sheetCornerRadius: 20,
+          contentStyle: {
+            backgroundColor: colors.card,
+          }
+        }}
+      />
+
+      <Stack.Screen
+        name="income/[id]/edit"
+        options={{
+          title: 'Edit Income',
+          presentation: 'formSheet',
+          gestureDirection: "vertical",
+          animation: "slide_from_bottom",
+          sheetGrabberVisible: true,
+          sheetInitialDetentIndex: 0,
+          sheetAllowedDetents: [0.75, 1],
+          sheetExpandsWhenScrolledToEdge: true,
+          sheetElevation: 24,
+          sheetCornerRadius: 20,
+          contentStyle: {
+            backgroundColor: colors.card,
+          }
+        }}
+      />
+
 
       {/* Helper Screens */}
       <Stack.Screen

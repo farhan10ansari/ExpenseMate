@@ -52,7 +52,7 @@ export const DefaultExpenseCategories: Category[] = [
 ]
 
 
-export const DefaultIncomeCategories: Category[] = [
+export const DefaultIncomeSources: Category[] = [
     {
         name: "salary",
         label: "Salary",

@@ -5,7 +5,7 @@ import { PieChart, BarChart } from 'react-native-gifted-charts';
 import { Card, Switch } from 'react-native-paper';
 import { ThemedText } from '@/components/base/ThemedText';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import useExpenseCategoriesStore from '@/stores/useCategoriesStore';
+import useExpenseCategoriesStore from '@/stores/useExpenseCategoriesStore';
 import { CategoryStat } from '@/lib/types';
 
 type CategoryBreakdownData = { data?: CategoryStat[] };
@@ -32,10 +32,10 @@ export default function CategoryBreakdownChart({ data }: CategoryBreakdownData) 
         const pctVal = totalSum > 0 ? parseFloat(((cat.total / totalSum) * 100).toFixed(1)) : 0;
         return {
           value: showAbsolute ? absVal : pctVal,
-          color: cfg.color ?? colors.accent,
+          color: cfg.color ?? colors.tertiary,
           text: showAbsolute ? `₹${absVal}` : `${pctVal}%`,
           label: cfg.label ?? cat.category,
-          frontColor: cfg.color ?? colors.accent // for bar chart
+          frontColor: cfg.color ?? colors.tertiary // for bar chart
         };
       }) || [],
     [data, categoryMapping, totalSum, showAbsolute, colors]
@@ -130,13 +130,13 @@ export default function CategoryBreakdownChart({ data }: CategoryBreakdownData) 
               android_ripple={{ color: colors.backdrop }}
               onPress={() => setChartType('pie')}
               style={styles.toggleBtn}>
-              <Text style={{ color: chartType === 'pie' ? colors.accent : colors.text }}>Pie</Text>
+              <Text style={{ color: chartType === 'pie' ? colors.tertiary : colors.text }}>Pie</Text>
             </Pressable>
             <Pressable
               android_ripple={{ color: colors.backdrop }}
               onPress={() => setChartType('bar')}
               style={styles.toggleBtn}>
-              <Text style={{ color: chartType === 'bar' ? colors.accent : colors.text }}>Bar</Text>
+              <Text style={{ color: chartType === 'bar' ? colors.tertiary : colors.text }}>Bar</Text>
             </Pressable>
           </View>
           <View style={styles.switchContainer}>
@@ -144,7 +144,7 @@ export default function CategoryBreakdownChart({ data }: CategoryBreakdownData) 
             <Switch
               value={showAbsolute}
               onValueChange={setShowAbsolute}
-              color={colors.accent}
+              color={colors.tertiary}
             />
           </View>
         </View>
@@ -173,7 +173,7 @@ export default function CategoryBreakdownChart({ data }: CategoryBreakdownData) 
                   )
                 }}
                 centerLabelComponent={() => (
-                  <ThemedText style={{ color: colors.accent, fontWeight: '600' }}>
+                  <ThemedText style={{ color: colors.tertiary, fontWeight: '600' }}>
                     ₹{totalSum.toFixed(2)}
                   </ThemedText>
                 )}

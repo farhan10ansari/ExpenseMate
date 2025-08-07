@@ -11,7 +11,7 @@ import NotesInput from '@/components/input/NotesInput';
 import PaymentMethodInput from '@/components/input/PaymentMethodInput';
 import TimeInput from '@/components/input/TimeInput';
 import { ExpenseData, useExpenseStore } from './ExpenseStoreProvider';
-import useExpenseCategoriesStore from '@/stores/useCategoriesStore';
+import useExpenseCategoriesStore from '@/stores/useExpenseCategoriesStore';
 
 type ExpenseFormProps = {
   showSubmitButton?: boolean;

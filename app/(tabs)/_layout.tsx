@@ -28,6 +28,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
+          // headerShown: false,
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="home" color={color} />,
         }}
       />
@@ -39,9 +40,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="income"
+        name="incomes"
         options={{
-          title: 'Income',
+          title: 'Incomes',
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="currency-rupee" color={color} />,
         }}
       />

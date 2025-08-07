@@ -83,8 +83,8 @@ export default function HomeScreen() {
           <InsightCard
             title="Transactions"
             value={expenseStats?.count ?? 0}
-            icon={<Feather name="pie-chart" size={24} color={colors.accent} />}
-            textColor={colors.accent}
+            icon={<Feather name="pie-chart" size={24} color={colors.tertiary} />}
+            textColor={colors.tertiary}
           />
         </View>
         <View style={styles.row}>
@@ -96,7 +96,7 @@ export default function HomeScreen() {
                 {expenseStats?.avgPerDay ?? 0}
               </>
             }
-            icon={<MaterialIcons name="trending-up" size={24} color={colors.accent} />}
+            icon={<MaterialIcons name="trending-up" size={24} color={colors.tertiary} />}
             textColor={colors.text}
           />
           <InsightCard
@@ -109,7 +109,7 @@ export default function HomeScreen() {
                 {expenseStats?.min ?? 0}
               </>
             }
-            icon={<MaterialCommunityIcons name="chart-timeline-variant" size={24} color={colors.accent} />}
+            icon={<MaterialCommunityIcons name="chart-timeline-variant" size={24} color={colors.tertiary} />}
             textColor={colors.text}
           />
         </View>

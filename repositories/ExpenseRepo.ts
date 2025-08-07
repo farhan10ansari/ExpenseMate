@@ -54,10 +54,10 @@ export const getExpensesByMonthPaginated = async ({
   // 1) Compute the requested month’s start/end
   const requestedTarget = subMonths(now, offsetMonth);
   const requestedStart = startOfMonth(requestedTarget);
-  const requestedEnd   = endOfMonth(requestedTarget);
+  const requestedEnd = endOfMonth(requestedTarget);
 
-  // 2) Try fetching that month
-  let expenses = await db
+  // 2) Fetch that month's expenses
+  const expenses = await db
     .select()
     .from(expensesSchema)
     .where(
@@ -69,73 +69,14 @@ export const getExpensesByMonthPaginated = async ({
     )
     .orderBy(desc(expensesSchema.dateTime));
 
-  let actualOffset = offsetMonth;
-  let actualStart  = requestedStart;
-
-  if (expenses.length === 0) {
-    // ───────────────────────────────────────────────────────────────────────
-    // Empty requested month → look for any older expense
-    // ───────────────────────────────────────────────────────────────────────
-    const olderRec = await db
-      .select({ dt: expensesSchema.dateTime })
-      .from(expensesSchema)
-      .where(
-        and(
-          eq(expensesSchema.isTrashed, false),
-          lt(expensesSchema.dateTime, requestedStart),
-        )
-      )
-      .orderBy(desc(expensesSchema.dateTime))
-      .limit(1);
-
-    if (olderRec.length === 0) {
-      // no data older than this month either → we’re done
-      return {
-        expenses: [],
-        hasMore: false,
-        offsetMonth,
-        month: format(requestedStart, 'MMMM yyyy'),
-      };
-    }
-
-    // ───────────────────────────────────────────────────────────────────────
-    // Found an "older" expense → figure out its month
-    // ───────────────────────────────────────────────────────────────────────
-    const firstOlderDate: Date = olderRec[0].dt;
-    // how many calendar months between now and that date?
-    actualOffset = differenceInCalendarMonths(
-      startOfMonth(now),
-      startOfMonth(firstOlderDate)
-    );
-    // recompute the start/end for that month
-    const actualTarget = subMonths(now, actualOffset);
-    actualStart = startOfMonth(actualTarget);
-    const actualEnd = endOfMonth(actualTarget);
-
-    // fetch expenses for the *new* month
-    expenses = await db
-      .select()
-      .from(expensesSchema)
-      .where(
-        and(
-          eq(expensesSchema.isTrashed, false),
-          gte(expensesSchema.dateTime, actualStart),
-          lte(expensesSchema.dateTime, actualEnd),
-        )
-      )
-      .orderBy(desc(expensesSchema.dateTime));
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // Finally, compute hasMore by checking anything older than actualStart
-  // ─────────────────────────────────────────────────────────────────────────
+  // 3) Compute hasMore: do we have any records older than this month's start?
   const olderAny = await db
-    .select()
+    .select({ id: expensesSchema.id })
     .from(expensesSchema)
     .where(
       and(
         eq(expensesSchema.isTrashed, false),
-        lt(expensesSchema.dateTime, actualStart),
+        lt(expensesSchema.dateTime, requestedStart),
       )
     )
     .limit(1);
@@ -143,10 +84,11 @@ export const getExpensesByMonthPaginated = async ({
   return {
     expenses,
     hasMore: olderAny.length > 0,
-    offsetMonth: actualOffset,
-    month: format(actualStart, 'MMMM yyyy'),
+    offsetMonth, // unchanged
+    month: format(requestedStart, 'MMMM yyyy'),
   };
 };
+
 
 
 // Get a single expense by ID

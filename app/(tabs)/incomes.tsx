@@ -1,8 +1,10 @@
+
+
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
-import ExpenseCard from "@/components/main/ExpenseCard";
-import { Expense } from "@/db/schema";
-import { getExpenseById, getExpensesByMonthPaginated } from "@/repositories/ExpenseRepo";
+import IncomeCard from "@/components/main/IncomeCard";
+import { Income } from "@/db/schema";
+import { getIncomeById, getIncomesByMonthPaginated } from "@/repositories/IncomeRepo";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
@@ -13,87 +15,88 @@ import {
     View,
     SectionListRenderItem,
 } from "react-native";
-import { Button, Card, FAB, Portal } from "react-native-paper";
+import { Button, FAB, Portal } from "react-native-paper";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { useIsFocused } from "@react-navigation/native";
 
-type ExpenseSection = {
+type IncomeSection = {
     title: string;
-    data: Expense[];
+    data: Income[];
 };
 
-export default function ExpensesScreen() {
+export default function IncomesScreen() {
     const router = useRouter();
+    const isFocused = useIsFocused();
     const queryClient = useQueryClient();
     const { colors } = useAppTheme();
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const scrollElementRef = useRef<SectionList<Expense, ExpenseSection>>(null);
-    const { handleScroll, scrollToTop, showScrollToTop } = useScrollToTop(scrollElementRef)
-    const isFocused = useIsFocused();
+    const scrollElementRef = useRef<SectionList<Income, IncomeSection>>(null);
+    const { handleScroll, scrollToTop, showScrollToTop } = useScrollToTop(scrollElementRef);
 
-    // fetch expenses by month with pagination
+    // Fetch incomes by month with pagination
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
         useInfiniteQuery({
-            queryKey: ["expenses"],
+            queryKey: ["incomes"],
             queryFn: ({ pageParam = 0 }) =>
-                getExpensesByMonthPaginated({ offsetMonth: pageParam }),
+                getIncomesByMonthPaginated({ offsetMonth: pageParam }),
             initialPageParam: 0,
             getNextPageParam: (last) =>
                 last.hasMore ? last.offsetMonth + 1 : undefined
         });
 
-    const sections: ExpenseSection[] = useMemo(
+    const sections: IncomeSection[] = useMemo(
         () =>
-            data?.pages.filter((p) => p.expenses.length > 0).map((p) => ({
+            data?.pages.filter((p) => p.incomes.length > 0).map((p) => ({
                 title: p.month,
-                data: p.expenses,
+                data: p.incomes,
             })) ?? [],
         [data]
     );
 
-    const onPressExpenseCard = useCallback(async (id: number) => {
+    const onPressIncomeCard = useCallback(async (id: number) => {
         await queryClient.prefetchQuery({
-            queryKey: ["expense", id.toString()],
-            queryFn: () => getExpenseById(id),
+            queryKey: ["income", id.toString()],
+            queryFn: () => getIncomeById(id),
         });
-        router.push(`/expense/${id}`);
+        router.push(`/income/${id}`);
     }, []);
 
     const handleRefresh = useCallback(async () => {
         setIsRefreshing(true);
         try {
-            await queryClient.refetchQueries({ queryKey: ["expensesByMonth"] });
+            await queryClient.refetchQueries({ queryKey: ["incomes"] });
         } finally {
             setIsRefreshing(false);
         }
     }, []);
 
-    const totalExpenses = useMemo(() => {
-        return data?.pages.reduce((prev, item) => prev + item.expenses.length, 0) ?? 0;
+    const totalIncomes = useMemo(() => {
+        return data?.pages.reduce((prev, item) => prev + item.incomes.length, 0) ?? 0;
     }, [data]);
 
-    // This is a workaround to ensure at least a minimum of 20 expenses are loaded to enable the user to scroll & able to load more
-    // This is needed because the initial fetch may not have enough expenses to trigger the onEnd
+    // Ensure at least a minimum of 20 incomes loaded for scroll trigger
     useEffect(() => {
         if (data && data.pages) {
-            console.log("Loading more expenses because initial fetch is less than 20");
-            if (data.pages[data.pages.length - 1].hasMore === true && totalExpenses <= 20) {
+            if (data.pages[data.pages.length - 1].hasMore === true && totalIncomes <= 20) {
                 fetchNextPage();
             }
         }
-    }, [data])
+    }, [data]);
 
-    const renderItem: SectionListRenderItem<Expense, ExpenseSection> = useCallback(({ item }) => (
-        <ExpenseCard expense={item} onPress={onPressExpenseCard} />
-    ), [onPressExpenseCard]);
+    const renderItem: SectionListRenderItem<Income, IncomeSection> = useCallback(({ item }) => (
+        <IncomeCard income={item} onPress={onPressIncomeCard} />
+    ), [onPressIncomeCard]);
 
+    const handleNavigateToNewIncome = useCallback(() => {
+        router.push("/income/new");
+    }, [router]);
 
     return (
         <ThemedView style={styles.container}>
-            <SectionList<Expense, ExpenseSection>
+            <SectionList<Income, IncomeSection>
                 ref={scrollElementRef}
-                sections={totalExpenses > 0 ? sections : []} // Only render sections if there are expenses else rended ListEmptyComponent
+                sections={totalIncomes > 0 ? sections : []}
                 keyExtractor={(item) => item.id!.toString()}
                 renderItem={renderItem}
                 renderSectionHeader={({ section }) => (
@@ -119,7 +122,7 @@ export default function ExpensesScreen() {
                     />
                 }
                 onScroll={handleScroll}
-                scrollEventThrottle={100} // set it to 16 for faster showing of FAB
+                scrollEventThrottle={100}
                 ItemSeparatorComponent={() => (
                     <View
                         style={[styles.itemSeparator, { backgroundColor: colors.border }]}
@@ -129,23 +132,24 @@ export default function ExpensesScreen() {
                 contentContainerStyle={styles.sectionListContentContainer}
                 ListEmptyComponent={
                     <View style={styles.emptyContainer}>
-                        <ThemedText type="subtitle">No expenses found...</ThemedText>
-                        <Button onPress={() => router.push("/expense/new")}>
-                            Add Expense
+                        <ThemedText type="subtitle">No income records found...</ThemedText>
+                        <Button onPress={() => router.push("/income/new")}>
+                            Add Income
                         </Button>
                     </View>
                 }
-            // debug
             />
             <Portal>
                 <FAB
-                    visible={showScrollToTop && isFocused}
-                    variant="tertiary"
-                    icon="arrow-up"
+                    icon={showScrollToTop ? "arrow-up" : "plus"}
                     style={styles.fab}
-                    onPress={scrollToTop}
+                    onPress={showScrollToTop ? scrollToTop : handleNavigateToNewIncome}
+                    visible={isFocused}
+                    variant="tertiary"
                 />
             </Portal>
+
+
         </ThemedView>
     );
 }
@@ -180,12 +184,33 @@ const styles = StyleSheet.create({
         gap: 5,
     },
     fab: {
-        position: "absolute",
-        right: 16,
-        bottom: 120,
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 100,
         height: 48,
         width: 48,
         justifyContent: 'center',
         alignItems: 'center',
     },
+
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

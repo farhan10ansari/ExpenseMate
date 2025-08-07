@@ -5,19 +5,29 @@ import { IncomeData, IncomeStoreProvider } from "@/features/Income/IncomeStorePr
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
 import { tryCatch } from "@/lib/try-catch";
 import { Screens } from "@/lib/types";
-import { addIncome } from "@/repositories/IncomeRepo";
+import { getIncomeById, updateIncomeById } from "@/repositories/IncomeRepo";
 import useAppStore from "@/stores/useAppStore";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { useQueryClient } from "@tanstack/react-query";
-import { router, useNavigation } from "expo-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useState } from "react";
 import { StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default function NewIncomeScreen() {
+export default function EditIncomeScreen() {
     const navigation = useNavigation();
     const queryClient = useQueryClient();
     const { colors } = useAppTheme();
     const { keyboardHeight, setKeyboardHeight } = useKeyboardHeight();
+    const { id } = useLocalSearchParams<{ id: string }>();
+    const insets = useSafeAreaInsets();
+
+    const { data: income, isLoading, isError, error } = useQuery({
+        queryKey: ['income', id],
+        queryFn: async () => getIncomeById(id),
+        enabled: !!id,
+        staleTime: Infinity,
+    });
 
     // Snackbar
     const [isSnackbarVisible, setSnackbarVisibility] = useState(false);
@@ -27,9 +37,10 @@ export default function NewIncomeScreen() {
     // Global Snackbar
     const setGlobalSnackbar = useAppStore((state) => state.setGlobalSnackbar);
 
-    const handleAddIncome = async (income: IncomeData) => {
-        const { amount, source, description, dateTime, recurring, receipt, currency } = income;
+    const handleUpdateIncome = async (updated: IncomeData) => {
+        if (!income) return;
 
+        const { amount, source, description, dateTime, recurring, receipt, currency } = updated;
         const missingFields = [];
         if (!amount) missingFields.push('amount');
         const actualAmount = parseFloat(amount ? amount : '0');
@@ -38,49 +49,71 @@ export default function NewIncomeScreen() {
             setSnackbarVisibility(true);
             return;
         }
+
         if (!source) missingFields.push('source');
         if (!dateTime) missingFields.push('date');
         if (!amount || !source || !dateTime) {
-            setErrorText(`Please fill the missing fields i.e. ${missingFields.join(', ')}`);
+            setErrorText(`Please fill the missing fields: ${missingFields.join(', ')}`);
             setSnackbarVisibility(true);
             return;
         }
 
-        const { data, error } = await tryCatch(
-            addIncome({
+        // Check if anything has changed
+        const hasChanged =
+            income.amount !== actualAmount ||
+            income.source !== source ||
+            income.description !== description ||
+            new Date(income.dateTime).getTime() !== new Date(dateTime).getTime() ||
+            (income.recurring ?? false) !== (recurring ?? false) ||
+            (income.receipt ?? null) !== (receipt ?? null) ||
+            (income.currency ?? "INR") !== (currency ?? "INR");
+
+        if (!hasChanged) {
+            setErrorText("No changes detected.");
+            setSnackbarVisibility(true);
+            return;
+        }
+
+        const { error } = await tryCatch(
+            updateIncomeById(id, {
                 amount: actualAmount,
                 dateTime: dateTime,
                 source: source,
-                description: description ?? "",
+                description: description ?? null,
                 recurring: !!recurring,
                 receipt: receipt ?? null,
-                currency: currency ?? 'INR',
+                currency: currency ?? "INR",
             })
         );
 
         if (error) {
-            setErrorText('Failed to add income. Please try again.');
+            setErrorText('Failed to update income. Please try again.');
             setSnackbarVisibility(true);
             return;
         }
 
-        // Show snackbar
         setGlobalSnackbar({
-            message: 'Income added successfully',
+            message: 'Income updated successfully',
             duration: 2000,
             actionLabel: 'Dismiss',
             actionIcon: 'close',
             type: 'success',
-            position: 'bottom',
-            offset: 80,
-            screens: [Screens.Home, Screens.AllExpenses, Screens.Incomes, Screens.Settings, ],
+            position: 'top',
+            offset: insets.top + 10,
+            screens: [Screens.Income, Screens.IncomeInfo],
         });
 
         setKeyboardHeight(0);
         navigation.goBack();
-        // Invalidate related queries
-        queryClient.invalidateQueries({ queryKey: ['incomes'] });
-        queryClient.invalidateQueries({ queryKey: ['insights'] });
+        queryClient.invalidateQueries({
+            queryKey: ['incomes'],
+        });
+        queryClient.invalidateQueries({
+            queryKey: ['income', id],
+        });
+        queryClient.invalidateQueries({
+            queryKey: ['insights'],
+        });
     };
 
     const styles = StyleSheet.create({
@@ -90,15 +123,17 @@ export default function NewIncomeScreen() {
     });
 
     return (
-        <IncomeStoreProvider>
+        <IncomeStoreProvider initialIncome={income}>
             <FormSheetHeader
-                title="New Income"
-                onClose={() => {router.back()}}
+                title="Edit Income"
+                onClose={() => navigation.goBack()}
             />
             <IncomeForm
                 showSubmitButton={!isSnackbarVisible}
-                onSubmit={handleAddIncome}
+                onSubmit={handleUpdateIncome}
+                type="edit"
             />
+            {/* Error Snackbar */}
             <CustomSnackbar
                 usePortal
                 visible={isSnackbarVisible}

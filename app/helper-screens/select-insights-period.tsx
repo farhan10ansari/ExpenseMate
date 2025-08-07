@@ -1,5 +1,6 @@
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
+import FormSheetHeader from "@/components/main/FormSheetHeader";
 import SheetGrabber from "@/components/ui/SheetGrabber";
 import useInsightsStore, { InsightPeriodOption, insightPeriodOptions } from "@/stores/useInsightsStore";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
@@ -26,25 +27,29 @@ export default function SelectInsightsPeriodScreen() {
   const styles = StyleSheet.create({
     container: {
       backgroundColor: colors.card,
-      paddingHorizontal: 20,
-      paddingBottom: 80, // Space at the bottom
+
     },
     optionsContainer: {
       gap: 4,
+      paddingHorizontal: 20,
+      paddingTop: 20,
+      paddingBottom: 80, // Space at the bottom
     },
     title: {
       fontSize: 24,
       fontWeight: 'bold',
       marginBottom: 20,
       textAlign: 'center',
-      color: colors.primary
+      color: colors.primary,
     },
   });
 
   return (
     <ThemedView style={styles.container}>
-      <SheetGrabber />
-      <ThemedText type="title" style={styles.title}>Select Period</ThemedText>
+      <FormSheetHeader
+        title="Select Period"
+        onClose={() => router.back()}
+      />
       <View style={styles.optionsContainer}>
         {insightPeriodOptions.map((option, index) => (
           <Fragment key={index}>

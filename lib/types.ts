@@ -42,8 +42,13 @@ export enum Screens {
     Home = "Home",
     AllExpenses = "AllExpenses",
     NewExpense = "NewExpense",
-    Income = "Income", // Example for income screen
+    Incomes = "Incomes",
     ExpenseInfo = "ExpenseInfo",
     Settings = "Settings",
     EditExpense = "EditExpense",
+    AllIncomes = "AllIncomes",
+    IncomeInfo = "IncomeInfo",
+
 }
+
+export type ColorType = "primary" | "secondary" | "tertiary";

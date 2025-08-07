@@ -1,16 +1,17 @@
-import { Category } from '@/lib/types';
-import useExpenseCategoriesStore, { AddCategory, getCategoryRows } from '@/stores/useCategoriesStore';
+import { Category, ColorType } from '@/lib/types';
+import { AddCategory, getCategoryRows } from '@/stores/useExpenseCategoriesStore';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Button } from 'react-native-paper';
+import ThemedButton from '../ui/ThemedButton';
 
 type CategoryInputProps = {
     categories: Category[];
     category: string | null;
     setCategory: (category: string) => void;
+    colorType?: ColorType;
 };
 
-export default function CategoriesInput({ categories, category, setCategory }: CategoryInputProps) {
+export default function CategoriesInput({ categories, category, setCategory, colorType = "primary" }: CategoryInputProps) {
     const { colors } = useAppTheme();
     // categories store
 
@@ -25,7 +26,6 @@ export default function CategoriesInput({ categories, category, setCategory }: C
         },
         categoryButtonStyle: {
             borderRadius: 10,
-            borderColor: colors.primary,
         },
         categoryButtonLabelStyle: {
             marginVertical: 8,
@@ -41,22 +41,24 @@ export default function CategoriesInput({ categories, category, setCategory }: C
                 {categoryRows.map((row, rowIndex) => (
                     <View key={rowIndex} style={styles.categoryRow}>
                         {row.map((c) => (
-                            <Button
+                            <ThemedButton
                                 compact
                                 key={c.name}
                                 icon={c.icon}
                                 mode={c.name === category ? 'contained' : 'outlined'}
+                                colorType={colorType}
                                 style={styles.categoryButtonStyle}
                                 labelStyle={styles.categoryButtonLabelStyle}
+                                themedBorder
                                 onPress={() => {
                                     setCategory(c.name);
                                 }}
                             >
                                 {c.label}
-                            </Button>
+                            </ThemedButton>
                         ))}
                         {rowIndex === categoryRows.length - 1 && (
-                            <Button
+                            <ThemedButton
                                 compact
                                 icon={AddCategory.icon}
                                 mode='outlined'
@@ -69,7 +71,7 @@ export default function CategoriesInput({ categories, category, setCategory }: C
                                 textColor={colors.muted}
 
                             >{AddCategory.label}
-                            </Button>)
+                            </ThemedButton>)
                         }
                     </View>
                 ))}
