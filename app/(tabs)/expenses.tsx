@@ -13,10 +13,11 @@ import {
     View,
     SectionListRenderItem,
 } from "react-native";
-import { Button, Card, FAB, Portal } from "react-native-paper";
+import { Button, FAB, Portal } from "react-native-paper";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { useIsFocused } from "@react-navigation/native";
+import useAppStore from "@/stores/useAppStore";
 
 type ExpenseSection = {
     title: string;
@@ -31,6 +32,7 @@ export default function ExpensesScreen() {
     const scrollElementRef = useRef<SectionList<Expense, ExpenseSection>>(null);
     const { handleScroll, scrollToTop, showScrollToTop } = useScrollToTop(scrollElementRef)
     const isFocused = useIsFocused();
+    const globalSnackbar = useAppStore((state) => state.globalSnackbar);
 
     // fetch expenses by month with pagination
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -139,7 +141,7 @@ export default function ExpensesScreen() {
             />
             <Portal>
                 <FAB
-                    visible={showScrollToTop && isFocused}
+                    visible={showScrollToTop && isFocused && !globalSnackbar}
                     variant="tertiary"
                     icon="arrow-up"
                     style={styles.fab}

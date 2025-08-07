@@ -19,6 +19,7 @@ import { Button, FAB, Portal } from "react-native-paper";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { useIsFocused } from "@react-navigation/native";
+import useAppStore from "@/stores/useAppStore";
 
 type IncomeSection = {
     title: string;
@@ -33,6 +34,7 @@ export default function IncomesScreen() {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const scrollElementRef = useRef<SectionList<Income, IncomeSection>>(null);
     const { handleScroll, scrollToTop, showScrollToTop } = useScrollToTop(scrollElementRef);
+    const globalSnackbar = useAppStore((state) => state.globalSnackbar);
 
     // Fetch incomes by month with pagination
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -141,10 +143,10 @@ export default function IncomesScreen() {
             />
             <Portal>
                 <FAB
+                    visible={isFocused && !globalSnackbar}
                     icon={showScrollToTop ? "arrow-up" : "plus"}
                     style={styles.fab}
                     onPress={showScrollToTop ? scrollToTop : handleNavigateToNewIncome}
-                    visible={isFocused}
                     variant="tertiary"
                 />
             </Portal>
