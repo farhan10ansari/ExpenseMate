@@ -28,7 +28,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          // headerShown: false,
+          headerShown: false,
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="home" color={color} />,
         }}
       />
@@ -36,6 +36,7 @@ export default function TabLayout() {
         name="expenses"
         options={{
           title: 'Expenses',
+          headerShown: false,
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="money" color={color} />,
         }}
       />
@@ -43,6 +44,7 @@ export default function TabLayout() {
         name="incomes"
         options={{
           title: 'Incomes',
+          headerShown: false,
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="currency-rupee" color={color} />,
         }}
       />

@@ -1,18 +1,17 @@
 import React from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Pressable, Dimensions } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "expo-router";
-import { Divider } from "react-native-paper";
 
 type HeaderProps = {
   title: string;
   description?: string;
   onBack?: () => void;
   style?: object;
-  // background?: "card" | "background";
+  showBackButton?: boolean;
 };
 
 function CustomScreenHeader({
@@ -20,110 +19,122 @@ function CustomScreenHeader({
   description,
   onBack,
   style,
-  // background = "card",
+  showBackButton = true,
 }: HeaderProps) {
   const { colors } = useAppTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+
+  // Simple scaling based on screen height
+  const { height } = Dimensions.get('window');
+  const scale = Math.min(height / 800, 1); // Scale down for screens smaller than 800px
 
   const handleGoBack = () => {
     if (onBack) return onBack();
     if (navigation.canGoBack()) navigation.goBack();
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      paddingTop: insets.top + (18 * scale),
+      paddingBottom: 16 * scale,
+      paddingHorizontal: 16,
+      flexDirection: "row",
+      alignItems: "center",
+      minHeight: 56 * scale,
+      borderBottomColor: colors.border,
+      borderBottomWidth: 1,
+    },
+    backButton: {
+      width: 44 * scale,
+      height: 44 * scale,
+      borderRadius: 22 * scale,
+      backgroundColor: colors.surfaceVariant + '30',
+      justifyContent: "center",
+      alignItems: "center",
+      elevation: 1,
+      shadowColor: colors.shadow,
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+    },
+    backButtonPlaceholder: {
+      width: 44 * scale,
+      height: 44 * scale,
+    },
+    titleContainer: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 16,
+    },
+    title: {
+      fontSize: 32 * scale,
+      fontWeight: "500",
+      color: colors.onSurface,
+      textAlign: "center",
+      lineHeight: 36 * scale,
+    },
+    description: {
+      fontSize: 14 * scale,
+      color: colors.onSurfaceVariant,
+      textAlign: "center",
+      marginTop: 2,
+      opacity: 0.85,
+      fontWeight: "400",
+    },
+    placeholder: {
+      width: 44 * scale,
+      height: 44 * scale, // Match back button height for alignment
+    },
+    divider: {
+      opacity: 0.2,
+      height: 1,
+    },
+  });
 
   return (
-    <View
-      style={{
-        paddingTop: insets.top + 18,
-        // backgroundColor: background === "background" ? colors.background : colors.card,
-
-      }}
-    >
-      <View style={[headerStyles.headerContainer, style]}>
-        {/* Make Pressable perfectly round with no inner padding */}
-        <Pressable
-          style={headerStyles.backButton}
-          onPress={handleGoBack}
-          android_ripple={{ color: colors.surfaceVariant, radius: 20 }}
-          hitSlop={10}
-        >
-          <MaterialCommunityIcons name="chevron-left" size={40} color={colors.secondary} />
-        </Pressable>
-        <View style={headerStyles.titleArea}>
-          <ThemedText
-            type="title"
-            style={[
-              headerStyles.headerTitle,
-              !description && headerStyles.headerTitleNoDescription,
-              { color: colors.secondary, textAlign: "right" }
-            ]}
-            numberOfLines={1}
+    <>
+      <View style={[styles.container, style]}>
+        {/* Left side - Back button or placeholder */}
+        {showBackButton ? (
+          <Pressable
+            style={styles.backButton}
+            onPress={handleGoBack}
+            android_ripple={{
+              color: colors.primary + '20',
+              radius: 22 * scale,
+              borderless: false
+            }}
+            hitSlop={8}
           >
+            <MaterialCommunityIcons
+              name="chevron-left"
+              size={26 * scale}
+              color={colors.onSurfaceVariant}
+            />
+          </Pressable>
+        ) : (
+          <View style={styles.backButtonPlaceholder} />
+        )}
+
+        {/* Centered title container */}
+        <View style={styles.titleContainer}>
+          <ThemedText style={styles.title} numberOfLines={1}>
             {title}
           </ThemedText>
           {description && (
-            <ThemedText
-              type="default"
-              style={[
-                headerStyles.headerDescription,
-                { color: colors.muted, textAlign: "right" },
-              ]}
-              numberOfLines={1}
-            >
+            <ThemedText style={styles.description} numberOfLines={1}>
               {description}
             </ThemedText>
           )}
         </View>
+
+        {/* Right side placeholder for balance */}
+        <View style={styles.placeholder} />
       </View>
-      <Divider />
-    </View>
+    </>
   );
 }
-
-// Key changes: no horizontal padding on the container, even spacing
-const headerStyles = StyleSheet.create({
-  headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 8,
-    paddingRight: 18, // Right padding for spacing
-    paddingLeft: 12, // Left padding for spacing
-    paddingBottom: 16,
-    zIndex: 20,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,     // Makes it a perfect circle
-    justifyContent: "center",
-    alignItems: "center",
-    overflow: "hidden",   // Required for ripple to respect borderRadius
-    // No marginRight here, spacing will be inside container's padding
-  },
-  titleArea: {
-    flex: 1,
-    alignItems: "flex-end",
-    justifyContent: "center",
-    minHeight: 48,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: "bold",
-    minHeight: 40,
-  },
-  headerTitleNoDescription: {
-    fontSize: 36,
-    minHeight: 40,
-    paddingVertical: 4,
-  },
-  headerDescription: {
-    fontSize: 15,
-    opacity: 0.85,
-    marginTop: 2,
-    fontWeight: "400",
-    maxWidth: "98%",
-  },
-});
 
 export default CustomScreenHeader;

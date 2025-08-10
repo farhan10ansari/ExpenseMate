@@ -1,5 +1,3 @@
-
-
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import IncomeCard from "@/components/main/IncomeCard";
@@ -20,6 +18,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { useIsFocused } from "@react-navigation/native";
 import useAppStore from "@/stores/useAppStore";
+import { ScreenWrapper } from "@/components/main/ScreenWrapper";
+import CustomScreenHeader from "@/components/main/CustomScreenHeader";
 
 type IncomeSection = {
     title: string;
@@ -95,64 +95,69 @@ export default function IncomesScreen() {
     }, [router]);
 
     return (
-        <ThemedView style={styles.container}>
-            <SectionList<Income, IncomeSection>
-                ref={scrollElementRef}
-                sections={totalIncomes > 0 ? sections : []}
-                keyExtractor={(item) => item.id!.toString()}
-                renderItem={renderItem}
-                renderSectionHeader={({ section }) => (
-                    <ThemedText type="subtitle" style={styles.sectionHeader}>
-                        {section.title}
-                    </ThemedText>
-                )}
-                onEndReached={() => {
-                    if (hasNextPage && !isFetchingNextPage) fetchNextPage();
-                }}
-                onEndReachedThreshold={0.5}
-                ListFooterComponent={
-                    isFetchingNextPage ? (
-                        <ThemedText style={styles.loadingMore}>
-                            Loading more months data…
+        <ScreenWrapper style={styles.container}
+            header={<CustomScreenHeader title="Incomes" showBackButton={false} />}
+            background="background"
+        >
+            <ThemedView style={styles.container}>
+                <SectionList<Income, IncomeSection>
+                    ref={scrollElementRef}
+                    sections={totalIncomes > 0 ? sections : []}
+                    keyExtractor={(item) => item.id!.toString()}
+                    renderItem={renderItem}
+                    renderSectionHeader={({ section }) => (
+                        <ThemedText type="subtitle" style={styles.sectionHeader}>
+                            {section.title}
                         </ThemedText>
-                    ) : null
-                }
-                refreshControl={
-                    <RefreshControl
-                        refreshing={isRefreshing}
-                        onRefresh={handleRefresh}
-                    />
-                }
-                onScroll={handleScroll}
-                scrollEventThrottle={100}
-                ItemSeparatorComponent={() => (
-                    <View
-                        style={[styles.itemSeparator, { backgroundColor: colors.border }]}
-                    />
-                )}
-                style={styles.sectionList}
-                contentContainerStyle={styles.sectionListContentContainer}
-                ListEmptyComponent={
-                    <View style={styles.emptyContainer}>
-                        <ThemedText type="subtitle">No income records found...</ThemedText>
-                        <Button onPress={() => router.push("/income/new")}>
-                            Add Income
-                        </Button>
-                    </View>
-                }
-            />
-            <Portal>
-                <FAB
-                    visible={isFocused && !globalSnackbar}
-                    icon={showScrollToTop ? "arrow-up" : "plus"}
-                    style={styles.fab}
-                    onPress={showScrollToTop ? scrollToTop : handleNavigateToNewIncome}
-                    variant="tertiary"
+                    )}
+                    onEndReached={() => {
+                        if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+                    }}
+                    onEndReachedThreshold={0.5}
+                    ListFooterComponent={
+                        isFetchingNextPage ? (
+                            <ThemedText style={styles.loadingMore}>
+                                Loading more months data…
+                            </ThemedText>
+                        ) : null
+                    }
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={isRefreshing}
+                            onRefresh={handleRefresh}
+                        />
+                    }
+                    onScroll={handleScroll}
+                    scrollEventThrottle={100}
+                    ItemSeparatorComponent={() => (
+                        <View
+                            style={[styles.itemSeparator, { backgroundColor: colors.border }]}
+                        />
+                    )}
+                    style={styles.sectionList}
+                    contentContainerStyle={styles.sectionListContentContainer}
+                    ListEmptyComponent={
+                        <View style={styles.emptyContainer}>
+                            <ThemedText type="subtitle">No income records found...</ThemedText>
+                            <Button onPress={() => router.push("/income/new")}>
+                                Add Income
+                            </Button>
+                        </View>
+                    }
                 />
-            </Portal>
+                <Portal>
+                    <FAB
+                        visible={isFocused && !globalSnackbar}
+                        icon={showScrollToTop ? "arrow-up" : "plus"}
+                        style={styles.fab}
+                        onPress={showScrollToTop ? scrollToTop : handleNavigateToNewIncome}
+                        variant="tertiary"
+                    />
+                </Portal>
 
 
-        </ThemedView>
+            </ThemedView>
+        </ScreenWrapper>
     );
 }
 

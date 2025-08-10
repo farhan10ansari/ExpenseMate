@@ -1,23 +1,19 @@
-import { ThemedText } from "@/components/base/ThemedText";
+// Updated ExpensesScreen
 import { ThemedView } from "@/components/base/ThemedView";
-import ExpenseCard from "@/components/main/ExpenseCard";
-import { Expense } from "@/db/schema";
-import { getExpenseById, getExpensesByMonthPaginated } from "@/repositories/ExpenseRepo";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import {
-    SectionList,
-    RefreshControl,
-    StyleSheet,
-    View,
-    SectionListRenderItem,
-} from "react-native";
-import { Button, FAB, Portal } from "react-native-paper";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { SectionList, StyleSheet } from "react-native";
+import { FAB, Portal } from "react-native-paper";
+import { useRef, useState } from "react";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { useIsFocused } from "@react-navigation/native";
 import useAppStore from "@/stores/useAppStore";
+import { Expense } from "@/db/schema";
+import MonthTabsContainer from "@/features/Expense/components/MonthTabsContainer";
+import ExpensesList from "@/features/Expense/components/ExpenseList";
+import { ScreenWrapper } from "@/components/main/ScreenWrapper";
+import CustomScreenHeader from "@/components/main/CustomScreenHeader";
 
 type ExpenseSection = {
     title: string;
@@ -28,116 +24,47 @@ export default function ExpensesScreen() {
     const router = useRouter();
     const queryClient = useQueryClient();
     const { colors } = useAppTheme();
-    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [selectedOffsetMonth, setSelectedOffsetMonth] = useState<number | null>(null);
+
     const scrollElementRef = useRef<SectionList<Expense, ExpenseSection>>(null);
-    const { handleScroll, scrollToTop, showScrollToTop } = useScrollToTop(scrollElementRef)
+    const { handleScroll, scrollToTop, showScrollToTop } = useScrollToTop(scrollElementRef);
     const isFocused = useIsFocused();
     const globalSnackbar = useAppStore((state) => state.globalSnackbar);
 
-    // fetch expenses by month with pagination
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-        useInfiniteQuery({
-            queryKey: ["expenses"],
-            queryFn: ({ pageParam = 0 }) =>
-                getExpensesByMonthPaginated({ offsetMonth: pageParam }),
-            initialPageParam: 0,
-            getNextPageParam: (last) =>
-                last.hasMore ? last.offsetMonth + 1 : undefined
-        });
+    const handleMonthSelect = (offsetMonth: number | null) => {
+        setSelectedOffsetMonth(offsetMonth);
+        // Scroll to top when changing tabs
+        scrollToTop();
+    };
 
-    const sections: ExpenseSection[] = useMemo(
-        () =>
-            data?.pages.filter((p) => p.expenses.length > 0).map((p) => ({
-                title: p.month,
-                data: p.expenses,
-            })) ?? [],
-        [data]
-    );
-
-    const onPressExpenseCard = useCallback(async (id: number) => {
-        await queryClient.prefetchQuery({
-            queryKey: ["expense", id.toString()],
-            queryFn: () => getExpenseById(id),
-        });
-        router.push(`/expense/${id}`);
-    }, []);
-
-    const handleRefresh = useCallback(async () => {
-        setIsRefreshing(true);
-        try {
-            await queryClient.refetchQueries({ queryKey: ["expensesByMonth"] });
-        } finally {
-            setIsRefreshing(false);
-        }
-    }, []);
-
-    const totalExpenses = useMemo(() => {
-        return data?.pages.reduce((prev, item) => prev + item.expenses.length, 0) ?? 0;
-    }, [data]);
-
-    // This is a workaround to ensure at least a minimum of 20 expenses are loaded to enable the user to scroll & able to load more
-    // This is needed because the initial fetch may not have enough expenses to trigger the onEnd
-    useEffect(() => {
-        if (data && data.pages) {
-            console.log("Loading more expenses because initial fetch is less than 20");
-            if (data.pages[data.pages.length - 1].hasMore === true && totalExpenses <= 20) {
-                fetchNextPage();
-            }
-        }
-    }, [data])
-
-    const renderItem: SectionListRenderItem<Expense, ExpenseSection> = useCallback(({ item }) => (
-        <ExpenseCard expense={item} onPress={onPressExpenseCard} />
-    ), [onPressExpenseCard]);
-
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1
+        },
+        fab: {
+            position: "absolute",
+            right: 16,
+            bottom: 120,
+            height: 48,
+            width: 48,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+    });
 
     return (
-        <ThemedView style={styles.container}>
-            <SectionList<Expense, ExpenseSection>
-                ref={scrollElementRef}
-                sections={totalExpenses > 0 ? sections : []} // Only render sections if there are expenses else rended ListEmptyComponent
-                keyExtractor={(item) => item.id!.toString()}
-                renderItem={renderItem}
-                renderSectionHeader={({ section }) => (
-                    <ThemedText type="subtitle" style={styles.sectionHeader}>
-                        {section.title}
-                    </ThemedText>
-                )}
-                onEndReached={() => {
-                    if (hasNextPage && !isFetchingNextPage) fetchNextPage();
-                }}
-                onEndReachedThreshold={0.5}
-                ListFooterComponent={
-                    isFetchingNextPage ? (
-                        <ThemedText style={styles.loadingMore}>
-                            Loading more months data…
-                        </ThemedText>
-                    ) : null
-                }
-                refreshControl={
-                    <RefreshControl
-                        refreshing={isRefreshing}
-                        onRefresh={handleRefresh}
-                    />
-                }
+        <ScreenWrapper style={styles.container}
+            header={<CustomScreenHeader title="Expenses" showBackButton={false} />}
+            background="background"
+        >
+            <MonthTabsContainer
+                selectedOffsetMonth={selectedOffsetMonth}
+                onMonthSelect={handleMonthSelect}
+            />
+            <ExpensesList
+                selectedOffsetMonth={selectedOffsetMonth}
                 onScroll={handleScroll}
-                scrollEventThrottle={100} // set it to 16 for faster showing of FAB
-                ItemSeparatorComponent={() => (
-                    <View
-                        style={[styles.itemSeparator, { backgroundColor: colors.border }]}
-                    />
-                )}
-                style={styles.sectionList}
-                contentContainerStyle={styles.sectionListContentContainer}
-                ListEmptyComponent={
-                    <View style={styles.emptyContainer}>
-                        <ThemedText type="subtitle">No expenses found...</ThemedText>
-                        <Button onPress={() => router.push("/expense/new")}>
-                            Add Expense
-                        </Button>
-                    </View>
-                }
-            // debug
+                scrollRef={scrollElementRef}
             />
             <Portal>
                 <FAB
@@ -148,46 +75,6 @@ export default function ExpensesScreen() {
                     onPress={scrollToTop}
                 />
             </Portal>
-        </ThemedView>
+        </ScreenWrapper>
     );
 }
-
-const styles = StyleSheet.create({
-    container: { flex: 1 },
-    sectionHeader: {
-        marginTop: 20,
-        marginBottom: 10,
-        paddingHorizontal: 10,
-    },
-    sectionList: {
-        padding: 10,
-        paddingTop: 0,
-    },
-    sectionListContentContainer: {
-        paddingBottom: 150,
-        flexGrow: 1,
-    },
-    loadingMore: {
-        textAlign: "center",
-        marginVertical: 16,
-    },
-    itemSeparator: {
-        height: 1,
-        marginVertical: 10,
-    },
-    emptyContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 5,
-    },
-    fab: {
-        position: "absolute",
-        right: 16,
-        bottom: 120,
-        height: 48,
-        width: 48,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-});

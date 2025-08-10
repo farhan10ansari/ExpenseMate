@@ -3,7 +3,7 @@ import { Expense, expensesSchema } from '@/db/schema';
 import { and, desc, eq, gte, sql, lte, lt } from 'drizzle-orm';
 import { getStartDate } from './lib/helpers';
 import { InsightPeriod, PeriodExpenseStats } from '@/lib/types';
-import { startOfMonth, endOfMonth, subMonths, format, differenceInCalendarMonths } from 'date-fns';
+import { startOfMonth, endOfMonth, subMonths, format, differenceInMonths } from 'date-fns';
 
 export interface NewExpense {
   amount: number;
@@ -88,6 +88,71 @@ export const getExpensesByMonthPaginated = async ({
     month: format(requestedStart, 'MMMM yyyy'),
   };
 };
+
+// Get list of months having expenses
+export const getAvailableExpenseMonths = async (): Promise<{
+  offsetMonth: number;
+  month: string;
+  count: number;
+}[]> => {
+  const now = new Date();
+  const availableMonths: { offsetMonth: number; month: string; count: number }[] = [];
+  let currentOffset = 0;
+
+  while (true) {
+    // 1) Compute the current month's start/end
+    const requestedTarget = subMonths(now, currentOffset);
+    const requestedStart = startOfMonth(requestedTarget);
+    const requestedEnd = endOfMonth(requestedTarget);
+
+    // 2) Check if this month has expenses
+    const monthExpenses = await db
+      .select({ id: expensesSchema.id })
+      .from(expensesSchema)
+      .where(
+        and(
+          eq(expensesSchema.isTrashed, false),
+          gte(expensesSchema.dateTime, requestedStart),
+          lte(expensesSchema.dateTime, requestedEnd),
+        )
+      );
+
+    // 3) If month has expenses, add it to available months
+    if (monthExpenses.length > 0) {
+      availableMonths.push({
+        offsetMonth: currentOffset,
+        month: format(requestedStart, 'MMMM yyyy'),
+        count: monthExpenses.length,
+      });
+    }
+
+    // 4) Check if there are more months with data
+    const olderAny = await db
+      .select({ dt: expensesSchema.dateTime })
+      .from(expensesSchema)
+      .where(
+        and(
+          eq(expensesSchema.isTrashed, false),
+          lt(expensesSchema.dateTime, requestedStart),
+        )
+      )
+      .orderBy(desc(expensesSchema.dateTime))
+      .limit(1);
+
+    // 5) If no more data, break
+    if (olderAny.length === 0) {
+      break;
+    }
+
+    // 6) Update offset to the month of the next older expense
+    const nextOlderDate = olderAny[0].dt;
+    currentOffset = differenceInMonths(now, startOfMonth(nextOlderDate));
+  }
+
+  // Sort by offset (newest first)
+  return availableMonths.sort((a, b) => a.offsetMonth - b.offsetMonth);
+};
+
 
 
 

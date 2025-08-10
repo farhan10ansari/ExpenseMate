@@ -104,7 +104,7 @@ export default function MenuScreen() {
 
   return (
     <ScreenWrapper
-      header={<CustomScreenHeader title="Menu" />}
+      header={<CustomScreenHeader title="Menu" showBackButton={false} />}
       background="background"
     >
       <ScrollView
