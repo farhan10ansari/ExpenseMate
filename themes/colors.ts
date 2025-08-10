@@ -16,6 +16,7 @@ const colors = {
     primaryDark: "#169976",
     
     // accent: "#FE7743",
+    link: "#1e90ff", // blue color for links (Dodger Blue)
 }
 
 export default colors;
