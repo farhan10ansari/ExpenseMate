@@ -20,6 +20,7 @@ import { useIsFocused } from "@react-navigation/native";
 import useAppStore from "@/stores/useAppStore";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import CustomScreenHeader from "@/components/main/CustomScreenHeader";
+import ErrorState from "@/components/main/ErrorState";
 
 type IncomeSection = {
     title: string;
@@ -37,7 +38,7 @@ export default function IncomesScreen() {
     const globalSnackbar = useAppStore((state) => state.globalSnackbar);
 
     // Fetch incomes by month with pagination
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage, isError, error } =
         useInfiniteQuery({
             queryKey: ["incomes"],
             queryFn: ({ pageParam = 0 }) =>
@@ -94,6 +95,20 @@ export default function IncomesScreen() {
         router.push("/income/new");
     }, [router]);
 
+    if (isLoading) return null; // Show nothing while loading to avoid flicker as data fetching is very fast
+
+    if (isError) {
+        console.error("Error fetching expenses:", error);
+        return (
+            <ErrorState
+                title="Failed to load incomes"
+                message={error instanceof Error ? error.message : "Unknown error occurred"}
+                onRetry={handleRefresh}
+                showRestartHint={true}
+            />
+        );
+    }
+
     return (
         <ScreenWrapper style={styles.container}
             header={<CustomScreenHeader title="Incomes" showBackButton={false} />}
@@ -106,7 +121,7 @@ export default function IncomesScreen() {
                     keyExtractor={(item) => item.id!.toString()}
                     renderItem={renderItem}
                     renderSectionHeader={({ section }) => (
-                        <ThemedText type="subtitle" style={styles.sectionHeader}>
+                        <ThemedText type="defaultSemiBold" fontSize={16} style={styles.sectionHeader}>
                             {section.title}
                         </ThemedText>
                     )}
@@ -164,8 +179,8 @@ export default function IncomesScreen() {
 const styles = StyleSheet.create({
     container: { flex: 1 },
     sectionHeader: {
-        marginTop: 20,
-        marginBottom: 10,
+        marginTop: 10,
+        marginBottom: 4,
         paddingHorizontal: 10,
     },
     sectionList: {

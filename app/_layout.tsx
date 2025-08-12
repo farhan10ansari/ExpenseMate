@@ -139,7 +139,6 @@ function MainLayout() {
           presentation: 'formSheet',
           gestureDirection: "vertical",
           animation: "slide_from_bottom",
-          // headerShown: false,
           sheetGrabberVisible: true,
           sheetInitialDetentIndex: 0,
           sheetAllowedDetents: [0.75, 1],
@@ -212,29 +211,11 @@ function MainLayout() {
         }}
       />
 
-
-      {/* <Stack.Screen
-        name="menu"
-        options={{
-          title: 'Menu',
-          headerShown: true,
-          presentation: 'card',
-          animation: 'default',
-          contentStyle: { backgroundColor: colors.card },
-        }}
-      /> */}
       <Stack.Screen
         name="menu/themes"
         options={{
           title: 'Themes',
           headerShown: false,
-          // presentation: 'formSheet',
-          // animation: 'slide_from_bottom',
-          // sheetGrabberVisible: true,
-          // sheetInitialDetentIndex: 0,
-          // sheetAllowedDetents: 'fitToContents',
-          // sheetCornerRadius: 20,
-          // contentStyle: { backgroundColor: colors.card },
         }}
       />
       <Stack.Screen
@@ -242,13 +223,6 @@ function MainLayout() {
         options={{
           title: 'Settings',
           headerShown: false,
-          // presentation: 'formSheet',
-          // animation: 'slide_from_bottom',
-          // sheetGrabberVisible: true,
-          // sheetInitialDetentIndex: 0,
-          // sheetAllowedDetents: 'fitToContents',
-          // sheetCornerRadius: 20,
-          // contentStyle: { backgroundColor: colors.card },
         }}
       />
       <Stack.Screen
@@ -256,13 +230,6 @@ function MainLayout() {
         options={{
           title: 'Dev Options',
           headerShown: false,
-          // presentation: 'formSheet',
-          // animation: 'slide_from_bottom',
-          // sheetGrabberVisible: true,
-          // sheetInitialDetentIndex: 0,
-          // sheetAllowedDetents: [0.75, 1],
-          // sheetCornerRadius: 20,
-          // contentStyle: { backgroundColor: colors.card },
         }}
       />
       <Stack.Screen
@@ -270,13 +237,6 @@ function MainLayout() {
         options={{
           title: 'App Info',
           headerShown: false,
-          // presentation: 'formSheet',
-          // animation: 'slide_from_bottom',
-          // sheetGrabberVisible: true,
-          // sheetInitialDetentIndex: 0,
-          // sheetAllowedDetents: 'fitToContents',
-          // sheetCornerRadius: 20,
-          // contentStyle: { backgroundColor: colors.card },
         }}
       />
 

@@ -12,8 +12,9 @@ import {
     View,
     SectionListRenderItem,
 } from "react-native";
-import { Button } from "react-native-paper";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Button, ActivityIndicator } from "react-native-paper";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import ErrorState from "@/components/main/ErrorState";
 
 type ExpenseSection = {
     title: string;
@@ -42,7 +43,7 @@ export default function ExpensesList({
         : ["expenses", "month", selectedOffsetMonth];
 
     // Fetch expenses based on selected month
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
+    const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage, refetch, isError, error } =
         useInfiniteQuery({
             queryKey,
             queryFn: ({ pageParam = 0 }) => {
@@ -117,8 +118,8 @@ export default function ExpensesList({
 
     const styles = StyleSheet.create({
         sectionHeader: {
-            marginTop: 20,
-            marginBottom: 10,
+            marginTop: 10,
+            marginBottom: 4,
             paddingHorizontal: 10,
         },
         sectionList: {
@@ -130,7 +131,9 @@ export default function ExpensesList({
             flexGrow: 1,
         },
         loadingMore: {
-            textAlign: "center",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
             marginVertical: 16,
         },
         itemSeparator: {
@@ -144,7 +147,64 @@ export default function ExpensesList({
             alignItems: "center",
             gap: 5,
         },
+        errorContainer: {
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            paddingHorizontal: 24,
+            paddingVertical: 32,
+        },
+        errorIcon: {
+            marginBottom: 16,
+        },
+        errorTitle: {
+            fontSize: 18,
+            fontWeight: "600",
+            color: colors.onSurface,
+            marginBottom: 8,
+            textAlign: "center",
+        },
+        errorMessage: {
+            fontSize: 14,
+            color: colors.error,
+            marginBottom: 12,
+            textAlign: "center",
+            lineHeight: 20,
+        },
+        errorHint: {
+            fontSize: 14,
+            color: colors.onSurfaceVariant,
+            marginBottom: 24,
+            textAlign: "center",
+            opacity: 0.8,
+        },
+        retryButton: {
+            marginBottom: 16,
+            paddingHorizontal: 24,
+        },
+        errorFooter: {
+            fontSize: 12,
+            color: colors.onSurfaceVariant,
+            textAlign: "center",
+            opacity: 0.6,
+            fontStyle: "italic",
+        },
     });
+
+    if (isLoading) return null; // Show nothing while loading to avoid flicker as data fetching is very fast
+
+    if (isError) {
+        console.error("Error fetching expenses:", error);
+        return (
+            <ErrorState
+                title="Failed to load expenses"
+                message={error instanceof Error ? error.message : "Unknown error occurred"}
+                onRetry={handleRefresh}
+                showRestartHint={true}
+            />
+        );
+    }
+
 
     return (
         <SectionList<Expense, ExpenseSection>
@@ -153,7 +213,7 @@ export default function ExpensesList({
             keyExtractor={(item) => item.id!.toString()}
             renderItem={renderItem}
             renderSectionHeader={({ section }) => (
-                <ThemedText type="subtitle" style={styles.sectionHeader}>
+                <ThemedText type="defaultSemiBold" fontSize={16} style={styles.sectionHeader}>
                     {section.title}
                 </ThemedText>
             )}
@@ -165,9 +225,9 @@ export default function ExpensesList({
             onEndReachedThreshold={0.5}
             ListFooterComponent={
                 isFetchingNextPage ? (
-                    <ThemedText style={styles.loadingMore}>
-                        Loading more months data…
-                    </ThemedText>
+                    <View style={styles.loadingMore}>
+                        <ActivityIndicator size="small" color={colors.primary} />
+                    </View>
                 ) : null
             }
             refreshControl={

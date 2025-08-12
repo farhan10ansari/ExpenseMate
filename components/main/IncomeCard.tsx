@@ -10,9 +10,6 @@ import useIncomeSourcesStore from "@/stores/useIncomeSourcesStore";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Color from 'color';
 
-// If you want to speed up lookups by name:
-// const sourceMapping = Object.fromEntries(DefaultIncomeCategories.map(cat => [cat.name, cat]));
-
 type IncomeCardProps = {
     income: Income;
     onPress?: (id: number) => void;
@@ -37,12 +34,14 @@ function IncomeCard({ income, onPress }: IncomeCardProps) {
             overflow: "hidden",
         },
         card: {
-            height: 100,
-            padding: 16,
+            height: 80, // Reduced from 100 to 80
+            paddingVertical: 12, // More balanced vertical padding
+            paddingHorizontal: 16, // More balanced horizontal padding
             borderWidth: 1,
             borderRadius: 12,
             borderColor: colors.border,
-            backgroundColor: Color(colors.card).alpha(0.6).rgb().string(), // semi-transparent card
+            backgroundColor: Color(colors.card).alpha(0.6).rgb().string(),
+            justifyContent: "space-between", // Better space distribution
         },
         topRow: {
             flexDirection: "row",
@@ -51,24 +50,24 @@ function IncomeCard({ income, onPress }: IncomeCardProps) {
         },
         amountContainer: {
             flexDirection: "row",
-            alignItems: "center",
-            gap: 5,
+            alignItems: "center", // Changed from "center" to "baseline" for better alignment
+            gap: 4, // Reduced from 5 to 4
+
         },
         amountText: {
             fontWeight: "bold",
-            fontSize: 24,
-            color: colors.tertiary
+            fontSize: 20, // Reduced from 24 to 20
+            color: colors.tertiary,
+            lineHeight: 20, // Explicit line height for consistent alignment
         },
         chipsContainer: {
             flexDirection: "row",
-            gap: 8,
-        },
-        bottomRow: {
-            marginTop: 10,
+            gap: 6, // Reduced from 8 to 6
         },
         dateText: {
-            fontSize: 12,
+            fontSize: 12, // Reduced from 12 to 11
             color: "#666",
+            lineHeight: 14, // Tight line height for compact date text
         },
     });
 
@@ -85,7 +84,7 @@ function IncomeCard({ income, onPress }: IncomeCardProps) {
             >
                 <View style={styles.topRow}>
                     <View style={styles.amountContainer}>
-                        <FontAwesome name="rupee" size={24} color={colors.tertiary} />
+                        <FontAwesome name="rupee" size={20} color={colors.tertiary} />
                         <ThemedText type="title" style={styles.amountText}>
                             {income.amount}
                         </ThemedText>
@@ -107,7 +106,7 @@ function IncomeCard({ income, onPress }: IncomeCardProps) {
                         )}
                     </View>
                 </View>
-                <View style={styles.bottomRow}>
+                <View>
                     <ThemedText type="default" style={styles.dateText}>
                         {formattedDate} • {formattedTime}
                     </ThemedText>

@@ -20,7 +20,6 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
     const { colors } = useAppTheme();
     const { uses24HourClock } = useLocalization()
 
-
     // Get the category mapping from the categories store
     const categoryMapping = useExpenseCategoriesStore((state) => state.categoryMapping);
 
@@ -33,12 +32,14 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
             overflow: "hidden",
         },
         card: {
-            height: 100,
-            padding: 16,
+            height: 80,
+            paddingVertical: 12,
+            paddingHorizontal: 16,
             borderWidth: 1,
             borderRadius: 12,
             borderColor: colors.border,
-            backgroundColor: Color(colors.card).alpha(0.6).rgb().string(), // semi-transparent card
+            backgroundColor: Color(colors.card).alpha(0.6).rgb().string(),
+            justifyContent: "space-between",
         },
         topRow: {
             flexDirection: "row",
@@ -48,23 +49,22 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
         amountContainer: {
             flexDirection: "row",
             alignItems: "center",
-            gap: 5,
+            gap: 4,
         },
         amountText: {
             fontWeight: "bold",
-            fontSize: 24,
-            color: colors.primary
+            fontSize: 20,
+            color: colors.primary,
+            lineHeight: 20,
         },
         chipsContainer: {
             flexDirection: "row",
-            gap: 8,
-        },
-        bottomRow: {
-            marginTop: 10,
+            gap: 6,
         },
         dateText: {
             fontSize: 12,
             color: "#666",
+            lineHeight: 14,
         },
     });
 
@@ -81,7 +81,7 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
             >
                 <View style={styles.topRow}>
                     <View style={styles.amountContainer}>
-                        <FontAwesome name="rupee" size={24} color={colors.primary} />
+                        <FontAwesome name="rupee" size={20} color={colors.primary} />
                         <ThemedText type="title" style={styles.amountText}>
                             {expense.amount}
                         </ThemedText>
@@ -103,7 +103,7 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
                         )}
                     </View>
                 </View>
-                <View style={styles.bottomRow}>
+                <View>
                     <ThemedText type="default" style={styles.dateText}>
                         {formattedDate} • {formattedTime}
                     </ThemedText>

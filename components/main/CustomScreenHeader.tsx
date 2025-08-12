@@ -36,12 +36,12 @@ function CustomScreenHeader({
 
   const styles = StyleSheet.create({
     container: {
-      paddingTop: insets.top + (18 * scale),
-      paddingBottom: 16 * scale,
+      paddingTop: insets.top + (14 * scale), // Reduced from 18 to 14
+      paddingBottom: 12 * scale, // Reduced from 16 to 12
       paddingHorizontal: 16,
       flexDirection: "row",
       alignItems: "center",
-      minHeight: 56 * scale,
+      minHeight: 48 * scale, // Reduced from 56 to 48
       borderBottomColor: colors.border,
       borderBottomWidth: 1,
     },
@@ -58,82 +58,72 @@ function CustomScreenHeader({
       shadowOpacity: 0.1,
       shadowRadius: 2,
     },
-    backButtonPlaceholder: {
-      width: 44 * scale,
-      height: 44 * scale,
-    },
     titleContainer: {
       flex: 1,
-      alignItems: "center",
+      alignItems: showBackButton ? "center" : "flex-start", // Dynamic alignment
       justifyContent: "center",
-      paddingHorizontal: 16,
+      // paddingHorizontal: showBackButton ? 16 : 0, // No padding when left-aligned
+      // paddingLeft: showBackButton ? 16 : 0, // Only left padding when centered
+      paddingHorizontal: 6
     },
     title: {
-      fontSize: 32 * scale,
+      fontSize: 28 * scale, // Reduced from 32 to 28
       fontWeight: "500",
       color: colors.onSurface,
-      textAlign: "center",
-      lineHeight: 36 * scale,
+      textAlign: showBackButton ? "center" : "left", // Dynamic text alignment
+      lineHeight: 32 * scale, // Reduced from 36 to 32
     },
     description: {
       fontSize: 14 * scale,
       color: colors.onSurfaceVariant,
-      textAlign: "center",
+      textAlign: showBackButton ? "center" : "left", // Dynamic text alignment
       marginTop: 2,
       opacity: 0.85,
       fontWeight: "400",
     },
     placeholder: {
-      width: 44 * scale,
-      height: 44 * scale, // Match back button height for alignment
-    },
-    divider: {
-      opacity: 0.2,
-      height: 1,
+      width: showBackButton ? 44 * scale : 0, // Hide placeholder when no back button
+      height: 44 * scale,
     },
   });
 
   return (
-    <>
-      <View style={[styles.container, style]}>
-        {/* Left side - Back button or placeholder */}
-        {showBackButton ? (
-          <Pressable
-            style={styles.backButton}
-            onPress={handleGoBack}
-            android_ripple={{
-              color: colors.primary + '20',
-              radius: 22 * scale,
-              borderless: false
-            }}
-            hitSlop={8}
-          >
-            <MaterialCommunityIcons
-              name="chevron-left"
-              size={26 * scale}
-              color={colors.onSurfaceVariant}
-            />
-          </Pressable>
-        ) : (
-          <View style={styles.backButtonPlaceholder} />
-        )}
+    <View style={[styles.container, style]}>
+      {/* Left side - Back button only when needed */}
+      {showBackButton && (
+        <Pressable
+          style={styles.backButton}
+          onPress={handleGoBack}
+          android_ripple={{
+            color: colors.primary + '20',
+            radius: 22 * scale,
+            borderless: false
+          }}
+          hitSlop={8}
+        >
+          <MaterialCommunityIcons
+            name="chevron-left"
+            size={26 * scale}
+            color={colors.onSurfaceVariant}
+          />
+        </Pressable>
+      )}
 
-        {/* Centered title container */}
-        <View style={styles.titleContainer}>
-          <ThemedText style={styles.title} numberOfLines={1}>
-            {title}
+      {/* Title container with dynamic alignment */}
+      <View style={styles.titleContainer}>
+        <ThemedText style={styles.title} numberOfLines={1}>
+          {title}
+        </ThemedText>
+        {description && (
+          <ThemedText style={styles.description} numberOfLines={1}>
+            {description}
           </ThemedText>
-          {description && (
-            <ThemedText style={styles.description} numberOfLines={1}>
-              {description}
-            </ThemedText>
-          )}
-        </View>
-
-        {/* Right side placeholder for balance */}
-        <View style={styles.placeholder} />
+        )}
       </View>
-    </>
+
+      {/* Right side placeholder only when back button exists */}
+      <View style={styles.placeholder} />
+    </View>
   );
 }
 
