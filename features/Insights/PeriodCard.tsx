@@ -38,7 +38,7 @@ const PeriodCard = ({ }: PeriodCardProps) => {
         <Card style={styles.card}>
             <Pressable
                 onPress={handlePress}
-                android_ripple={{ color: dark ? colors.primary100 : colors.primary10 }}
+                android_ripple={{ color: colors.ripplePrimary }}
             >
                 <Card.Content style={styles.cardContent}>
                     <ThemedText type="defaultSemiBold">

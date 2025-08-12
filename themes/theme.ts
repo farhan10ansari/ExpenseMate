@@ -9,6 +9,7 @@ import {
   adaptNavigationTheme,
 } from 'react-native-paper';
 import colors from './colors';
+import Color from 'color';
 
 
 /**
@@ -133,6 +134,11 @@ export const customLightTheme = {
     text: 'rgb(28, 28, 30)',
     border: 'rgb(216, 216, 216)',
     muted: 'rgb(142, 142, 147)',
+
+    // calculated ripple colors based on primary, secondary, tertiary colors
+    ripplePrimary: Color(myLightTheme.colors.primary).alpha(0.12).rgb().string(),
+    rippleSecondary: Color(myLightTheme.colors.secondary).alpha(0.12).rgb().string(),
+    rippleTertiary: Color(myLightTheme.colors.tertiary).alpha(0.12).rgb().string(),
   },
 };
 
@@ -148,5 +154,10 @@ export const customDarkTheme = {
     text: 'rgb(229, 229, 231)',
     border: 'rgb(39, 39, 41)',
     muted: 'rgb(142, 142, 147)',
+
+    // calculated ripple colors based on primary, secondary, tertiary colors
+    ripplePrimary: Color(myDarkTheme.colors.primary).alpha(0.12).rgb().string(),
+    rippleSecondary: Color(myDarkTheme.colors.secondary).alpha(0.12).rgb().string(),
+    rippleTertiary: Color(myDarkTheme.colors.tertiary).alpha(0.12).rgb().string(),
   },
 };

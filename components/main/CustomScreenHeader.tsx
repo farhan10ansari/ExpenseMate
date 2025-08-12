@@ -95,7 +95,7 @@ function CustomScreenHeader({
           style={styles.backButton}
           onPress={handleGoBack}
           android_ripple={{
-            color: colors.primary + '20',
+            color: colors.ripplePrimary,
             radius: 22 * scale,
             borderless: false
           }}

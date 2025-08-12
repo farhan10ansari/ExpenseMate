@@ -185,7 +185,7 @@ export default function ExpenseInfoScreen() {
                             mode="elevated"
                             style={[styles.button, styles.editButton]}
                             labelStyle={styles.editBUttonText}
-                            rippleColor={colors.primary}
+                            rippleColor={colors.ripplePrimary}
                             onPress={handleEdit}
                         >
                             Edit

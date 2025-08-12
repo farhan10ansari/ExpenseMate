@@ -181,10 +181,7 @@ function MenuItemComponent({ item, isLast, onPress }: MenuItemComponentProps) {
     },
     rightIcon: {
       color: colors.muted,
-    },
-    rippleColor: {
-      color: Color(colors.primary).alpha(0.12).rgb().string(),
-    },
+    }
   });
 
   return (
@@ -210,7 +207,7 @@ function MenuItemComponent({ item, isLast, onPress }: MenuItemComponentProps) {
           />
         )}
         onPress={() => onPress(item.route)}
-        rippleColor={styles.rippleColor.color}
+        rippleColor={colors.ripplePrimary}
       />
       {!isLast && <View style={styles.divider} />}
     </View>

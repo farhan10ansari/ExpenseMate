@@ -138,7 +138,7 @@ function TabBarItem({ route, options, isFocused, navigation }: TabBarItemProps) 
             onLongPress={onLongPress}
             style={styles.tabBarItem}
             android_ripple={{
-                color: dark ? colors.primary100 : colors.primary10,
+                color: colors.ripplePrimary,
                 borderless: true,
             }}
         >

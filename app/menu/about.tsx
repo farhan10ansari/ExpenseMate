@@ -341,7 +341,7 @@ function AboutItem({ icon, title, description, onPress, children }: AboutItemPro
             <Pressable
                 onPress={onPress}
                 android_ripple={{
-                    color: Color(colors.primary).alpha(0.1).rgb().string(),
+                    color: colors.ripplePrimary,
                     borderless: false,
                 }}
             >

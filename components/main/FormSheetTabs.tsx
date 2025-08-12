@@ -60,23 +60,6 @@ export default function FormSheetTabs({ tabs, activeTab, onTabChange }: FormShee
                 const isActive = activeTab === tab.key;
                 return (
                     <View key={tab.key} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        {/* <Pressable
-                            style={styles.tab}
-                            onPress={() => onTabChange(tab.key)}
-                            android_ripple={{
-                                color: tab.key === 'expense' ? colors.primary : colors.tertiary,
-                                borderless: false,
-                            }}
-                        >
-                            <ThemedText
-                                style={[
-                                    styles.tabText,
-                                    isActive ? styles.activeTabText : styles.inactiveTabText,
-                                ]}
-                            >
-                                {tab.label}
-                            </ThemedText>
-                        </Pressable> */}
                         <ThemedButton
                             compact
                             mode="text"
@@ -87,7 +70,7 @@ export default function FormSheetTabs({ tabs, activeTab, onTabChange }: FormShee
                                 isActive ? styles.activeTabText : styles.inactiveTabText,
                             ]}
                             uppercase={false}
-                            rippleColor={tab.key === 'expense' ?  Color(colors.primary).alpha(0.12).rgb().string()  :  Color(colors.tertiary).alpha(0.12).rgb().string() }
+                            rippleColor={tab.key === 'income' ? colors.rippleTertiary : colors.ripplePrimary}
                         >
                             {tab.label}
                         </ThemedButton>

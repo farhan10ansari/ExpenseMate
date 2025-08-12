@@ -187,7 +187,7 @@ export default function IncomeInfoScreen() {
                             mode="elevated"
                             style={[styles.button, styles.editButton]}
                             labelStyle={styles.editButtonText}
-                            rippleColor={colors.tertiary || colors.primary}
+                            rippleColor={colors.rippleTertiary}
                             onPress={handleEdit}
                         >
                             Edit

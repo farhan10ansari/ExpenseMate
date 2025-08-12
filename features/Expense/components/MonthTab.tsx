@@ -55,7 +55,7 @@ export default function MonthTab({ month, count, isSelected, onPress }: MonthTab
                 style={styles.tabContainer}
                 onPress={onPress}
                 android_ripple={{
-                    color: Color(colors.primary).alpha(0.12).rgb().string(),
+                    color: colors.ripplePrimary,
                     borderless: false,
                 }}
             >

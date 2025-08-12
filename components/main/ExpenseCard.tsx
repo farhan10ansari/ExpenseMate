@@ -76,7 +76,7 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
         <View style={styles.wrapper}>
             <Pressable
                 onPress={handleOnPress}
-                android_ripple={{ color: Color(colors.primary).alpha(0.12).rgb().string() }}
+                android_ripple={{ color: colors.ripplePrimary}}
                 style={styles.card}
             >
                 <View style={styles.topRow}>
