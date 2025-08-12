@@ -79,7 +79,7 @@ function IncomeCard({ income, onPress }: IncomeCardProps) {
         <View style={styles.wrapper}>
             <Pressable
                 onPress={handleOnPress}
-                android_ripple={{ color: colors.ripplePrimary }}
+                android_ripple={{ color: colors.rippleTertiary }}
                 style={styles.card}
             >
                 <View style={styles.topRow}>
