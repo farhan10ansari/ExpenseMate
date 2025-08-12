@@ -13,8 +13,6 @@ export const seedDummyExpenses = async (count: number): Promise<void> => {
   // Extract exactly the `name` values (lowercase, no spaces) from your constants
   const categoryNames = DefaultExpenseCategories.map(({ name }) => name);
   const paymentMethodNames = paymentMethods.map(({ name }) => name);
-  console.log("categoryNames", categoryNames);
-  console.log("paymentMethodNames", paymentMethodNames);
   const currencies = ['INR', 'USD', 'EUR'];
 
 

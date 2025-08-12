@@ -100,7 +100,7 @@ export default function EditIncomeScreen() {
             type: 'success',
             position: 'top',
             offset: insets.top + 10,
-            screens: [Screens.Income, Screens.IncomeInfo],
+            screens: [Screens.AllIncomes, Screens.IncomeInfo],
         });
 
         setKeyboardHeight(0);

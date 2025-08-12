@@ -68,11 +68,11 @@ export default function TabBar({ state, descriptors, navigation }: BottomTabBarP
                 })}
                 <TabBarItem
                     key="payment"
-                    route={{ key: 'expense/new', name: 'expense/new', params: {} }}
+                    route={{ key: 'transaction/new', name: 'transaction/new', params: {} }}
                     options={{
-                        title: 'Payments',
+                        title: 'Transaction',
                         tabBarIcon: ({ color }) => <MaterialIcons size={28} name="add" color={color} />,
-                        tabBarButtonTestID: 'payments-tab-button',
+                        tabBarButtonTestID: 'new-transaction-tab-button',
                     }}
                     isFocused={false}
                     navigation={navigation}

@@ -2,7 +2,7 @@ import { Category, ColorType } from '@/lib/types';
 import { AddCategory, getCategoryRows } from '@/stores/useExpenseCategoriesStore';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import ThemedButton from '../ui/ThemedButton';
+import ThemedButton from '@/components/ui/ThemedButton';
 
 type CategoryInputProps = {
     categories: Category[];

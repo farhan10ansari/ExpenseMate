@@ -1,20 +1,20 @@
 import { IconSource } from "react-native-paper/lib/typescript/components/Icon";
 
 export type Category = {
-    name: string;
-    label: string;
-    icon?: IconSource;
-    color?: string; // Optional color for the category
+  name: string;
+  label: string;
+  icon?: IconSource;
+  color?: string; // Optional color for the category
 }
 
 export type PaymentMethod = {
-    name: "upi" | "cash" | "bank-transfer" | "credit-card" | "other";
-    label: string;
-    icon: IconSource;
+  name: "upi" | "cash" | "bank-transfer" | "credit-card" | "other";
+  label: string;
+  icon: IconSource;
 }
 
 export type RootStackParamList = {
-    ExpenseInfoScreen: { id: string };
+  ExpenseInfoScreen: { id: string };
 }
 
 /**
@@ -39,16 +39,19 @@ export interface PeriodExpenseStats {
 }
 
 export enum Screens {
-    Home = "Home",
-    AllExpenses = "AllExpenses",
-    NewExpense = "NewExpense",
-    Incomes = "Incomes",
-    ExpenseInfo = "ExpenseInfo",
-    Settings = "Settings",
-    EditExpense = "EditExpense",
-    AllIncomes = "AllIncomes",
-    IncomeInfo = "IncomeInfo",
-
+  Home = "Home",
+  AllExpenses = "AllExpenses",
+  AllIncomes = "AllIncomes",
+  ExpenseInfo = "ExpenseInfo",
+  IncomeInfo = "IncomeInfo",
+  EditExpense = "EditExpense",
+  EditIncome = "EditIncome",
+  NewTransaction = "NewTransaction",
+  Menu = "Menu",
+  Settings = "Settings",
+  Themes = "Themes",
+  DevOptions = "DevOptions",
+  About = "About",
 }
 
 export type ColorType = "primary" | "secondary" | "tertiary";

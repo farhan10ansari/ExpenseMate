@@ -77,7 +77,7 @@ function MainLayout() {
 
       {/* Income Screens */}
       <Stack.Screen
-        name="expense/new"
+        name="transaction/new"
         options={{
           title: 'Create Expense',
           presentation: 'formSheet',
@@ -128,27 +128,6 @@ function MainLayout() {
           contentStyle: {
             backgroundColor: colors.card,
           }
-        }}
-      />
-
-      {/* Income Screens */}
-      <Stack.Screen
-        name="income/new"
-        options={{
-          title: 'Create Income',
-          presentation: 'formSheet',
-          gestureDirection: "vertical",
-          animation: "slide_from_bottom",
-          sheetGrabberVisible: true,
-          sheetInitialDetentIndex: 0,
-          sheetAllowedDetents: [0.75, 1],
-          sheetExpandsWhenScrolledToEdge: true,
-          sheetElevation: 24,
-          sheetCornerRadius: 20,
-          contentStyle: {
-            backgroundColor: colors.card,
-          }
-
         }}
       />
 

@@ -7,11 +7,17 @@ import { useEffect } from "react";
 const PathToScreenMap: Record<string, Screens> = {
     "(tabs)": Screens.Home,
     "(tabs)/expenses": Screens.AllExpenses,
-    "expense/new": Screens.NewExpense,
+    "(tabs)/incomes": Screens.AllIncomes,
     "expense/[id]": Screens.ExpenseInfo,
+    "income/[id]": Screens.IncomeInfo,
     "expense/[id]/edit": Screens.EditExpense,
-    "(tabs)/incomes": Screens.Incomes,
-    "(tabs)/settings": Screens.Settings,
+    "income/[id]/edit": Screens.EditIncome,
+    "transaction/new": Screens.NewTransaction,
+    "(tabs)/menu": Screens.Menu,
+    "menu/settings": Screens.Settings,
+    "menu/themes": Screens.Themes,
+    "menu/dev-options": Screens.DevOptions,
+    "menu/about": Screens.About,
     // Add more mappings as needed
 }
 

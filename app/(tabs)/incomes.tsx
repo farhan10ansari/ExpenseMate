@@ -91,9 +91,9 @@ export default function IncomesScreen() {
         <IncomeCard income={item} onPress={onPressIncomeCard} />
     ), [onPressIncomeCard]);
 
-    const handleNavigateToNewIncome = useCallback(() => {
-        router.push("/income/new");
-    }, [router]);
+    // const handleNavigateToNewIncome = useCallback(() => {
+    //     router.push("/income/new");
+    // }, [router]);
 
     if (isLoading) return null; // Show nothing while loading to avoid flicker as data fetching is very fast
 
@@ -160,12 +160,22 @@ export default function IncomesScreen() {
                         </View>
                     }
                 />
-                <Portal>
+                {/* <Portal>
                     <FAB
                         visible={isFocused && !globalSnackbar}
                         icon={showScrollToTop ? "arrow-up" : "plus"}
                         style={styles.fab}
                         onPress={showScrollToTop ? scrollToTop : handleNavigateToNewIncome}
+                        variant="tertiary"
+                    />
+                </Portal> */}
+
+                <Portal>
+                    <FAB
+                        visible={showScrollToTop && isFocused && !globalSnackbar}
+                        icon="arrow-up"
+                        style={styles.fab}
+                        onPress={scrollToTop}
                         variant="tertiary"
                     />
                 </Portal>
