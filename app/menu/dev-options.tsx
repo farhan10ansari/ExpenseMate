@@ -20,7 +20,7 @@ export default function DevOptionsScreen() {
   const setShowDevOptions = usePersistentAppStore(state => state.setShowDevOptions);
   const [numberOfExpenses, setNumberOfExpenses] = useState(0);
   const [numberOfIncomes, setNumberOfIncomes] = useState(0);
-  
+
   // Snackbar state
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -137,6 +137,9 @@ export default function DevOptionsScreen() {
     const { error } = await tryCatch(seedDummyExpenses(numberOfExpenses));
     if (!error) {
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
+      queryClient.invalidateQueries({ queryKey: ['insights'] });
+      queryClient.invalidateQueries({ queryKey: ['incomes'] });
+
       showSnackbar(`Successfully added ${numberOfExpenses} dummy expenses!`);
       setNumberOfExpenses(0);
     } else {
@@ -150,7 +153,10 @@ export default function DevOptionsScreen() {
 
     const { error } = await tryCatch(seedDummyIncome(numberOfIncomes));
     if (!error) {
+      queryClient.invalidateQueries({ queryKey: ['expenses'] });
+      queryClient.invalidateQueries({ queryKey: ['insights'] });
       queryClient.invalidateQueries({ queryKey: ['incomes'] });
+      
       showSnackbar(`Successfully added ${numberOfIncomes} dummy incomes!`);
       setNumberOfIncomes(0);
       Keyboard.dismiss();
@@ -174,7 +180,7 @@ export default function DevOptionsScreen() {
       header={<CustomScreenHeader title="Dev Options" />}
       background="background"
     >
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         style={styles.keyboardAvoidingView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
@@ -336,8 +342,8 @@ export default function DevOptionsScreen() {
           textColor: snackbarType === "success" ? colors.onPrimary : colors.onError,
         }}
       >
-        <ThemedText style={{ 
-          color: snackbarType === "success" ? colors.onPrimary : colors.onError 
+        <ThemedText style={{
+          color: snackbarType === "success" ? colors.onPrimary : colors.onError
         }}>
           {snackbarMessage}
         </ThemedText>
