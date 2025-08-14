@@ -21,6 +21,7 @@ import useAppStore from "@/stores/useAppStore";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import CustomScreenHeader from "@/components/main/CustomScreenHeader";
 import ErrorState from "@/components/main/ErrorState";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type IncomeSection = {
     title: string;
@@ -36,6 +37,7 @@ export default function IncomesScreen() {
     const scrollElementRef = useRef<SectionList<Income, IncomeSection>>(null);
     const { handleScroll, scrollToTop, showScrollToTop } = useScrollToTop(scrollElementRef);
     const globalSnackbar = useAppStore((state) => state.globalSnackbar);
+    const insets = useSafeAreaInsets();
 
     // Fetch incomes by month with pagination
     const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage, isError, error } =
@@ -91,10 +93,6 @@ export default function IncomesScreen() {
         <IncomeCard income={item} onPress={onPressIncomeCard} />
     ), [onPressIncomeCard]);
 
-    // const handleNavigateToNewIncome = useCallback(() => {
-    //     router.push("/income/new");
-    // }, [router]);
-
     if (isLoading) return null; // Show nothing while loading to avoid flicker as data fetching is very fast
 
     if (isError) {
@@ -108,6 +106,49 @@ export default function IncomesScreen() {
             />
         );
     }
+
+
+    const styles = StyleSheet.create({
+        container: { flex: 1 },
+        sectionHeader: {
+            marginTop: 10,
+            marginBottom: 4,
+            paddingHorizontal: 10,
+        },
+        sectionList: {
+            padding: 10,
+            paddingTop: 0,
+        },
+        sectionListContentContainer: {
+            paddingBottom: 150,
+            flexGrow: 1,
+        },
+        loadingMore: {
+            textAlign: "center",
+            marginVertical: 16,
+        },
+        itemSeparator: {
+            height: 1,
+            marginVertical: 10,
+        },
+        emptyContainer: {
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 5,
+        },
+        fab: {
+            position: "absolute",
+            right: 16,
+            bottom: insets.bottom + 90,
+            height: 48,
+            width: 48,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+
+    });
+
 
     return (
         <ScreenWrapper style={styles.container}
@@ -160,16 +201,6 @@ export default function IncomesScreen() {
                         </View>
                     }
                 />
-                {/* <Portal>
-                    <FAB
-                        visible={isFocused && !globalSnackbar}
-                        icon={showScrollToTop ? "arrow-up" : "plus"}
-                        style={styles.fab}
-                        onPress={showScrollToTop ? scrollToTop : handleNavigateToNewIncome}
-                        variant="tertiary"
-                    />
-                </Portal> */}
-
                 <Portal>
                     <FAB
                         visible={showScrollToTop && isFocused && !globalSnackbar}
@@ -179,54 +210,10 @@ export default function IncomesScreen() {
                         variant="tertiary"
                     />
                 </Portal>
-
-
             </ThemedView>
         </ScreenWrapper>
     );
 }
-
-const styles = StyleSheet.create({
-    container: { flex: 1 },
-    sectionHeader: {
-        marginTop: 10,
-        marginBottom: 4,
-        paddingHorizontal: 10,
-    },
-    sectionList: {
-        padding: 10,
-        paddingTop: 0,
-    },
-    sectionListContentContainer: {
-        paddingBottom: 150,
-        flexGrow: 1,
-    },
-    loadingMore: {
-        textAlign: "center",
-        marginVertical: 16,
-    },
-    itemSeparator: {
-        height: 1,
-        marginVertical: 10,
-    },
-    emptyContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 5,
-    },
-    fab: {
-        position: 'absolute',
-        margin: 16,
-        right: 0,
-        bottom: 100,
-        height: 48,
-        width: 48,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-
-});
 
 
 

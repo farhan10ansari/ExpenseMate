@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, Pressable, ScrollView } from "react-native";
+import React, { useRef, useState } from "react";
+import { View, StyleSheet, Pressable } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import * as Linking from "expo-linking";
@@ -8,7 +8,6 @@ import CustomScreenHeader from "@/components/main/CustomScreenHeader";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import CustomSnackbar from "@/components/ui/CustomSnackbar";
-import Color from "color";
 
 const APP_NAME = process.env.EXPO_PUBLIC_APP_NAME;
 const APP_VERSION = process.env.EXPO_PUBLIC_APP_VERSION;
@@ -137,14 +136,13 @@ export default function AboutScreen() {
     });
 
     return (
-        <ScreenWrapper 
+        <ScreenWrapper
             header={<CustomScreenHeader title="About" />}
             background="card"
+            withScrollView
         >
-            <ScrollView 
-                style={styles.container} 
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 32 }}
+            <View
+                style={styles.container}
             >
                 {/* App Information Section */}
                 <View style={styles.sectionContainer}>
@@ -161,11 +159,11 @@ export default function AboutScreen() {
                     </View>
 
                     <View style={styles.appInfoContainer}>
-                        <MaterialCommunityIcons 
-                            name="wallet" 
-                            size={48} 
-                            color={colors.primary} 
-                            style={styles.appLogoIcon} 
+                        <MaterialCommunityIcons
+                            name="wallet"
+                            size={48}
+                            color={colors.primary}
+                            style={styles.appLogoIcon}
                         />
                         <ThemedText style={styles.appName}>{APP_NAME}</ThemedText>
                         <ThemedText style={styles.appAuthor}>by {APP_AUTHOR}</ThemedText>
@@ -269,7 +267,7 @@ export default function AboutScreen() {
                         />
                     )}
                 </View>
-            </ScrollView>
+            </View>
 
             <CustomSnackbar
                 usePortal
@@ -346,11 +344,11 @@ function AboutItem({ icon, title, description, onPress, children }: AboutItemPro
                 }}
             >
                 <View style={styles.itemPressable}>
-                    <MaterialCommunityIcons 
-                        name={icon as any} 
-                        size={20} 
-                        color={colors.secondary} 
-                        style={styles.itemIcon} 
+                    <MaterialCommunityIcons
+                        name={icon as any}
+                        size={20}
+                        color={colors.secondary}
+                        style={styles.itemIcon}
                     />
                     <View style={styles.itemContent}>
                         <ThemedText style={styles.itemTitle}>

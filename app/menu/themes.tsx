@@ -82,8 +82,11 @@ export default function ThemesScreen() {
     <ScreenWrapper
       header={<CustomScreenHeader title="Themes" />}
       background="card"
+      withScrollView
     >
-      <View style={styles.container}>
+      <View
+        style={styles.container}
+      >
         {/* Theme Selection Section */}
         <View style={styles.sectionContainer}>
           <View style={styles.sectionHeader}>

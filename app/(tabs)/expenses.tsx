@@ -1,8 +1,3 @@
-// Updated ExpensesScreen
-import { ThemedView } from "@/components/base/ThemedView";
-import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { useRouter } from "expo-router";
-import { useQueryClient } from "@tanstack/react-query";
 import { SectionList, StyleSheet } from "react-native";
 import { FAB, Portal } from "react-native-paper";
 import { useRef, useState } from "react";
@@ -14,6 +9,7 @@ import MonthTabsContainer from "@/features/Expense/components/MonthTabsContainer
 import ExpensesList from "@/features/Expense/components/ExpenseList";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import CustomScreenHeader from "@/components/main/CustomScreenHeader";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type ExpenseSection = {
     title: string;
@@ -21,15 +17,12 @@ type ExpenseSection = {
 };
 
 export default function ExpensesScreen() {
-    const router = useRouter();
-    const queryClient = useQueryClient();
-    const { colors } = useAppTheme();
     const [selectedOffsetMonth, setSelectedOffsetMonth] = useState<number | null>(null);
-
     const scrollElementRef = useRef<SectionList<Expense, ExpenseSection>>(null);
     const { handleScroll, scrollToTop, showScrollToTop } = useScrollToTop(scrollElementRef);
     const isFocused = useIsFocused();
     const globalSnackbar = useAppStore((state) => state.globalSnackbar);
+    const insets = useSafeAreaInsets();
 
     const handleMonthSelect = (offsetMonth: number | null) => {
         setSelectedOffsetMonth(offsetMonth);
@@ -44,7 +37,7 @@ export default function ExpensesScreen() {
         fab: {
             position: "absolute",
             right: 16,
-            bottom: 120,
+            bottom: insets.bottom + 90,
             height: 48,
             width: 48,
             justifyContent: 'center',

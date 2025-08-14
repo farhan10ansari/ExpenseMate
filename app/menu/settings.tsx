@@ -1,4 +1,4 @@
-import { StyleSheet, View, ScrollView } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import CustomScreenHeader from "@/components/main/CustomScreenHeader";
@@ -130,11 +130,10 @@ export default function SettingsScreen() {
     <ScreenWrapper
       header={<CustomScreenHeader title="Settings" />}
       background="card"
+      withScrollView
     >
-      <ScrollView 
+      <View
         style={styles.container}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 32 }}
       >
         {/* Language Section */}
         <View style={styles.sectionContainer}>
@@ -166,19 +165,19 @@ export default function SettingsScreen() {
               descriptionStyle={styles.listItemDescription}
               style={styles.listItem}
               left={(props) => (
-                <List.Icon 
-                  {...props} 
-                  icon={option.available ? "check-circle" : "clock-outline"} 
+                <List.Icon
+                  {...props}
+                  icon={option.available ? "check-circle" : "clock-outline"}
                   color={option.available ? colors.primary : colors.muted}
                 />
               )}
               right={() => (
                 <>
                   {language === option.key && option.available && (
-                    <MaterialCommunityIcons 
-                      name="check" 
-                      size={20} 
-                      color={colors.primary} 
+                    <MaterialCommunityIcons
+                      name="check"
+                      size={20}
+                      color={colors.primary}
                     />
                   )}
                   {!option.available && (
@@ -226,19 +225,19 @@ export default function SettingsScreen() {
               descriptionStyle={styles.listItemDescription}
               style={styles.listItem}
               left={(props) => (
-                <List.Icon 
-                  {...props} 
-                  icon={option.available ? "currency-sign" : "clock-outline"} 
+                <List.Icon
+                  {...props}
+                  icon={option.available ? "currency-sign" : "clock-outline"}
                   color={option.available ? colors.primary : colors.muted}
                 />
               )}
               right={() => (
                 <>
                   {currency === option.key && option.available && (
-                    <MaterialCommunityIcons 
-                      name="check" 
-                      size={20} 
-                      color={colors.primary} 
+                    <MaterialCommunityIcons
+                      name="check"
+                      size={20}
+                      color={colors.primary}
                     />
                   )}
                   {!option.available && (
@@ -280,7 +279,7 @@ export default function SettingsScreen() {
             </ThemedText>
           </View>
         </View>
-      </ScrollView>
+      </View>
     </ScreenWrapper>
   );
 }
