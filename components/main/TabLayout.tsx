@@ -1,16 +1,30 @@
-import TabBar from '@/components/main/TabBar';
+import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import React from 'react';
+import { View } from 'react-native';
+import { IconButton } from 'react-native-paper';
 
 function TabLayout() {
+  const router = useRouter();
+  const { colors } = useAppTheme();
 
+  const handleNavigateToNewTransaction = () => {
+    router.push('/transaction/new');
+  };
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarStyle: {
+          borderTopEndRadius: 24,
+          borderTopStartRadius: 24,
+          position: 'absolute',
+        },
+        tabBarItemStyle: {
+          backgroundColor: 'transparent',
+        }
       }}
-      tabBar={props => <TabBar {...props} />}
     >
       <Tabs.Screen
         name="index"
@@ -18,6 +32,7 @@ function TabLayout() {
           title: 'Home',
           headerShown: false,
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="home" color={color} />,
+
         }}
       />
       <Tabs.Screen
@@ -28,6 +43,31 @@ function TabLayout() {
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="money" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="circle"
+        options={{
+          title: 'Transaction',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="add" color={color} />,
+          tabBarButton: (props) => (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <IconButton
+                icon="plus"
+                mode='contained'
+                size={48}
+                style={{
+                  borderColor: colors.border,
+                  borderWidth: 1,
+                  elevation: 5,
+                  top: -12,
+                }}
+                onPress={handleNavigateToNewTransaction}
+              />
+            </View>
+          ),
+        }}
+      />
+
       <Tabs.Screen
         name="incomes"
         options={{

@@ -36,8 +36,8 @@ export default function ExpensesScreen() {
         },
         fab: {
             position: "absolute",
-            right: 16,
-            bottom: insets.bottom + 90,
+            right: insets.right + 16,
+            bottom: insets.bottom + 60,
             height: 48,
             width: 48,
             justifyContent: 'center',
