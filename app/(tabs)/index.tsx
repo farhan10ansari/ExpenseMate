@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Easing, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -14,6 +14,7 @@ import { getExpenseStatsByPeriod } from '@/repositories/ExpenseRepo';
 import CategoryBreakdownChart from '@/features/Insights/CategoryBreakdownChart';
 import { ScreenWrapper } from '@/components/main/ScreenWrapper';
 import CustomScreenHeader from '@/components/main/CustomScreenHeader';
+import AnimatedNumber from '@/components/main/AnimatedNumber';
 
 export default function HomeScreen() {
   const { colors } = useAppTheme();
@@ -79,7 +80,21 @@ export default function HomeScreen() {
               value={
                 <>
                   <FontAwesome name="rupee" size={18} color={colors.onPrimary} />
-                  {expenseStats?.total ?? 0}
+                  {
+                    <AnimatedNumber
+                      fontStyle={{
+                        fontSize: 20,
+                        lineHeight: 26,
+                        color: colors.onPrimary,
+                        fontWeight: 'bold'
+                      }}
+                      containerStyle={{
+                        paddingVertical: 4,
+                        paddingHorizontal: 2,
+                      }}
+                      value={expenseStats?.total ?? 0}
+                    />
+                  }
                 </>
               }
               icon={<FontAwesome name="rupee" size={24} color={colors.onPrimary} />}
