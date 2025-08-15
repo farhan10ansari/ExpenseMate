@@ -1,7 +1,7 @@
 import React from 'react';
 import { CurvedBottomBarExpo } from 'react-native-curved-bottom-bar';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { TouchableOpacity, StyleSheet, Animated, Pressable, View } from 'react-native';
+import { StyleSheet, Animated, Pressable, View } from 'react-native';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { ThemedText } from '@/components/base/ThemedText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -25,40 +25,79 @@ interface CircleProps {
   navigate: (routeName: string) => void;
 }
 
+
+const getIconName = (routeName: RouteNames): IconNames => {
+  switch (routeName) {
+    case 'index':
+      return 'home';
+    case 'expenses':
+      return 'money';
+    case 'incomes':
+      return 'currency-rupee';
+    case 'menu':
+      return 'menu';
+    default:
+      return 'home';
+  }
+};
+
+const getTitle = (routeName: RouteNames): string => {
+  switch (routeName) {
+    case 'index':
+      return 'Home';
+    case 'expenses':
+      return 'Expenses';
+    case 'incomes':
+      return 'Incomes';
+    case 'menu':
+      return 'Menu';
+    default:
+      return routeName;
+  }
+};
+
+
 export default function TabLayoutV2() {
   const { colors } = useAppTheme();
   const insets = useSafeAreaInsets()
 
 
-  const getIconName = (routeName: RouteNames): IconNames => {
-    switch (routeName) {
-      case 'index':
-        return 'home';
-      case 'expenses':
-        return 'money';
-      case 'incomes':
-        return 'currency-rupee';
-      case 'menu':
-        return 'menu';
-      default:
-        return 'home';
-    }
-  };
 
-  const getTitle = (routeName: RouteNames): string => {
-    switch (routeName) {
-      case 'index':
-        return 'Home';
-      case 'expenses':
-        return 'Expenses';
-      case 'incomes':
-        return 'Incomes';
-      case 'menu':
-        return 'Menu';
-      default:
-        return routeName;
-    }
-  };
+  const styles = StyleSheet.create({
+    tabbarItem: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 10,
+      borderRadius: 20,
+      marginHorizontal: 5,
+    },
+    btnCircleUp: {
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      alignItems: 'center',
+      justifyContent: 'center',
+      bottom: 18,
+      shadowColor: colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowOpacity: 0.2,
+      shadowRadius: 1.41,
+      elevation: 1,
+    },
+    button: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+      height: '100%',
+      borderRadius: 30,  // Add this line
+    },
+  });
+
 
   const renderTabBar = ({ routeName, selectedTab, navigate }: TabBarProps) => {
     const isSelected: boolean = selectedTab === routeName;
@@ -73,8 +112,8 @@ export default function TabLayoutV2() {
         ]}
 
         android_ripple={{
-          color: colors.ripplePrimary,
-          radius: 50
+          color: colors.inverseOnSurface,
+          radius: 40,
         }}
         accessibilityRole="tab"
         accessibilityState={{ selected: isSelected }}
@@ -100,47 +139,24 @@ export default function TabLayoutV2() {
 
   const renderCircle = ({ navigate }: CircleProps) => (
     <Animated.View style={[styles.btnCircleUp, { backgroundColor: colors.primary }]}>
-      <TouchableOpacity
+      <Pressable
         style={styles.button}
         onPress={() => navigate('transaction/new')}
         accessibilityRole="button"
         accessibilityLabel="Add new transaction"
+        android_ripple={{
+          color: 'rgba(255,255,255,0.3)',
+          radius: 30,
+          borderless: true
+        }}
       >
         <MaterialIcons name="add" size={25} color="white" />
-      </TouchableOpacity>
+      </Pressable>
     </Animated.View>
   );
 
-  const styles = StyleSheet.create({
-    tabbarItem: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingVertical: 10,
-      borderRadius: 30,
-      marginHorizontal: 5,
-    },
-    btnCircleUp: {
-      width: 60,
-      height: 60,
-      borderRadius: 30,
-      alignItems: 'center',
-      justifyContent: 'center',
-      bottom: 18,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 1,
-      },
-      shadowOpacity: 0.2,
-      shadowRadius: 1.41,
-      elevation: 1,
-    },
-    button: {
-      flex: 1,
-      justifyContent: 'center',
-    },
-  });
+
+
 
   return (
     <>
