@@ -222,7 +222,7 @@ export default function ExpensesList({
                     fetchNextPage();
                 }
             }}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={1}
             ListFooterComponent={
                 isFetchingNextPage ? (
                     <View style={styles.loadingMore}>

@@ -169,7 +169,7 @@ export default function IncomesScreen() {
                     onEndReached={() => {
                         if (hasNextPage && !isFetchingNextPage) fetchNextPage();
                     }}
-                    onEndReachedThreshold={0.5}
+                    onEndReachedThreshold={1}
                     ListFooterComponent={
                         isFetchingNextPage ? (
                             <ThemedText style={styles.loadingMore}>
@@ -214,22 +214,3 @@ export default function IncomesScreen() {
         </ScreenWrapper>
     );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
