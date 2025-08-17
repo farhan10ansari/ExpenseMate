@@ -195,7 +195,10 @@ export default function IncomesScreen() {
                     ListEmptyComponent={
                         <View style={styles.emptyContainer}>
                             <ThemedText type="subtitle">No income records found...</ThemedText>
-                            <Button onPress={() => router.push("/income/new")}>
+                            <Button onPress={() => router.navigate({
+                                pathname: '/transaction/new',
+                                params: { defaultTab: 'income' }
+                            })}>
                                 Add Income
                             </Button>
                         </View>

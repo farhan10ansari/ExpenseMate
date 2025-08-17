@@ -241,7 +241,7 @@ export default function ExpensesList({
             ListEmptyComponent={
                 <View style={styles.emptyContainer}>
                     <ThemedText type="subtitle">No expenses found...</ThemedText>
-                    <Button onPress={() => router.push("/expense/new")}>
+                    <Button onPress={() => router.push("/transaction/new")}>
                         Add Expense
                     </Button>
                 </View>

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Pressable, Dimensions } from "react-native";
+import { View, StyleSheet, Pressable, ViewStyle, StyleProp, useWindowDimensions } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -10,7 +10,7 @@ type HeaderProps = {
   title: string;
   description?: string;
   onBack?: () => void;
-  style?: object;
+  style?: StyleProp<ViewStyle>;
   showBackButton?: boolean;
 };
 
@@ -26,7 +26,7 @@ function CustomScreenHeader({
   const navigation = useNavigation();
 
   // Simple scaling based on screen height
-  const { height } = Dimensions.get('window');
+  const { height } = useWindowDimensions();
   const scale = Math.min(height / 800, 1); // Scale down for screens smaller than 800px
 
   const handleGoBack = () => {
@@ -36,7 +36,7 @@ function CustomScreenHeader({
 
   const styles = StyleSheet.create({
     container: {
-      paddingTop: insets.top + (14 * scale),
+      paddingTop: (14 * scale), // removed insets.top because it's already applied in ScreenWrapper
       paddingBottom: 12 * scale,
       paddingHorizontal: 16,
       flexDirection: "row",

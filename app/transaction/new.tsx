@@ -1,7 +1,6 @@
-// app/(modal)/transaction/new.tsx
 import { useState } from "react";
 import { StyleSheet } from "react-native";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 import FormSheetTabs from "@/components/main/FormSheetTabs";
@@ -23,7 +22,8 @@ const TABS = [
 ];
 
 export default function NewTransactionScreen() {
-    const [activeTab, setActiveTab] = useState<TransactionType>('expense');
+    const { defaultTab } = useLocalSearchParams<{ defaultTab?: TransactionType }>();
+    const [activeTab, setActiveTab] = useState<TransactionType>(defaultTab ?? 'expense');
 
     const {
         isSnackbarVisible,
