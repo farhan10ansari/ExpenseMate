@@ -1,0 +1,32 @@
+import { PeriodIncomeStats } from "@/repositories/IncomeRepo";
+import { PeriodExpenseStats } from "./types";
+
+export interface FinancialSummary {
+    netIncome: number;
+    savingsRate: number; // percentage
+    // incomeExpenseRatio: number;
+}
+
+export const getFinancialSummary = (
+    expenseStats: PeriodExpenseStats,
+    incomeStats: PeriodIncomeStats
+): FinancialSummary => {
+    console.log("expenseStats", expenseStats);
+    console.log("incomeStats", incomeStats);
+    const netIncome = parseFloat((incomeStats.total - expenseStats.total).toFixed(2));
+    console.log("net", netIncome)
+    const savingsRate = incomeStats.total > expenseStats.total
+        ? parseFloat(((netIncome / incomeStats.total) * 100).toFixed(2))
+        : 0;
+    console.log("savingsRate", savingsRate);
+    console.log("netIncome", netIncome);
+    // const incomeExpenseRatio = expenseStats.total > 0
+    //     ? parseFloat((incomeStats.total / expenseStats.total).toFixed(2))
+    //     : incomeStats.total > 0 ? Infinity : 1;
+
+    return {
+        netIncome,
+        savingsRate,
+        // incomeExpenseRatio,
+    };
+};

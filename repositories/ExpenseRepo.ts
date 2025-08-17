@@ -238,12 +238,7 @@ export const getExpenseStatsByPeriod = async (
     Math.floor((now.getTime() - startDate.getTime()) / msPerDay) + 1;
 
   // 2. fetch total, count, max, min in one query
-  const [{
-    total = 0,
-    count = 0,
-    max: maxAmount = 0,
-    min: minAmount = 0
-  }] = await db
+  const [row] = await db
     .select({
       total: sql<number>`SUM(${expensesSchema.amount})`,
       count: sql<number>`COUNT(*)`,
@@ -259,6 +254,11 @@ export const getExpenseStatsByPeriod = async (
     )
     .limit(1);
 
+  const total = row.total ?? 0;
+  const count = row.count ?? 0;
+  const maxAmount = row.max ?? 0;
+  const minAmount = row.min ?? 0;
+
   // 3. fetch category breakdown (sum + count)
   const categories = await db
     .select({
@@ -273,7 +273,8 @@ export const getExpenseStatsByPeriod = async (
         gte(expensesSchema.dateTime, startDate)
       )
     )
-    .groupBy(expensesSchema.category);
+    .groupBy(expensesSchema.category)
+    .orderBy(desc(sql<number>`SUM(${expensesSchema.amount})`)) // sort by total descending
 
   // 4. compute avg/day and round
   const rawAvg = days > 0 ? total / days : 0;

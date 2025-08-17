@@ -1,53 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { Easing, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import Feather from '@expo/vector-icons/Feather';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { ThemedView } from '@/components/base/ThemedView';
-import PeriodCard from '@/features/Insights/PeriodCard';
-import InsightCard from '@/features/Insights/InsightCard';
-import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import useInsightsStore from '@/stores/useInsightsStore';
+import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
+import PeriodCard from '@/features/Stats/components/PeriodCard';
+import useStatsStore from '@/stores/useStatsStore';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getExpenseStatsByPeriod } from '@/repositories/ExpenseRepo';
-import CategoryBreakdownChart from '@/features/Insights/CategoryBreakdownChart';
+import { getIncomeStatsByPeriod } from '@/repositories/IncomeRepo';
 import { ScreenWrapper } from '@/components/main/ScreenWrapper';
 import CustomScreenHeader from '@/components/main/CustomScreenHeader';
-import AnimatedNumber from '@/components/main/AnimatedNumber';
+import FinancialSummaryStats from '@/features/Stats/FinancialOverviewStats';
+import ExpenseStats from '@/features/Stats/ExpenseStats';
+import IncomeStats from '@/features/Stats/IncomeStats';
+
 
 export default function HomeScreen() {
-  const { colors } = useAppTheme();
-  const expensesPeriod = useInsightsStore((state) => state.period);
+  const expensesPeriod = useStatsStore((state) => state.period);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const queryClient = useQueryClient();
 
+  // Expense stats query
   const { data: expenseStats } = useQuery({
     queryKey: ['insights', 'expense-stats-in-a-period', expensesPeriod.value],
     queryFn: () => getExpenseStatsByPeriod(expensesPeriod.value),
   });
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    scrollView: {
-      flex: 1,
-    },
-    scrollContainer: {
-      padding: 16,
-      paddingBottom: 100,
-      flexGrow: 1,
-    },
-    row: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      gap: 12,
-      marginTop: 12,
-    },
-
-  })
+  // Income stats query
+  const { data: incomeStats } = useQuery({
+    queryKey: ['insights', 'income-stats-in-a-period', expensesPeriod.value],
+    queryFn: () => getIncomeStatsByPeriod(expensesPeriod.value),
+  });
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -59,84 +39,32 @@ export default function HomeScreen() {
   };
 
 
-
   return (
     <ScreenWrapper
       header={<CustomScreenHeader title="Home" showBackButton={false} />}
       background="background"
+      withScrollView
+      isRefreshing={isRefreshing}
+      onRefresh={handleRefresh}
+      contentContainerStyle={styles.scrollContainer}
     >
-      <ThemedView style={styles.container}>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContainer}
-          refreshControl={
-            <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
-          }
-        >
-          <PeriodCard />
-          <View style={styles.row}>
-            <InsightCard
-              title="Total Expenses"
-              value={
-                <>
-                  <FontAwesome name="rupee" size={18} color={colors.onPrimary} />
-                  {
-                    <AnimatedNumber
-                      fontStyle={{
-                        fontSize: 20,
-                        lineHeight: 26,
-                        color: colors.onPrimary,
-                        fontWeight: 'bold'
-                      }}
-                      containerStyle={{
-                        paddingVertical: 4,
-                        paddingHorizontal: 2,
-                      }}
-                      value={expenseStats?.total ?? 0}
-                    />
-                  }
-                </>
-              }
-              icon={<FontAwesome name="rupee" size={24} color={colors.onPrimary} />}
-              backgroundColor={colors.primary80}
-              textColor={colors.onPrimary}
-            />
-            <InsightCard
-              title="Transactions"
-              value={expenseStats?.count ?? 0}
-              icon={<Feather name="pie-chart" size={24} color={colors.tertiary} />}
-              textColor={colors.tertiary}
-            />
-          </View>
-          <View style={styles.row}>
-            <InsightCard
-              title="Daily Avg"
-              value={
-                <>
-                  <FontAwesome name="rupee" size={18} color={colors.text} />
-                  {expenseStats?.avgPerDay ?? 0}
-                </>
-              }
-              icon={<MaterialIcons name="trending-up" size={24} color={colors.tertiary} />}
-              textColor={colors.text}
-            />
-            <InsightCard
-              title="Max/Min Spend"
-              value={
-                <>
-                  <FontAwesome name="rupee" size={18} color={colors.text} />
-                  {expenseStats?.max ?? 0}/
-                  <FontAwesome name="rupee" size={18} color={colors.text} />
-                  {expenseStats?.min ?? 0}
-                </>
-              }
-              icon={<MaterialCommunityIcons name="chart-timeline-variant" size={24} color={colors.tertiary} />}
-              textColor={colors.text}
-            />
-          </View>
-          <CategoryBreakdownChart data={expenseStats?.categories} />
-        </ScrollView>
-      </ThemedView>
+      <PeriodCard />
+      <FinancialSummaryStats expenseStats={expenseStats} incomeStats={incomeStats} />
+      <ExpenseStats expenseStats={expenseStats} />
+      <IncomeStats incomeStats={incomeStats} />
     </ScreenWrapper>
   );
 }
+
+
+const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
+  scrollContainer: {
+    padding: 16,
+    paddingBottom: 100,
+    flexGrow: 1,
+    gap: 20
+  },
+});

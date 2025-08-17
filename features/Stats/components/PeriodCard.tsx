@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { Card } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
-import useInsightsStore from "@/stores/useInsightsStore";
+import useStatsStore from "@/stores/useStatsStore";
 
 type PeriodCardProps = {
 
@@ -14,7 +14,7 @@ type PeriodCardProps = {
 const PeriodCard = ({ }: PeriodCardProps) => {
     const { colors, dark } = useAppTheme()
     const router = useRouter();
-    const period = useInsightsStore((state) => state.period);
+    const period = useStatsStore((state) => state.period);
 
     const styles = StyleSheet.create({
         card: {

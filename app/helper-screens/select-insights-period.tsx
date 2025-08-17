@@ -2,7 +2,7 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 import SheetGrabber from "@/components/ui/SheetGrabber";
-import useInsightsStore, { InsightPeriodOption, insightPeriodOptions } from "@/stores/useInsightsStore";
+import useStatsStore, { statsPeriodOption, statsPeriodOptions } from "@/stores/useStatsStore";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useRouter } from "expo-router";
 import { Fragment } from "react";
@@ -13,11 +13,11 @@ import { Divider } from "react-native-paper";
 
 export default function SelectInsightsPeriodScreen() {
   const { colors } = useAppTheme();
-  const period = useInsightsStore((state) => state.period);
-  const setPeriod = useInsightsStore((state) => state.setPeriod);
+  const period = useStatsStore((state) => state.period);
+  const setPeriod = useStatsStore((state) => state.setPeriod);
   const router = useRouter();
 
-  const handleSelectPeriod = (selectedPeriod: InsightPeriodOption) => {
+  const handleSelectPeriod = (selectedPeriod: statsPeriodOption) => {
     setPeriod(selectedPeriod);
     setTimeout(() => {
       router.back(); // Use router to go back in Expo Router
@@ -51,7 +51,7 @@ export default function SelectInsightsPeriodScreen() {
         onClose={() => router.back()}
       />
       <View style={styles.optionsContainer}>
-        {insightPeriodOptions.map((option, index) => (
+        {statsPeriodOptions.map((option, index) => (
           <Fragment key={index}>
             <Pressable
               key={option.value}
@@ -69,7 +69,7 @@ export default function SelectInsightsPeriodScreen() {
                 {option.label}
               </ThemedText>
             </Pressable>
-            {index !== insightPeriodOptions.length - 1 && (
+            {index !== statsPeriodOptions.length - 1 && (
               <Divider />
             )}
           </Fragment>

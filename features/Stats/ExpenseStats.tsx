@@ -1,0 +1,82 @@
+import { ThemedText } from "@/components/base/ThemedText";
+import { PeriodExpenseStats } from "@/lib/types";
+import styles from "./styles";
+import { useAppTheme } from "@/themes/providers/AppThemeProviders";
+import StatsCard from "./components/StatsCard";
+import { Feather, FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { View } from "react-native";
+import { Button } from "react-native-paper";
+import { useRouter } from "expo-router";
+
+type Props = {
+    expenseStats?: PeriodExpenseStats
+}
+
+
+export default function ExpenseStats({ expenseStats }: Props) {
+    const { colors } = useAppTheme();
+    const router = useRouter();
+
+    const handleNavigateToExpenseStatsScreen = () => {
+        // Handle navigation to the detailed expense stats screen
+        router.push('/stats/expenses');
+    };
+    return (
+        <View style={styles.section} >
+            <ThemedText style={[{ fontSize: 18, fontWeight: 'bold', color: colors.text }]}>
+                Expense Statistics
+            </ThemedText>
+            <View style={styles.row}>
+                <StatsCard
+                    title="Total Expenses"
+                    prefix={<FontAwesome name="rupee" size={18} color={colors.onPrimary} />}
+                    value={expenseStats?.total ?? 0}
+                    icon={<FontAwesome name="rupee" size={24} color={colors.onPrimary} />}
+                    backgroundColor={colors.primary}
+                    textColor={colors.onPrimary}
+                />
+                <StatsCard
+                    title="Transactions"
+                    value={expenseStats?.count ?? 0}
+                    icon={<Feather name="pie-chart" size={24} color={colors.tertiary} />}
+                    textColor={colors.tertiary}
+                />
+            </View>
+            <View style={styles.row}>
+                <StatsCard
+                    title="Daily Avg"
+                    prefix={<FontAwesome name="rupee" size={18} color={colors.text} />}
+                    value={expenseStats?.avgPerDay ?? 0}
+                    icon={<MaterialIcons name="trending-up" size={24} color={colors.tertiary} />}
+                    textColor={colors.text}
+                />
+                <StatsCard
+                    title="Max/Min Spend"
+                    value={
+                        <>
+                            <FontAwesome name="rupee" size={18} color={colors.text} />
+                            {expenseStats?.max ?? 0}/
+                            <FontAwesome name="rupee" size={18} color={colors.text} />
+                            {expenseStats?.min ?? 0}
+                        </>
+                    }
+                    icon={<MaterialCommunityIcons name="chart-timeline-variant" size={24} color={colors.tertiary} />}
+                    textColor={colors.text}
+                />
+            </View>
+            <View style={styles.moreStatsButtonContainer}>
+                <Button
+                    mode="text"
+                    compact
+                    icon={() => <MaterialIcons name="chevron-right" size={20} color={colors.primary} />}
+                    contentStyle={{ flexDirection: 'row-reverse' }}
+                    labelStyle={{ fontSize: 12, fontWeight: '600' }}
+                    textColor={colors.primary}
+                    onPress={handleNavigateToExpenseStatsScreen}
+                >
+                    More Stats
+                </Button>
+            </View>
+        </View>
+    )
+}

@@ -219,6 +219,22 @@ function MainLayout() {
         }}
       />
 
+      {/* Stats Screens */}
+      <Stack.Screen
+        name="stats/expenses"
+        options={{
+          title: 'Expense Stats',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="stats/incomes"
+        options={{
+          title: 'Income Stats',
+          headerShown: false,
+        }}
+      />
+
       <Stack.Screen name="+not-found" />
     </Stack>
   )

@@ -3,33 +3,33 @@ import { create } from 'zustand';
 
 
 
-export type InsightPeriodOption = {
+export type statsPeriodOption = {
     label: string;
     value: InsightPeriod;
 }
 
-export const insightPeriodOptions: InsightPeriodOption[] = [
+export const statsPeriodOptions: statsPeriodOption[] = [
     { label: "Today", value: "today" },
     { label: "This Week", value: "this-week" },
     { label: "This Month", value: "this-month" },
     { label: "This Year", value: "this-year" },
 ];
 
-type InsightsStore = {
-    period: InsightPeriodOption;
-    setPeriod: (period: InsightPeriodOption) => void;
+type StatsStore = {
+    period: statsPeriodOption;
+    setPeriod: (period: statsPeriodOption) => void;
 }
 
-const useInsightsStore = create<InsightsStore>()((set) => ({
+const useStatsStore = create<StatsStore>()((set) => ({
     period: {
         label: "This Month", // Default label
         value: "this-month", // Default value
     }, // Default period
-    setPeriod: (period: InsightPeriodOption) => set(() => ({
+    setPeriod: (period: statsPeriodOption) => set(() => ({
         period,
     })),
 }))
 
-export default useInsightsStore;
+export default useStatsStore;
 
 

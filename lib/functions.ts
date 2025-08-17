@@ -33,3 +33,4 @@ export function extractTimeString(date: Date, is24HourClock: boolean): string {
         hour12: !is24HourClock // force 12h if false, otherwise 24h
     }).format(date);
 }
+

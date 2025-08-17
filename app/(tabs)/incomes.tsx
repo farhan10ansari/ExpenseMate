@@ -151,7 +151,7 @@ export default function IncomesScreen() {
 
 
     return (
-        <ScreenWrapper style={styles.container}
+        <ScreenWrapper containerStyle={styles.container}
             header={<CustomScreenHeader title="Incomes" showBackButton={false} />}
             background="background"
         >

@@ -1,19 +1,32 @@
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, ViewStyle, StyleProp } from "react-native";
+import { RefreshControl } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type ScreenWrapperProps = {
     header: React.ReactNode;
     children: React.ReactNode;
-    style?: object;
+    containerStyle?: StyleProp<ViewStyle>;
+    contentContainerStyle?: StyleProp<ViewStyle>;
     background?: "card" | "background";
     withScrollView?: boolean;
+    isRefreshing?: boolean;
+    onRefresh?: () => void;
 };
 
-export function ScreenWrapper({ header, children, style, background = "card", withScrollView = false }: ScreenWrapperProps) {
+export function ScreenWrapper({
+    header,
+    children,
+    containerStyle,
+    contentContainerStyle,
+    background = "card",
+    withScrollView = false,
+    isRefreshing = false,
+    onRefresh
+}: ScreenWrapperProps) {
     const { colors } = useAppTheme();
-    const insets = useSafeAreaInsets()
+    const insets = useSafeAreaInsets();
 
     const styles = StyleSheet.create({
         container: {
@@ -22,31 +35,50 @@ export function ScreenWrapper({ header, children, style, background = "card", wi
             paddingLeft: insets.left,
             paddingRight: insets.right,
         },
+        headerContainer: {
+            paddingTop: insets.top,
+        },
         content: {
             flex: 1,
         },
+        nonScrollContent: {
+            flex: 1,
+            paddingBottom: insets.bottom,
+        },
     });
-    const content = (
-        <View style={styles.content}>
-            {children}
-        </View>
-    )
+
     return (
-        <View style={[styles.container, style]}>
-            {/* Render header at the top */}
-            {header}
-            {/* Main content below header */}
+        <View style={[styles.container, containerStyle]}>
+            {/* Header with safe area top padding */}
+            <View style={styles.headerContainer}>
+                {header}
+            </View>
+
+            {/* Main content */}
             {withScrollView ? (
                 <ScrollView
-                    contentContainerStyle={{ paddingBottom: insets.bottom }}
+                    style={styles.content}
+                    contentContainerStyle={[
+                        { paddingBottom: insets.bottom },
+                        contentContainerStyle
+                    ]}
                     showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        onRefresh ? (
+                            <RefreshControl
+                                refreshing={isRefreshing}
+                                onRefresh={onRefresh}
+                            />
+                        ) : undefined
+                    }
                 >
-                    {content}
+                    {children}
                 </ScrollView>
             ) : (
-                content
+                <View style={[styles.nonScrollContent, contentContainerStyle]}>
+                    {children}
+                </View>
             )}
         </View>
     );
 }
-

@@ -1,4 +1,3 @@
-// screens/CategoryBreakdownChart.tsx
 import React, { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View, Text, useWindowDimensions } from 'react-native';
 import { PieChart, BarChart } from 'react-native-gifted-charts';

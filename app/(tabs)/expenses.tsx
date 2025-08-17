@@ -46,7 +46,7 @@ export default function ExpensesScreen() {
     });
 
     return (
-        <ScreenWrapper style={styles.container}
+        <ScreenWrapper containerStyle={styles.container}
             header={<CustomScreenHeader title="Expenses" showBackButton={false} />}
             background="background"
         >

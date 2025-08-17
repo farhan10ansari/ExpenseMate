@@ -36,12 +36,12 @@ function CustomScreenHeader({
 
   const styles = StyleSheet.create({
     container: {
-      paddingTop: insets.top + (14 * scale), // Reduced from 18 to 14
-      paddingBottom: 12 * scale, // Reduced from 16 to 12
+      paddingTop: insets.top + (14 * scale),
+      paddingBottom: 12 * scale,
       paddingHorizontal: 16,
       flexDirection: "row",
       alignItems: "center",
-      minHeight: 48 * scale, // Reduced from 56 to 48
+      minHeight: 48 * scale,
       borderBottomColor: colors.border,
       borderBottomWidth: 1,
     },
@@ -60,18 +60,16 @@ function CustomScreenHeader({
     },
     titleContainer: {
       flex: 1,
-      alignItems: showBackButton ? "center" : "flex-start", // Dynamic alignment
+      alignItems: showBackButton ? "center" : "flex-start",
       justifyContent: "center",
-      // paddingHorizontal: showBackButton ? 16 : 0, // No padding when left-aligned
-      // paddingLeft: showBackButton ? 16 : 0, // Only left padding when centered
       paddingHorizontal: 6
     },
     title: {
-      fontSize: 28 * scale, // Reduced from 32 to 28
+      fontSize: 28 * scale,
       fontWeight: "500",
       color: colors.onSurface,
-      textAlign: showBackButton ? "center" : "left", // Dynamic text alignment
-      lineHeight: 32 * scale, // Reduced from 36 to 32
+      textAlign: showBackButton ? "center" : "left",
+      lineHeight: 32 * scale,
     },
     description: {
       fontSize: 14 * scale,
