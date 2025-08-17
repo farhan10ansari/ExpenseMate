@@ -5,27 +5,23 @@ import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import StatsCard from "./components/StatsCard";
 import { Feather, FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { View } from "react-native";
-import { Button } from "react-native-paper";
-import { useRouter } from "expo-router";
 
 type Props = {
-    expenseStats?: PeriodExpenseStats
+    expenseStats?: PeriodExpenseStats;
+    showTitle?: boolean;
 }
 
 
-export default function ExpenseStats({ expenseStats }: Props) {
+export default function ExpenseStats({ expenseStats, showTitle = false }: Props) {
     const { colors } = useAppTheme();
-    const router = useRouter();
 
-    const handleNavigateToExpenseStatsScreen = () => {
-        // Handle navigation to the detailed expense stats screen
-        router.push('/stats/expenses');
-    };
     return (
         <View style={styles.section} >
-            <ThemedText style={[{ fontSize: 18, fontWeight: 'bold', color: colors.text }]}>
-                Expense Statistics
-            </ThemedText>
+            {showTitle && (
+                <ThemedText style={[{ fontSize: 18, fontWeight: 'bold', color: colors.text }]}>
+                    Expense Statistics
+                </ThemedText>
+            )}
             <View style={styles.row}>
                 <StatsCard
                     title="Total Expenses"
@@ -63,19 +59,6 @@ export default function ExpenseStats({ expenseStats }: Props) {
                     icon={<MaterialCommunityIcons name="chart-timeline-variant" size={24} color={colors.tertiary} />}
                     textColor={colors.text}
                 />
-            </View>
-            <View style={styles.moreStatsButtonContainer}>
-                <Button
-                    mode="text"
-                    compact
-                    icon={() => <MaterialIcons name="chevron-right" size={20} color={colors.primary} />}
-                    contentStyle={{ flexDirection: 'row-reverse' }}
-                    labelStyle={{ fontSize: 12, fontWeight: '600' }}
-                    textColor={colors.primary}
-                    onPress={handleNavigateToExpenseStatsScreen}
-                >
-                    More Stats
-                </Button>
             </View>
         </View>
     )

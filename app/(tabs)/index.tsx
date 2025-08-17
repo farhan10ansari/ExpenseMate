@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import PeriodCard from '@/features/Stats/components/PeriodCard';
 import useStatsStore from '@/stores/useStatsStore';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -10,12 +10,18 @@ import CustomScreenHeader from '@/components/main/CustomScreenHeader';
 import FinancialSummaryStats from '@/features/Stats/FinancialOverviewStats';
 import ExpenseStats from '@/features/Stats/ExpenseStats';
 import IncomeStats from '@/features/Stats/IncomeStats';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useAppTheme } from '@/themes/providers/AppThemeProviders';
+import { Button } from 'react-native-paper';
+import { Href, useRouter } from 'expo-router';
 
 
 export default function HomeScreen() {
+  const { colors } = useAppTheme();
   const expensesPeriod = useStatsStore((state) => state.period);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   // Expense stats query
   const { data: expenseStats } = useQuery({
@@ -38,6 +44,21 @@ export default function HomeScreen() {
     }
   };
 
+  const MoreStatsButton = ({ routeName }: { routeName: Href }) => (
+    <View style={styles.moreStatsButtonContainer}>
+      <Button
+        mode="text"
+        compact
+        icon={() => <MaterialIcons name="chevron-right" size={20} color={colors.primary} />}
+        contentStyle={{ flexDirection: 'row-reverse' }}
+        labelStyle={{ fontSize: 12, fontWeight: '600' }}
+        textColor={colors.primary}
+        onPress={() => router.push(routeName)}
+      >
+        More Stats
+      </Button>
+    </View>
+  )
 
   return (
     <ScreenWrapper
@@ -50,8 +71,14 @@ export default function HomeScreen() {
     >
       <PeriodCard />
       <FinancialSummaryStats expenseStats={expenseStats} incomeStats={incomeStats} />
-      <ExpenseStats expenseStats={expenseStats} />
-      <IncomeStats incomeStats={incomeStats} />
+      <View style={styles.section}>
+        <ExpenseStats expenseStats={expenseStats} showTitle />
+        <MoreStatsButton routeName="/stats/expenses" />
+      </View>
+      <View style={styles.section}>
+        <IncomeStats incomeStats={incomeStats} showTitle />
+        <MoreStatsButton routeName="/stats/incomes" />
+      </View>
     </ScreenWrapper>
   );
 }
@@ -67,4 +94,12 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     gap: 20
   },
+  moreStatsButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  section: {
+    gap: 10
+  }
 });

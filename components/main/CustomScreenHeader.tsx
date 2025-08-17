@@ -3,7 +3,6 @@ import { View, StyleSheet, Pressable, ViewStyle, StyleProp, useWindowDimensions 
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "expo-router";
 
 type HeaderProps = {
