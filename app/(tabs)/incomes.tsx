@@ -198,7 +198,9 @@ export default function IncomesScreen() {
                             <Button onPress={() => router.navigate({
                                 pathname: '/transaction/new',
                                 params: { defaultTab: 'income' }
-                            })}>
+                            })}
+                                textColor={colors.tertiary}
+                            >
                                 Add Income
                             </Button>
                         </View>

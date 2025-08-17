@@ -22,7 +22,6 @@ function CustomScreenHeader({
   showBackButton = true,
 }: HeaderProps) {
   const { colors } = useAppTheme();
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
   // Simple scaling based on screen height
