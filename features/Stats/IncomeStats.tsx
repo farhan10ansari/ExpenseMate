@@ -32,16 +32,16 @@ export default function IncomeStats({ incomeStats, showTitle = false }: Props) {
             <View style={styles.row}>
                 <StatsCard
                     title="Total Income"
-                    prefix={<FontAwesome name="rupee" size={18} color={colors.onPrimary} />}
+                    prefix={<FontAwesome name="rupee" size={18} color={colors.onTertiary} />}
                     value={incomeStats?.total ?? 0}
-                    icon={<MaterialIcons name="trending-up" size={24} color={colors.onPrimary} />}
+                    icon={<MaterialCommunityIcons name="finance" size={24} color={colors.onTertiary} />}
                     backgroundColor={colors.tertiary}
-                    textColor={colors.onPrimary}
+                    textColor={colors.onTertiary}
                 />
                 <StatsCard
                     title="Income Count"
                     value={incomeStats?.count ?? 0}
-                    icon={<AntDesign name="plus" size={24} color={colors.tertiary} />}
+                    icon={<AntDesign name="pluscircleo" size={20} color={colors.tertiary} />}
                     textColor={colors.tertiary}
                 />
             </View>
@@ -53,7 +53,7 @@ export default function IncomeStats({ incomeStats, showTitle = false }: Props) {
                     }}
                     prefix={<FontAwesome name="rupee" size={18} color={colors.text} />}
                     value={incomeStats?.avgPerDay ?? 0}
-                    icon={<MaterialIcons name="timeline" size={24} color={colors.tertiary} />}
+                    icon={<MaterialIcons name="trending-up" size={24} color={colors.tertiary} />}
                     textColor={colors.text}
                 />
                 <StatsCard
@@ -76,7 +76,7 @@ export default function IncomeStats({ incomeStats, showTitle = false }: Props) {
                         {incomeStats?.min ?? 0}
                     </>
                 }
-                icon={<MaterialCommunityIcons name="chart-line" size={24} color={colors.tertiary} />}
+                icon={<MaterialCommunityIcons name="chart-timeline-variant" size={24} color={colors.tertiary} />}
                 textColor={colors.text}
             />
         </View>

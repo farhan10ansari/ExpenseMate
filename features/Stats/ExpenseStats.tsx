@@ -3,7 +3,7 @@ import { PeriodExpenseStats } from "@/lib/types";
 import styles from "./styles";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import StatsCard from "./components/StatsCard";
-import { Feather, FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { View } from "react-native";
 import useExpenseCategoriesStore from "@/stores/useExpenseCategoriesStore";
 
@@ -37,9 +37,9 @@ export default function ExpenseStats({ expenseStats, showTitle = false }: Props)
                     textColor={colors.onPrimary}
                 />
                 <StatsCard
-                    title="Transactions"
+                    title="Expense Count"
                     value={expenseStats?.count ?? 0}
-                    icon={<Feather name="pie-chart" size={24} color={colors.tertiary} />}
+                    icon={<AntDesign name="minuscircleo" size={20} color={colors.tertiary} />}
                     textColor={colors.tertiary}
                 />
             </View>
