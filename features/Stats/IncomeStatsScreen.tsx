@@ -11,6 +11,7 @@ import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import statsStyles from "./styles";
 import SourceBreakdownChart from "./components/SourceBreakdownChart";
+import IncomeSourcesBreakdownCard from "./components/IncomeSourcesBreakdownData";
 
 export default function IncomeStatsScreen() {
     const { colors } = useAppTheme();
@@ -48,6 +49,10 @@ export default function IncomeStatsScreen() {
                 <ThemedText style={[statsStyles.sectionTitle, { color: colors.text }]}>
                     Breakdowns
                 </ThemedText>
+                <IncomeSourcesBreakdownCard
+                    data={incomeStats?.sources}
+                    title="Income Sources"
+                />
                 <SourceBreakdownChart data={incomeStats?.sources}
                 />
             </View>
@@ -58,6 +63,6 @@ export default function IncomeStatsScreen() {
 const styles = StyleSheet.create({
     container: {
         padding: 16,
-        gap: 10,
+        gap: 20,
     }
 });

@@ -22,7 +22,7 @@ export type RootStackParamList = {
  */
 export type InsightPeriod = "today" | "this-week" | "this-month" | "this-year";
 
-export interface CategoryStat {
+export interface ExpenseCategoryStat {
   category: string;
   total: number;
   count: number;
@@ -35,8 +35,14 @@ export interface PeriodExpenseStats {
   count: number;        // total number of transactions in the period
   max: number;          // largest single transaction
   min: number;          // smallest single transaction
-  categories: CategoryStat[]; // breakdown by category (sum + count)
+  categories: ExpenseCategoryStat[]; // breakdown by category (sum + count)
   topCategory: string | null; // category with the highest total spend
+}
+
+export interface IncomeSourceStat {
+  source: string;
+  total: number;
+  count: number;
 }
 
 export interface PeriodIncomeStats {
@@ -46,11 +52,7 @@ export interface PeriodIncomeStats {
   avgPerDay: number;
   max: number;
   min: number;
-  sources: {
-    source: string;
-    total: number;
-    count: number;
-  }[];
+  sources: IncomeSourceStat[];
   topSource: string | null;
 }
 

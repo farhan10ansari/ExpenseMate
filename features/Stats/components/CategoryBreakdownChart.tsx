@@ -5,9 +5,9 @@ import { Card, Switch } from 'react-native-paper';
 import { ThemedText } from '@/components/base/ThemedText';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import useExpenseCategoriesStore from '@/stores/useExpenseCategoriesStore';
-import { CategoryStat } from '@/lib/types';
+import { ExpenseCategoryStat } from '@/lib/types';
 
-type CategoryBreakdownData = { data?: CategoryStat[] };
+type CategoryBreakdownData = { data?: ExpenseCategoryStat[] };
 
 export default function CategoryBreakdownChart({ data }: CategoryBreakdownData) {
   const { colors, dark } = useAppTheme();
@@ -45,78 +45,19 @@ export default function CategoryBreakdownChart({ data }: CategoryBreakdownData) 
 
 
   const styles = StyleSheet.create({
-    container: {
-      marginTop: 12,
-      alignItems: 'center',
-      width: '100%'
-    },
-    card: {
-      borderRadius: 8,
-      width: '100%',
-      elevation: 2,
-      overflow: 'hidden'
-    },
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingVertical: 8,
-      paddingHorizontal: 16
-    },
-    toggleGroup: {
-      flexDirection: 'row',
-      borderWidth: 1,
-      borderRadius: 4,
-      borderColor: colors.muted,
-      overflow: 'hidden',
-    },
-    toggleBtn: {
-      paddingVertical: 6,
-      paddingHorizontal: 14,
-      borderColor: 'transparent'
-    },
-    switchContainer: {
-      flexDirection: 'row',
-      alignItems: 'center'
-    },
-    switchLabel: {
-      marginRight: 8,
-      fontSize: 14
-    },
-    chartWrapper: {
-      alignItems: 'center',
-      paddingVertical: 16
-    },
-    legendContainer: {
-      marginTop: 16,
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'center',
-      paddingHorizontal: 16
-    },
-    legendItem: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      margin: 4,
-    },
-    legendColorBox: {
-      width: 10,
-      height: 10,
-      marginRight: 6,
-      borderRadius: 2,
-    },
-    legendText: {
-      fontSize: 12,
-    },
-    tooltip: {
-      padding: 8,
-      borderRadius: 4,
-      shadowColor: colors.shadow,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 4,
-      backgroundColor: colors.surface
-    }
+    container: { alignItems: 'center', width: '100%' },
+    card: { borderRadius: 8, width: '100%', elevation: 2, overflow: 'hidden' },
+    header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 8, paddingHorizontal: 16 },
+    toggleGroup: { flexDirection: 'row', borderWidth: 1, borderRadius: 4, borderColor: colors.muted, overflow: 'hidden' },
+    toggleBtn: { paddingVertical: 6, paddingHorizontal: 14, borderColor: 'transparent' },
+    switchContainer: { flexDirection: 'row', alignItems: 'center' },
+    switchLabel: { marginRight: 8, fontSize: 14 },
+    chartWrapper: { alignItems: 'center', paddingVertical: 16 },
+    legendContainer: { marginTop: 16, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', paddingHorizontal: 16 },
+    legendItem: { flexDirection: 'row', alignItems: 'center', margin: 4 },
+    legendColorBox: { width: 10, height: 10, marginRight: 6, borderRadius: 2 },
+    legendText: { fontSize: 12 },
+    tooltip: { padding: 8, borderRadius: 4, shadowColor: colors.shadow, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4, backgroundColor: colors.surface }
   });
 
   return (

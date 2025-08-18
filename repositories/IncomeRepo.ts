@@ -226,7 +226,6 @@ export const getIncomeStatsByPeriod = async (
   // 5. get top source
   const topSource = sources.length > 0 ? sources[0].source : null;
 
-  // console.log("total", total);
   return {
     period,
     total: parseFloat(total.toFixed(2)),

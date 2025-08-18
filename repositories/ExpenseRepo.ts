@@ -281,7 +281,6 @@ export const getExpenseStatsByPeriod = async (
   const avgPerDay = parseFloat(rawAvg.toFixed(2));
 
   // 5. get top category
-  console.log('categories', categories);
   const topCategory = categories.length > 0 ? categories[0].category : null;
 
   return {

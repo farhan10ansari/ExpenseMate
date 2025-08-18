@@ -11,6 +11,7 @@ import CategoryBreakdownChart from "./components/CategoryBreakdownChart";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import statsStyles from "./styles";
+import ExpenseCategoryBreakdownCard from "./components/ExpenseCategoriesBreakdownData";
 
 export default function ExpenseStatsScreen() {
     const { colors } = useAppTheme();
@@ -48,6 +49,10 @@ export default function ExpenseStatsScreen() {
                 <ThemedText style={[statsStyles.sectionTitle, { color: colors.text }]}>
                     Breakdowns
                 </ThemedText>
+                <ExpenseCategoryBreakdownCard
+                    data={expenseStats?.categories}
+                    title="Expense Categories"
+                />
                 <CategoryBreakdownChart data={expenseStats?.categories}
                 />
             </View>
@@ -58,6 +63,6 @@ export default function ExpenseStatsScreen() {
 const styles = StyleSheet.create({
     container: {
         padding: 16,
-        gap: 10,
+        gap: 20,
     }
 });
