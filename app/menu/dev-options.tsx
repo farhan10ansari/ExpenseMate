@@ -6,7 +6,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button, TextInput, Snackbar } from "react-native-paper";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import CustomScreenHeader from "@/components/main/CustomScreenHeader";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
@@ -177,7 +176,6 @@ export default function DevOptionsScreen() {
 
   return (
     <ScreenWrapper
-      header={<CustomScreenHeader title="Dev Options" />}
       background="background"
     >
       <KeyboardAvoidingView

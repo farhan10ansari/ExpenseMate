@@ -1,4 +1,3 @@
-import CustomScreenHeader from "@/components/main/CustomScreenHeader";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { getExpenseStatsByPeriod } from "@/repositories/ExpenseRepo";
 import useStatsStore from "@/stores/useStatsStore";
@@ -22,14 +21,14 @@ export default function ExpenseStatsScreen() {
 
     // Expense stats query
     const { data: expenseStats } = useQuery({
-        queryKey: ['insights', 'expense-stats-in-a-period', expensesPeriod.value],
+        queryKey: ['insights', 'expense', 'stats-in-a-period', expensesPeriod.value],
         queryFn: () => getExpenseStatsByPeriod(expensesPeriod.value),
     });
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
         try {
-            await queryClient.refetchQueries({ queryKey: ['insights'] });
+            await queryClient.refetchQueries({ queryKey: ['insights', 'expense'] });
         } finally {
             setIsRefreshing(false);
         }
@@ -37,7 +36,6 @@ export default function ExpenseStatsScreen() {
 
     return (
         <ScreenWrapper
-            header={<CustomScreenHeader title="Expense Stats" showBackButton />}
             background="background"
             withScrollView
             isRefreshing={isRefreshing}

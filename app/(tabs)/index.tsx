@@ -6,7 +6,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getExpenseStatsByPeriod } from '@/repositories/ExpenseRepo';
 import { getIncomeStatsByPeriod } from '@/repositories/IncomeRepo';
 import { ScreenWrapper } from '@/components/main/ScreenWrapper';
-import CustomScreenHeader from '@/components/main/CustomScreenHeader';
 import FinancialSummaryStats from '@/features/Stats/FinancialOverviewStats';
 import ExpenseStats from '@/features/Stats/ExpenseStats';
 import IncomeStats from '@/features/Stats/IncomeStats';
@@ -25,13 +24,13 @@ export default function HomeScreen() {
 
   // Expense stats query
   const { data: expenseStats } = useQuery({
-    queryKey: ['insights', 'expense-stats-in-a-period', expensesPeriod.value],
+    queryKey: ['insights', 'expense', 'stats-in-a-period', expensesPeriod.value],
     queryFn: () => getExpenseStatsByPeriod(expensesPeriod.value),
   });
 
   // Income stats query
   const { data: incomeStats } = useQuery({
-    queryKey: ['insights', 'income-stats-in-a-period', expensesPeriod.value],
+    queryKey: ['insights', 'income', 'stats-in-a-period', expensesPeriod.value],
     queryFn: () => getIncomeStatsByPeriod(expensesPeriod.value),
   });
 
@@ -62,7 +61,6 @@ export default function HomeScreen() {
 
   return (
     <ScreenWrapper
-      header={<CustomScreenHeader title="Home" showBackButton={false} />}
       background="background"
       withScrollView
       isRefreshing={isRefreshing}

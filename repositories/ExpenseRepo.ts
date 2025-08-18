@@ -280,6 +280,10 @@ export const getExpenseStatsByPeriod = async (
   const rawAvg = days > 0 ? total / days : 0;
   const avgPerDay = parseFloat(rawAvg.toFixed(2));
 
+  // 5. get top category
+  console.log('categories', categories);
+  const topCategory = categories.length > 0 ? categories[0].category : null;
+
   return {
     period,
     total: parseFloat(total.toFixed(2)), // format total to 2 decimal places
@@ -288,5 +292,6 @@ export const getExpenseStatsByPeriod = async (
     max: maxAmount,
     min: minAmount,
     categories,
+    topCategory,
   };
 };

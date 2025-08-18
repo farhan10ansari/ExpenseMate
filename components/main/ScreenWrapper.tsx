@@ -5,7 +5,6 @@ import { RefreshControl } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type ScreenWrapperProps = {
-    header: React.ReactNode;
     children: React.ReactNode;
     containerStyle?: StyleProp<ViewStyle>;
     contentContainerStyle?: StyleProp<ViewStyle>;
@@ -16,14 +15,13 @@ type ScreenWrapperProps = {
 };
 
 export function ScreenWrapper({
-    header,
     children,
     containerStyle,
     contentContainerStyle,
     background = "card",
     withScrollView = false,
     isRefreshing = false,
-    onRefresh
+    onRefresh,
 }: ScreenWrapperProps) {
     const { colors } = useAppTheme();
     const insets = useSafeAreaInsets();
@@ -34,9 +32,8 @@ export function ScreenWrapper({
             backgroundColor: background === "background" ? colors.background : colors.card,
             paddingLeft: insets.left,
             paddingRight: insets.right,
-        },
-        headerContainer: {
-            paddingTop: insets.top,
+            borderTopWidth: 1,
+            borderTopColor: colors.border,
         },
         content: {
             flex: 1,
@@ -49,11 +46,6 @@ export function ScreenWrapper({
 
     return (
         <View style={[styles.container, containerStyle]}>
-            {/* Header with safe area top padding */}
-            <View style={styles.headerContainer}>
-                {header}
-            </View>
-
             {/* Main content */}
             {withScrollView ? (
                 <ScrollView

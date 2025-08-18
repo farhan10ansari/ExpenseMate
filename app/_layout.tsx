@@ -8,13 +8,14 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import useCurrentScreenTracker from '@/hooks/useCurrentScreenTracker';
+import CustomBackButton from '@/components/ui/CustomBackButton';
 const queryClient = new QueryClient()
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -65,14 +66,28 @@ export default function RootLayout() {
 
 function MainLayout() {
   const { colors } = useAppTheme();
+  const router = useRouter();
 
   // Track the current screen using the custom hook
   useCurrentScreenTracker()
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerLeft: (props) => ( // Custom back button component
+          router.canGoBack() ? (<CustomBackButton onPress={() => router.back()} />) : null // Show back button only if we can go back
+        ),
+        headerTitleAlign: 'center', // Center the title
+        headerShadowVisible: false, // Hide the header shadow
+        headerStyle: {
+          backgroundColor: colors.card, // Use card color for header background
+        }
+      }}
+    >
       <Stack.Screen
         name="(tabs)"
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false
+        }}
       />
 
       {/* Income Screens */}
@@ -194,28 +209,28 @@ function MainLayout() {
         name="menu/themes"
         options={{
           title: 'Themes',
-          headerShown: false,
         }}
       />
       <Stack.Screen
         name="menu/settings"
         options={{
           title: 'Settings',
-          headerShown: false,
         }}
       />
       <Stack.Screen
         name="menu/dev-options"
         options={{
           title: 'Dev Options',
-          headerShown: false,
+          headerStyle: {
+            backgroundColor: colors.background,
+          }
         }}
       />
       <Stack.Screen
         name="menu/about"
         options={{
           title: 'App Info',
-          headerShown: false,
+          headerStyle: {}
         }}
       />
 
@@ -224,14 +239,12 @@ function MainLayout() {
         name="stats/expenses"
         options={{
           title: 'Expense Stats',
-          headerShown: false,
         }}
       />
       <Stack.Screen
         name="stats/incomes"
         options={{
           title: 'Income Stats',
-          headerShown: false,
         }}
       />
 

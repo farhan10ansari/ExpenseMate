@@ -2,7 +2,7 @@ import db from '@/db/client';              // Or your correct import style
 import { Income, incomesSchema } from '@/db/schema';
 import { and, desc, eq, gte, lt, lte, sql } from 'drizzle-orm';
 import { subMonths, startOfMonth, endOfMonth, format, differenceInCalendarMonths } from 'date-fns';
-import { InsightPeriod } from '@/lib/types';
+import { InsightPeriod, PeriodIncomeStats } from '@/lib/types';
 import { getStartDate } from './lib/helpers';
 import { getExpenseStatsByPeriod } from './ExpenseRepo';
 
@@ -169,20 +169,6 @@ export const updateIncomeById = async (
 // import { incomesSchema } from '@/db/schema';
 // import { InsightPeriod } from '@/types/insights'; // assuming you have this type
 
-export interface PeriodIncomeStats {
-  period: InsightPeriod;
-  total: number;
-  count: number;
-  avgPerDay: number;
-  max: number;
-  min: number;
-  sources: {
-    source: string;
-    total: number;
-    count: number;
-  }[];
-  topSource: string | null;
-}
 
 export const getIncomeStatsByPeriod = async (
   period: InsightPeriod

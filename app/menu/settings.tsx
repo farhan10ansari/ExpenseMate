@@ -1,7 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import CustomScreenHeader from "@/components/main/CustomScreenHeader";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { List } from "react-native-paper";
@@ -128,7 +127,6 @@ export default function SettingsScreen() {
 
   return (
     <ScreenWrapper
-      header={<CustomScreenHeader title="Settings" />}
       background="card"
       withScrollView
     >

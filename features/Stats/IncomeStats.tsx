@@ -1,11 +1,11 @@
 import { ThemedText } from "@/components/base/ThemedText";
-import { PeriodIncomeStats } from "@/repositories/IncomeRepo";
 import styles from "./styles";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import StatsCard from "./components/StatsCard";
 import { AntDesign, FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { View } from "react-native";
-import { useRouter } from "expo-router";
+import { PeriodIncomeStats } from "@/lib/types";
+import useIncomeSourcesStore from "@/stores/useIncomeSourcesStore";
 
 type Props = {
     incomeStats?: PeriodIncomeStats;
@@ -14,6 +14,11 @@ type Props = {
 
 export default function IncomeStats({ incomeStats, showTitle = false }: Props) {
     const { colors } = useAppTheme();
+
+    const sourceMapping = useIncomeSourcesStore((state) => state.sourceMapping);
+
+    const topSource = incomeStats?.topSource
+        ? sourceMapping[incomeStats?.topSource] : null;
 
     return (
         <View style={styles.section}>
@@ -56,7 +61,7 @@ export default function IncomeStats({ incomeStats, showTitle = false }: Props) {
                     titleStyle={{
                         fontSize: 12
                     }}
-                    value={incomeStats?.topSource ?? 'No data'}
+                    value={topSource?.label ?? 'No data'}
                     icon={<MaterialCommunityIcons name="source-branch" size={24} color={colors.tertiary} />}
                     textColor={colors.text}
                 />

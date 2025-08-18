@@ -19,7 +19,6 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { useIsFocused } from "@react-navigation/native";
 import useAppStore from "@/stores/useAppStore";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
-import CustomScreenHeader from "@/components/main/CustomScreenHeader";
 import ErrorState from "@/components/main/ErrorState";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -152,7 +151,6 @@ export default function IncomesScreen() {
 
     return (
         <ScreenWrapper containerStyle={styles.container}
-            header={<CustomScreenHeader title="Incomes" showBackButton={false} />}
             background="background"
         >
             <ThemedView style={styles.container}>

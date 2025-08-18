@@ -3,10 +3,8 @@ import { List } from "react-native-paper";
 import { Href, useRouter } from "expo-router";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { ThemedText } from "@/components/base/ThemedText";
-import CustomScreenHeader from "@/components/main/CustomScreenHeader";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
-import Color from "color";
 
 type MenuSection = {
   title: string;
@@ -104,7 +102,6 @@ export default function MenuScreen() {
 
   return (
     <ScreenWrapper
-      header={<CustomScreenHeader title="Menu" showBackButton={false} />}
       background="background"
     >
       <ScrollView

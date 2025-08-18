@@ -15,7 +15,6 @@ function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
         tabBarStyle: {
           borderTopEndRadius: 24,
           borderTopStartRadius: 24,
@@ -23,23 +22,24 @@ function TabLayout() {
         },
         tabBarItemStyle: {
           backgroundColor: 'transparent',
-        }
+        },
+        headerStyle: {
+          backgroundColor: colors.background,
+        },
+        headerShadowVisible: false,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          headerShown: false,
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="home" color={color} />,
-
         }}
       />
       <Tabs.Screen
         name="expenses"
         options={{
           title: 'Expenses',
-          headerShown: false,
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="money" color={color} />,
         }}
       />
@@ -47,7 +47,6 @@ function TabLayout() {
         name="circle"
         options={{
           title: 'Transaction',
-          headerShown: false,
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="add" color={color} />,
           tabBarButton: (props) => (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -72,14 +71,12 @@ function TabLayout() {
         name="incomes"
         options={{
           title: 'Incomes',
-          headerShown: false,
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="currency-rupee" color={color} />,
         }}
       />
       <Tabs.Screen
         name="menu"
         options={{
-          headerShown: false,
           title: 'Menu',
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="menu" color={color} />,
         }}

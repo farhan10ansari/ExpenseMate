@@ -8,7 +8,6 @@ import { Expense } from "@/db/schema";
 import MonthTabsContainer from "@/features/Expense/components/MonthTabsContainer";
 import ExpensesList from "@/features/Expense/components/ExpenseList";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
-import CustomScreenHeader from "@/components/main/CustomScreenHeader";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type ExpenseSection = {
@@ -47,7 +46,6 @@ export default function ExpensesScreen() {
 
     return (
         <ScreenWrapper containerStyle={styles.container}
-            header={<CustomScreenHeader title="Expenses" showBackButton={false} />}
             background="background"
         >
             <MonthTabsContainer

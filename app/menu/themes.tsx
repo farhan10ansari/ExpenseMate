@@ -3,7 +3,6 @@ import { ThemedText } from "@/components/base/ThemedText";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import { Button } from "react-native-paper";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import CustomScreenHeader from "@/components/main/CustomScreenHeader";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -80,7 +79,6 @@ export default function ThemesScreen() {
 
   return (
     <ScreenWrapper
-      header={<CustomScreenHeader title="Themes" />}
       background="card"
       withScrollView
     >

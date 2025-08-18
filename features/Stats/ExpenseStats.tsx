@@ -5,6 +5,7 @@ import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import StatsCard from "./components/StatsCard";
 import { Feather, FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { View } from "react-native";
+import useExpenseCategoriesStore from "@/stores/useExpenseCategoriesStore";
 
 type Props = {
     expenseStats?: PeriodExpenseStats;
@@ -14,6 +15,10 @@ type Props = {
 
 export default function ExpenseStats({ expenseStats, showTitle = false }: Props) {
     const { colors } = useAppTheme();
+    const categoryMapping = useExpenseCategoriesStore((state) => state.categoryMapping);
+
+    const topCategory = expenseStats?.topCategory
+        ? categoryMapping[expenseStats?.topCategory] : null
 
     return (
         <View style={styles.section} >
@@ -47,19 +52,28 @@ export default function ExpenseStats({ expenseStats, showTitle = false }: Props)
                     textColor={colors.text}
                 />
                 <StatsCard
-                    title="Max/Min Spend"
-                    value={
-                        <>
-                            <FontAwesome name="rupee" size={18} color={colors.text} />
-                            {expenseStats?.max ?? 0}/
-                            <FontAwesome name="rupee" size={18} color={colors.text} />
-                            {expenseStats?.min ?? 0}
-                        </>
-                    }
-                    icon={<MaterialCommunityIcons name="chart-timeline-variant" size={24} color={colors.tertiary} />}
+                    title="Top Income Source"
+                    titleStyle={{
+                        fontSize: 12
+                    }}
+                    value={topCategory?.label ?? 'No data'}
+                    icon={<MaterialCommunityIcons name="source-branch" size={24} color={colors.tertiary} />}
                     textColor={colors.text}
                 />
             </View>
+            <StatsCard
+                title="Max/Min Spend"
+                value={
+                    <>
+                        <FontAwesome name="rupee" size={18} color={colors.text} />
+                        {expenseStats?.max ?? 0}/
+                        <FontAwesome name="rupee" size={18} color={colors.text} />
+                        {expenseStats?.min ?? 0}
+                    </>
+                }
+                icon={<MaterialCommunityIcons name="chart-timeline-variant" size={24} color={colors.tertiary} />}
+                textColor={colors.text}
+            />
         </View>
     )
 }

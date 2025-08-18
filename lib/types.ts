@@ -36,7 +36,24 @@ export interface PeriodExpenseStats {
   max: number;          // largest single transaction
   min: number;          // smallest single transaction
   categories: CategoryStat[]; // breakdown by category (sum + count)
+  topCategory: string | null; // category with the highest total spend
 }
+
+export interface PeriodIncomeStats {
+  period: InsightPeriod;
+  total: number;
+  count: number;
+  avgPerDay: number;
+  max: number;
+  min: number;
+  sources: {
+    source: string;
+    total: number;
+    count: number;
+  }[];
+  topSource: string | null;
+}
+
 
 export enum Screens {
   Home = "Home",

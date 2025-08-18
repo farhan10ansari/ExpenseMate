@@ -4,7 +4,6 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import * as Linking from "expo-linking";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import CustomScreenHeader from "@/components/main/CustomScreenHeader";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import CustomSnackbar from "@/components/ui/CustomSnackbar";
@@ -137,7 +136,6 @@ export default function AboutScreen() {
 
     return (
         <ScreenWrapper
-            header={<CustomScreenHeader title="About" />}
             background="card"
             withScrollView
         >
@@ -255,7 +253,7 @@ export default function AboutScreen() {
                     </View>
 
                     <ThemedText style={styles.descriptionText}>
-                        Have questions, feedback, or need support? We're here to help.
+                        {"Have questions, feedback, or need support? We're here to help."}
                     </ThemedText>
 
                     {CONTACT_EMAIL && (
