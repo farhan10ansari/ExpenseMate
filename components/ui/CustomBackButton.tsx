@@ -1,12 +1,16 @@
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { memo } from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 const CustomBackButton = (({ onPress }: { onPress: () => void }) => {
     const { colors } = useAppTheme();
 
     const styles = StyleSheet.create({
+        container:{
+            borderRadius: 50,
+            overflow: "hidden",
+        },
         backButton: {
             width: 36,
             height: 36,
@@ -23,21 +27,23 @@ const CustomBackButton = (({ onPress }: { onPress: () => void }) => {
     });
 
     return (
-        <Pressable
-            style={styles.backButton}
-            onPress={onPress}
-            android_ripple={{
-                color: colors.ripplePrimary,
-                borderless: false
-            }}
-            hitSlop={8}
-        >
-            <MaterialCommunityIcons
-                name="chevron-left"
-                size={24}
-                color={colors.onSurfaceVariant}
-            />
-        </Pressable>
+        <View style={styles.container}>
+            <Pressable
+                style={styles.backButton}
+                onPress={onPress}
+                android_ripple={{
+                    color: colors.ripplePrimary,
+                    borderless: false
+                }}
+                hitSlop={8}
+            >
+                <MaterialCommunityIcons
+                    name="chevron-left"
+                    size={24}
+                    color={colors.onSurfaceVariant}
+                />
+            </Pressable>
+        </View>
     );
 })
 

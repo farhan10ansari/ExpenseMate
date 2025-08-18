@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import PeriodCard from '@/features/Stats/components/PeriodCard';
 import useStatsStore from '@/stores/useStatsStore';
@@ -11,8 +11,9 @@ import ExpenseStats from '@/features/Stats/ExpenseStats';
 import IncomeStats from '@/features/Stats/IncomeStats';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import { Button } from 'react-native-paper';
-import { Href, useRouter } from 'expo-router';
+import { Button, IconButton, Menu } from 'react-native-paper';
+import { Href, useNavigation, useRouter } from 'expo-router';
+import usePersistentAppStore from '@/stores/usePersistentAppStore';
 
 
 export default function HomeScreen() {
@@ -21,7 +22,6 @@ export default function HomeScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const queryClient = useQueryClient();
   const router = useRouter();
-
   // Expense stats query
   const { data: expenseStats } = useQuery({
     queryKey: ['insights', 'expense', 'stats-in-a-period', expensesPeriod.value],
@@ -42,6 +42,8 @@ export default function HomeScreen() {
       setIsRefreshing(false);
     }
   };
+  // Set up screen menu
+  useScreenMenu({ onRefresh: () => handleRefresh() });
 
   const MoreStatsButton = ({ routeName }: { routeName: Href }) => (
     <View style={styles.moreStatsButtonContainer}>
@@ -81,6 +83,49 @@ export default function HomeScreen() {
   );
 }
 
+const useScreenMenu = ({ onRefresh }: { onRefresh: () => void }) => {
+  const navigation = useNavigation();
+  const { colors } = useAppTheme();
+  const showNegativeStats = usePersistentAppStore((state) => state.uiFlags.showNegativeStats);
+  const updateUiFlag = usePersistentAppStore((state) => state.updateUIFlag);
+  const [showMenu, setShowMenu] = useState(false);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Menu
+          visible={showMenu}
+          onDismiss={() => setShowMenu(false)}
+          anchor={
+            <IconButton
+              icon="dots-vertical"
+              onPress={() => setShowMenu(true)}
+            />
+          }
+          anchorPosition='bottom'
+          contentStyle={{ backgroundColor: colors.surface }} // Optional: styled menu
+        >
+          <Menu.Item
+            leadingIcon={showNegativeStats ? "eye-off" : "eye"}
+            title={showNegativeStats ? "Hide Negative Stats" : "Show Negative Stats"}
+            onPress={() => {
+              updateUiFlag("showNegativeStats", !showNegativeStats);
+              setShowMenu(false); // Close after click
+            }}
+          />
+          <Menu.Item
+            leadingIcon="refresh"
+            title="Refresh Data"
+            onPress={() => {
+              onRefresh();
+              setShowMenu(false);
+            }}
+          />
+        </Menu>
+      ),
+    });
+  }, [showMenu, showNegativeStats, colors.primary]);
+}
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -99,5 +144,12 @@ const styles = StyleSheet.create({
   },
   section: {
     gap: 10
+  },
+  menuItemWithSwitch: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingRight: 10,
   }
 });

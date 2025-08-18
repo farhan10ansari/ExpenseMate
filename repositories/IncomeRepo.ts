@@ -1,10 +1,9 @@
 import db from '@/db/client';              // Or your correct import style
 import { Income, incomesSchema } from '@/db/schema';
 import { and, desc, eq, gte, lt, lte, sql } from 'drizzle-orm';
-import { subMonths, startOfMonth, endOfMonth, format, differenceInCalendarMonths } from 'date-fns';
+import { subMonths, startOfMonth, endOfMonth, format } from 'date-fns';
 import { InsightPeriod, PeriodIncomeStats } from '@/lib/types';
 import { getStartDate } from './lib/helpers';
-import { getExpenseStatsByPeriod } from './ExpenseRepo';
 
 export interface NewIncome {
   amount: number;

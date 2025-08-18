@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import { View, StyleProp, StyleSheet, TextStyle } from "react-native";
+import { Card, IconButton, Portal, Dialog } from "react-native-paper";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { StyleProp, StyleSheet, TextStyle, View } from "react-native";
-import { Card } from "react-native-paper";
-
 type StatsCardProps = {
     title: string;
     value: React.ReactNode | string | number;
@@ -17,9 +16,13 @@ type StatsCardProps = {
     /** Color for all text inside the card */
     textColor?: string;
     titleStyle?: StyleProp<TextStyle>;
+    /** Description for the card, shown in info dialog (can be string or ReactNode) */
+    description?: string | React.ReactNode;
+    /** Optional: Custom info icon (node). Overwrites default IconButton */
+    infoIcon?: React.ReactElement<React.ComponentProps<typeof IconButton>>;
+    /** Optional: Color for the info icon */
+    infoIconColor?: string;
 };
-
-
 const StatsCard = ({
     title,
     value,
@@ -28,19 +31,26 @@ const StatsCard = ({
     suffix,
     backgroundColor,
     textColor,
-    titleStyle
+    titleStyle,
+    description,
+    infoIcon,
+    infoIconColor
 }: StatsCardProps) => {
     const { colors } = useAppTheme();
-
+    const [showDesc, setShowDesc] = useState(false);
+    const resolvedTextColor = textColor ?? colors.text;
     const styles = StyleSheet.create({
         card: {
             flex: 1,
-            overflow: 'hidden',
+            // minHeight: 30,
+            overflow: "hidden",
+            padding: 12,
+            position: "relative",
         },
         cardHeader: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: 8,
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 4,
             gap: 8,
             paddingHorizontal: 4,
         },
@@ -48,23 +58,25 @@ const StatsCard = ({
             fontSize: 16,
         },
         cardValueContainer: {
-            flexDirection: 'row',
-            alignItems: 'center',
+            flexDirection: "row",
+            alignItems: "center",
             gap: 4,
+            height: 24,
         },
         cardValue: {
             fontSize: 20,
-            fontWeight: '700',
+            fontWeight: "700",
+        },
+        infoIconContainer: {
+            position: "absolute",
+            top: -8,
+            right: -8,
+            // zIndex: 1,
         },
     });
-
-
-    // Fallback to theme text color if none provided
-    const resolvedTextColor = textColor ?? colors.text;
-
     // Helper function to render prefix/suffix
     const renderTextOrNode = (item: React.ReactNode) => {
-        if (typeof item === 'string') {
+        if (typeof item === "string") {
             return (
                 <ThemedText style={[styles.cardValue, { color: resolvedTextColor }]}>
                     {item}
@@ -73,28 +85,68 @@ const StatsCard = ({
         }
         return item;
     };
-
-
     return (
         <Card style={[styles.card, backgroundColor && { backgroundColor }]}>
-            <Card.Content>
-                <View style={styles.cardHeader}>
-                    {icon}
-                    <ThemedText
-                        type="defaultSemiBold"
-                        style={[styles.cardTitle, { color: resolvedTextColor }, titleStyle]}
-                    >
-                        {title}
-                    </ThemedText>
+            {/* Info Icon (top right, only if description is provided) */}
+            {description && (
+                <View style={styles.infoIconContainer}>
+                    {infoIcon ? (
+                        // Custom icon provided as prop
+                        React.cloneElement(infoIcon, {
+                            onPress: () => setShowDesc(true),
+                        })
+                    ) : (
+                        <IconButton
+                            icon="information-outline"
+                            size={20}
+                            onPress={() => setShowDesc(true)}
+                            accessibilityLabel="Info"
+                            rippleColor={colors.backdrop}
+                            iconColor={infoIconColor ?? colors.inverseOnSurface}
+                            style={{ margin: 0 }}
+                        />
+                    )}
                 </View>
-                <View style={styles.cardValueContainer}>
-                    {prefix && renderTextOrNode(prefix)}
-                    <ThemedText style={[styles.cardValue, { color: resolvedTextColor }]}>
-                        {value}
-                    </ThemedText>
-                    {suffix && renderTextOrNode(suffix)}
-                </View>
-            </Card.Content>
+            )}
+            <View style={styles.cardHeader}>
+                {icon}
+                <ThemedText
+                    type="defaultSemiBold"
+                    style={[styles.cardTitle, { color: resolvedTextColor }, titleStyle]}
+                >
+                    {title}
+                </ThemedText>
+            </View>
+            <View style={styles.cardValueContainer}>
+                {prefix && renderTextOrNode(prefix)}
+                <ThemedText style={[styles.cardValue, { color: resolvedTextColor }]}>
+                    {value}
+                </ThemedText>
+                {suffix && renderTextOrNode(suffix)}
+            </View>
+            {/* Info dialog */}
+            {!!description && (
+                <Portal>
+                    <Dialog visible={showDesc} onDismiss={() => setShowDesc(false)}>
+                        <Dialog.Title>Info</Dialog.Title>
+                        <Dialog.Content>
+                            {typeof description === "string" ? (
+                                <ThemedText>{description}</ThemedText>
+                            ) : (
+                                description
+                            )}
+                        </Dialog.Content>
+                        <Dialog.Actions>
+                            <IconButton
+                                icon="close"
+                                size={20}
+                                onPress={() => setShowDesc(false)}
+                                accessibilityLabel="Close"
+                            />
+                        </Dialog.Actions>
+                    </Dialog>
+                </Portal>
+            )}
         </Card>
     );
 };

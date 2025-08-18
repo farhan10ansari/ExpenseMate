@@ -19,7 +19,7 @@ type MenuSection = {
 export default function MenuScreen() {
   const router = useRouter();
   const { colors } = useAppTheme();
-  const showDevOptions = usePersistentAppStore(state => state.showDevOptions);
+  const showDevOptions = usePersistentAppStore((state) => state.uiFlags.showDevOptions);
 
   const styles = StyleSheet.create({
     container: {

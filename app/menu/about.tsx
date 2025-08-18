@@ -17,8 +17,8 @@ const CONTACT_EMAIL = process.env.EXPO_PUBLIC_CONTACT_EMAIL;
 
 export default function AboutScreen() {
     const { colors } = useAppTheme();
-    const showDevOptions = usePersistentAppStore((state) => state.showDevOptions);
-    const setShowDevOptions = usePersistentAppStore((state) => state.setShowDevOptions);
+    const showDevOptions = usePersistentAppStore((state) => state.uiFlags.showDevOptions);
+    const updateUiFlag = usePersistentAppStore((state) => state.updateUIFlag);
 
     // Snackbar state
     const [isSnackbarVisible, setSnackbarVisibility] = useState(false);
@@ -57,7 +57,7 @@ export default function AboutScreen() {
         }
 
         if (tapCountRef.current >= 5) {
-            setShowDevOptions(true);
+            updateUiFlag("showDevOptions", true);
             setSnackbarText("Dev options enabled");
             setSnackbarVisibility(true);
             tapCountRef.current = 0;
