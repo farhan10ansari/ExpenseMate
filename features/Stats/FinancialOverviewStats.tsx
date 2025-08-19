@@ -39,7 +39,7 @@ export default function FinancialSummaryStats({ expenseStats, incomeStats }: Pro
                     prefix={<FontAwesome name="rupee" size={18} color={colors.onPrimary} />}
                     value={financialSummary?.netIncome ?? 0}
                     icon={<MaterialIcons name="account-balance-wallet" size={24} color={colors.onPrimary} />}
-                    backgroundColor={financialSummary?.netIncome && financialSummary.netIncome >= 0 ? colors.primary : colors.error}
+                    backgroundColor={(financialSummary?.netIncome !== undefined && financialSummary.netIncome >= 0) ? colors.primary : colors.error}
                     textColor={colors.onPrimary}
                     description={
                         <View>
