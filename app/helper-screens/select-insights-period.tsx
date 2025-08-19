@@ -55,7 +55,7 @@ export default function SelectInsightsPeriodScreen() {
           periods={quickPeriodOptions}
           selectedPeriod={period}
           onSelect={handleSelectPeriod}
-          variant="primary"
+          variant="tertiary"
         />
       </View>
 
