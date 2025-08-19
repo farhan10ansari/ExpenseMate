@@ -16,9 +16,9 @@ export default function DevOptionsScreen() {
   const queryClient = useQueryClient();
   const { colors } = useAppTheme();
   const router = useRouter();
-  const setShowDevOptions = usePersistentAppStore(state => state.setShowDevOptions);
   const [numberOfExpenses, setNumberOfExpenses] = useState(0);
   const [numberOfIncomes, setNumberOfIncomes] = useState(0);
+  const updateUIFlag = usePersistentAppStore((state) => state.updateUIFlag);
 
   // Snackbar state
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -136,7 +136,7 @@ export default function DevOptionsScreen() {
     const { error } = await tryCatch(seedDummyExpenses(numberOfExpenses));
     if (!error) {
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
-      queryClient.invalidateQueries({ queryKey: ['insights'] });
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
       queryClient.invalidateQueries({ queryKey: ['incomes'] });
 
       showSnackbar(`Successfully added ${numberOfExpenses} dummy expenses!`);
@@ -153,7 +153,7 @@ export default function DevOptionsScreen() {
     const { error } = await tryCatch(seedDummyIncome(numberOfIncomes));
     if (!error) {
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
-      queryClient.invalidateQueries({ queryKey: ['insights'] });
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
       queryClient.invalidateQueries({ queryKey: ['incomes'] });
       
       showSnackbar(`Successfully added ${numberOfIncomes} dummy incomes!`);
@@ -166,7 +166,7 @@ export default function DevOptionsScreen() {
   };
 
   const handleDisableDevOptions = () => {
-    setShowDevOptions(false);
+    updateUIFlag("showDevOptions", false);
     showSnackbar("Developer options disabled successfully!");
     // Delay navigation to allow snackbar to show
     setTimeout(() => {

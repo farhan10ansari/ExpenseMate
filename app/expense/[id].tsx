@@ -95,7 +95,7 @@ export default function ExpenseInfoScreen() {
         }
         else {
             queryClient.invalidateQueries({ queryKey: ['expenses'] });
-            queryClient.invalidateQueries({ queryKey: ['insights'] });
+            queryClient.invalidateQueries({ queryKey: ['stats', 'expense'] });
             navigation.goBack()
             setGlobalSnackbar({
                 message: 'Successfully deleted expense',

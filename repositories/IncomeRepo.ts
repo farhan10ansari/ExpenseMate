@@ -2,8 +2,8 @@ import db from '@/db/client';              // Or your correct import style
 import { Income, incomesSchema } from '@/db/schema';
 import { and, desc, eq, gte, lt, lte, sql } from 'drizzle-orm';
 import { subMonths, startOfMonth, endOfMonth, format } from 'date-fns';
-import { InsightPeriod, PeriodIncomeStats } from '@/lib/types';
-import { getStartDate } from './lib/helpers';
+import { StatsPeriod, PeriodIncomeStats } from '@/lib/types';
+import { getPeriodStartEnd } from './lib/helpers';
 
 export interface NewIncome {
   amount: number;
@@ -162,24 +162,18 @@ export const updateIncomeById = async (
 };
 
 
-// // repositories/IncomeRepo.ts (or add to existing file)
-// import { and, desc, eq, gte, sql } from 'drizzle-orm';
-// import { db } from '@/db/db';
-// import { incomesSchema } from '@/db/schema';
-// import { InsightPeriod } from '@/types/insights'; // assuming you have this type
-
 
 export const getIncomeStatsByPeriod = async (
-  period: InsightPeriod
+  period: StatsPeriod
 ): Promise<PeriodIncomeStats> => {
-  // 1. period start & days elapsed (inclusive)
-  const startDate = getStartDate(period);
-  const now = new Date();
+  // 1. Get period start & end dates, calculate days in period
+  const { start: startDate, end: endDate } = getPeriodStartEnd(period);
   const msPerDay = 1000 * 60 * 60 * 24;
-  const days =
-    Math.floor((now.getTime() - startDate.getTime()) / msPerDay) + 1;
+  
+  // Calculate the total days in the period (inclusive)
+  const days = Math.floor((endDate.getTime() - startDate.getTime()) / msPerDay) + 1;
 
-  // 2. fetch total, count, max, min in one query
+  // 2. Fetch total, count, max, min in one query using both start and end dates
   const [row] = await db
     .select({
       total: sql<number>`SUM(${incomesSchema.amount})`,
@@ -191,7 +185,8 @@ export const getIncomeStatsByPeriod = async (
     .where(
       and(
         eq(incomesSchema.isTrashed, false),
-        gte(incomesSchema.dateTime, startDate)
+        gte(incomesSchema.dateTime, startDate),
+        lte(incomesSchema.dateTime, endDate)
       )
     )
     .limit(1);
@@ -201,7 +196,7 @@ export const getIncomeStatsByPeriod = async (
   const maxAmount = row?.max ?? 0;
   const minAmount = row?.min ?? 0;
 
-  // 3. fetch source breakdown (sum + count)
+  // 3. Fetch source breakdown (sum + count) for the specific period
   const sources = await db
     .select({
       source: incomesSchema.source,
@@ -212,17 +207,18 @@ export const getIncomeStatsByPeriod = async (
     .where(
       and(
         eq(incomesSchema.isTrashed, false),
-        gte(incomesSchema.dateTime, startDate)
+        gte(incomesSchema.dateTime, startDate),
+        lte(incomesSchema.dateTime, endDate)
       )
     )
     .groupBy(incomesSchema.source)
     .orderBy(desc(sql<number>`SUM(${incomesSchema.amount})`)); // sort by total descending
 
-  // 4. compute avg/day and round
+  // 4. Compute avg/day and round
   const rawAvg = days > 0 ? total / days : 0;
   const avgPerDay = parseFloat(rawAvg.toFixed(2));
 
-  // 5. get top source
+  // 5. Get top source
   const topSource = sources.length > 0 ? sources[0].source : null;
 
   return {

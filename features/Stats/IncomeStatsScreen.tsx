@@ -22,14 +22,14 @@ export default function IncomeStatsScreen() {
 
     // Income stats query
     const { data: incomeStats } = useQuery({
-        queryKey: ['insights', 'income', 'stats-in-a-period', incomesPeriod.value],
+        queryKey: ['stats', 'income', 'stats-in-a-period', incomesPeriod.value],
         queryFn: () => getIncomeStatsByPeriod(incomesPeriod.value),
     });
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
         try {
-            await queryClient.refetchQueries({ queryKey: ['insights', 'income'] });
+            await queryClient.refetchQueries({ queryKey: ['stats', 'income'] });
         } finally {
             setIsRefreshing(false);
         }

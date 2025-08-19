@@ -112,7 +112,7 @@ export default function EditIncomeScreen() {
             queryKey: ['income', id],
         });
         queryClient.invalidateQueries({
-            queryKey: ['insights'],
+            queryKey: ['stats', 'income'],
         });
     };
 

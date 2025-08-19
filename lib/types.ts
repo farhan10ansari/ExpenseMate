@@ -17,10 +17,23 @@ export type RootStackParamList = {
   ExpenseInfoScreen: { id: string };
 }
 
+
 /**
- * Supported period keys for filtering total expenses.
+ * Supported period keys for filtering stats.
  */
-export type InsightPeriod = "today" | "this-week" | "this-month" | "this-year";
+export type PeriodType = "today" | "week" | "month" | "year";
+
+export type StatsPeriod = {
+  type: PeriodType;
+  offset?: number; // offset from current period, 0 = current, 1 = previous, etc.
+};
+
+export type StatsPeriodOption = {
+  primaryLabel: string;
+  secondaryLabel?: string;
+  type: PeriodType;
+  offset?: number;
+};
 
 export interface ExpenseCategoryStat {
   category: string;
@@ -29,7 +42,7 @@ export interface ExpenseCategoryStat {
 }
 
 export interface PeriodExpenseStats {
-  period: InsightPeriod;
+  period: StatsPeriod;
   total: number;        // total spend in the period
   avgPerDay: number;    // average spend per calendar day (2 d.p.)
   count: number;        // total number of transactions in the period
@@ -46,7 +59,7 @@ export interface IncomeSourceStat {
 }
 
 export interface PeriodIncomeStats {
-  period: InsightPeriod;
+  period: StatsPeriod;
   total: number;
   count: number;
   avgPerDay: number;

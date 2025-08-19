@@ -1,26 +1,59 @@
-import { InsightPeriod } from "@/lib/types";
+import { StatsPeriod } from "@/lib/types";
+import { 
+  startOfDay, 
+  endOfDay, 
+  startOfWeek, 
+  endOfWeek, 
+  startOfMonth, 
+  endOfMonth, 
+  startOfYear, 
+  endOfYear,
+  subWeeks,
+  subMonths,
+  subYears
+} from 'date-fns';
 
 /**
- * Get the starting date for a given period.
+ * Get the starting and ending dates for a given period with offset support.
+ * Returns both start and end dates for the specified period.
  */
-export function getStartDate(period: InsightPeriod): Date {
+export function getPeriodStartEnd(period: StatsPeriod): { start: Date; end: Date } {
     const now = new Date();
-    switch (period) {
+    const offset = period.offset || 0;
+    
+    switch (period.type) {
         case "today": {
-            return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            // Today ignores offset - always current day
+            const start = startOfDay(now);
+            const end = endOfDay(now);
+            return { start, end };
         }
-        case "this-week": {
-            const day = now.getDay(); // Sunday: 0
-            const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Adjust to Monday start
-            return new Date(now.getFullYear(), now.getMonth(), diff);
+        
+        case "week": {
+            // Calculate the target week by subtracting offset weeks
+            const targetDate = subWeeks(now, offset);
+            const start = startOfWeek(targetDate, { weekStartsOn: 1 }); // Monday start
+            const end = endOfWeek(targetDate, { weekStartsOn: 1 });
+            return { start, end };
         }
-        case "this-month": {
-            return new Date(now.getFullYear(), now.getMonth(), 1);
+        
+        case "month": {
+            // Calculate the target month by subtracting offset months
+            const targetDate = subMonths(now, offset);
+            const start = startOfMonth(targetDate);
+            const end = endOfMonth(targetDate);
+            return { start, end };
         }
-        case "this-year": {
-            return new Date(now.getFullYear(), 0, 1);
+        
+        case "year": {
+            // Calculate the target year by subtracting offset years
+            const targetDate = subYears(now, offset);
+            const start = startOfYear(targetDate);
+            const end = endOfYear(targetDate);
+            return { start, end };
         }
+        
         default:
-            throw new Error(`Unsupported period type: ${period}`);
+            throw new Error(`Unsupported period type: ${period.type}`);
     }
 }

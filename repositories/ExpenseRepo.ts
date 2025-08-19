@@ -1,8 +1,8 @@
 import db from '@/db/client';
 import { Expense, expensesSchema } from '@/db/schema';
 import { and, desc, eq, gte, sql, lte, lt } from 'drizzle-orm';
-import { getStartDate } from './lib/helpers';
-import { InsightPeriod, PeriodExpenseStats } from '@/lib/types';
+import { getPeriodStartEnd } from './lib/helpers';
+import { StatsPeriod, PeriodExpenseStats } from '@/lib/types';
 import { startOfMonth, endOfMonth, subMonths, format, differenceInMonths } from 'date-fns';
 
 export interface NewExpense {
@@ -228,16 +228,16 @@ export const updateExpenseById = async (id: string | number, expense: NewExpense
 
 // Insights 
 export const getExpenseStatsByPeriod = async (
-  period: InsightPeriod
+  period: StatsPeriod
 ): Promise<PeriodExpenseStats> => {
-  // 1. period start & days elapsed (inclusive)
-  const startDate = getStartDate(period);
-  const now = new Date();
+  // 1. Get period start & end dates, calculate days in period
+  const { start: startDate, end: endDate } = getPeriodStartEnd(period);
   const msPerDay = 1000 * 60 * 60 * 24;
-  const days =
-    Math.floor((now.getTime() - startDate.getTime()) / msPerDay) + 1;
+  
+  // Calculate the total days in the period (inclusive)
+  const days = Math.floor((endDate.getTime() - startDate.getTime()) / msPerDay) + 1;
 
-  // 2. fetch total, count, max, min in one query
+  // 2. Fetch total, count, max, min in one query using both start and end dates
   const [row] = await db
     .select({
       total: sql<number>`SUM(${expensesSchema.amount})`,
@@ -249,7 +249,8 @@ export const getExpenseStatsByPeriod = async (
     .where(
       and(
         eq(expensesSchema.isTrashed, false),
-        gte(expensesSchema.dateTime, startDate)
+        gte(expensesSchema.dateTime, startDate),
+        lte(expensesSchema.dateTime, endDate)
       )
     )
     .limit(1);
@@ -259,7 +260,7 @@ export const getExpenseStatsByPeriod = async (
   const maxAmount = row.max ?? 0;
   const minAmount = row.min ?? 0;
 
-  // 3. fetch category breakdown (sum + count)
+  // 3. Fetch category breakdown (sum + count) for the specific period
   const categories = await db
     .select({
       category: expensesSchema.category,
@@ -270,17 +271,18 @@ export const getExpenseStatsByPeriod = async (
     .where(
       and(
         eq(expensesSchema.isTrashed, false),
-        gte(expensesSchema.dateTime, startDate)
+        gte(expensesSchema.dateTime, startDate),
+        lte(expensesSchema.dateTime, endDate)
       )
     )
     .groupBy(expensesSchema.category)
     .orderBy(desc(sql<number>`SUM(${expensesSchema.amount})`)) // sort by total descending
 
-  // 4. compute avg/day and round
+  // 4. Compute avg/day and round
   const rawAvg = days > 0 ? total / days : 0;
   const avgPerDay = parseFloat(rawAvg.toFixed(2));
 
-  // 5. get top category
+  // 5. Get top category
   const topCategory = categories.length > 0 ? categories[0].category : null;
 
   return {

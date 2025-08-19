@@ -109,7 +109,7 @@ export default function EditExpenseScreen() {
             queryKey: ['expense', id],
         });
         queryCLient.invalidateQueries({
-            queryKey: ['insights'],
+            queryKey: ['stats', 'expense'],
         });
     };
 

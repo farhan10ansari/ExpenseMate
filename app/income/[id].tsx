@@ -92,7 +92,7 @@ export default function IncomeInfoScreen() {
             });
         } else {
             queryClient.invalidateQueries({ queryKey: ['incomes'] });
-            queryClient.invalidateQueries({ queryKey: ['insights'] });
+            queryClient.invalidateQueries({ queryKey: ['stats', 'income'] });
             navigation.goBack();
             setGlobalSnackbar({
                 message: 'Successfully deleted income',

@@ -122,7 +122,7 @@ export function useTransactionForm() {
         queryKeys.forEach(key => {
             queryClient.invalidateQueries({ queryKey: [key] });
         });
-        queryClient.invalidateQueries({ queryKey: ['insights'] });
+        queryClient.invalidateQueries({ queryKey: ['stats'] });
     };
 
     return {

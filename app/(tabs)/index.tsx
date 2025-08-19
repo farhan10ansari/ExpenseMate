@@ -24,20 +24,20 @@ export default function HomeScreen() {
   const router = useRouter();
   // Expense stats query
   const { data: expenseStats } = useQuery({
-    queryKey: ['insights', 'expense', 'stats-in-a-period', expensesPeriod.value],
-    queryFn: () => getExpenseStatsByPeriod(expensesPeriod.value),
+    queryKey: ['stats', 'expense', 'stats-in-a-period', expensesPeriod],
+    queryFn: () => getExpenseStatsByPeriod(expensesPeriod),
   });
 
   // Income stats query
   const { data: incomeStats } = useQuery({
-    queryKey: ['insights', 'income', 'stats-in-a-period', expensesPeriod.value],
-    queryFn: () => getIncomeStatsByPeriod(expensesPeriod.value),
+    queryKey: ['stats', 'income', 'stats-in-a-period', expensesPeriod],
+    queryFn: () => getIncomeStatsByPeriod(expensesPeriod),
   });
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
     try {
-      await queryClient.refetchQueries({ queryKey: ['insights'] });
+      await queryClient.refetchQueries({ queryKey: ['stats'] });
     } finally {
       setIsRefreshing(false);
     }
@@ -124,7 +124,7 @@ const useScreenMenu = ({ onRefresh }: { onRefresh: () => void }) => {
         </Menu>
       ),
     });
-  }, [showMenu, showNegativeStats, colors.primary]);
+  }, [showMenu, showNegativeStats, colors, onRefresh, navigation]);
 }
 
 const styles = StyleSheet.create({

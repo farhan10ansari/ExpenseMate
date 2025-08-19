@@ -22,14 +22,14 @@ export default function ExpenseStatsScreen() {
 
     // Expense stats query
     const { data: expenseStats } = useQuery({
-        queryKey: ['insights', 'expense', 'stats-in-a-period', expensesPeriod.value],
+        queryKey: ['stats', 'expense', 'stats-in-a-period', expensesPeriod.value],
         queryFn: () => getExpenseStatsByPeriod(expensesPeriod.value),
     });
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
         try {
-            await queryClient.refetchQueries({ queryKey: ['insights', 'expense'] });
+            await queryClient.refetchQueries({ queryKey: ['stats', 'expense'] });
         } finally {
             setIsRefreshing(false);
         }
