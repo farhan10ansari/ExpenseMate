@@ -1,4 +1,4 @@
-import { StyleSheet, View, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { tryCatch } from "@/lib/try-catch";
 import { seedDummyExpenses, seedDummyIncome } from "@/repositories/dev";
@@ -10,7 +10,6 @@ import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import { useRouter } from "expo-router";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function DevOptionsScreen() {
   const queryClient = useQueryClient();
@@ -185,14 +184,11 @@ export default function DevOptionsScreen() {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ flex: 1 }}>
-            <KeyboardAwareScrollView
+            <ScrollView
               style={styles.container}
               contentContainerStyle={styles.scrollContentContainer}
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
-              enableOnAndroid={true}
-              extraScrollHeight={20}
-              enableAutomaticScroll={true}
             >
               {/* Warning Section */}
               <View style={styles.warningContainer}>
@@ -318,7 +314,7 @@ export default function DevOptionsScreen() {
                   Disable
                 </Button>
               </View>
-            </KeyboardAwareScrollView>
+            </ScrollView>
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
