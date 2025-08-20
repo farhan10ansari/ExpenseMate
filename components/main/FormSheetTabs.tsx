@@ -1,10 +1,8 @@
 // components/main/FormSheetTabs.tsx
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { StyleSheet, View, Pressable } from "react-native";
+import { StyleSheet, View} from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
-import { Button } from "react-native-paper";
 import ThemedButton from '@/components/ui/ThemedButton';
-import Color from "color";
 
 
 type Tab = {

@@ -1,5 +1,4 @@
 import { extractDateLabel } from '@/lib/functions';
-import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import React, { useCallback, useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Button } from 'react-native-paper';

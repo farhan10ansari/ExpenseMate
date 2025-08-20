@@ -35,7 +35,7 @@ const PeriodCard = () => {
             queryKey: ["stats", 'available-periods'],
             queryFn: getAvailablePeriodsWithData,
         });
-        router.push("/helper-screens/select-insights-period");
+        router.push("/helper-screens/select-stats-period");
     };
 
     return (

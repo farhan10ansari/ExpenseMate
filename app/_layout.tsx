@@ -187,7 +187,7 @@ function MainLayout() {
 
       {/* Helper Screens */}
       <Stack.Screen
-        name="helper-screens/select-insights-period"
+        name="helper-screens/select-stats-period"
         options={{
           title: 'Select Period',
           presentation: 'formSheet',

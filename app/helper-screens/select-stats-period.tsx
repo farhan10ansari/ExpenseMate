@@ -1,6 +1,6 @@
 import React from "react";
 import { View, ScrollView, FlatList } from "react-native";
-import { Card } from "react-native-paper";
+import { Card, Divider } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
@@ -12,7 +12,7 @@ import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useRouter } from "expo-router";
 import { getAvailablePeriodsWithData } from "@/repositories/CommonRepo";
 
-export default function SelectInsightsPeriodScreen() {
+export default function SelectStatsPeriodScreen() {
   const { colors } = useAppTheme();
   const period = useStatsStore((state) => state.period);
   const setPeriod = useStatsStore((state) => state.setPeriod);
@@ -59,6 +59,8 @@ export default function SelectInsightsPeriodScreen() {
         />
       </View>
 
+      <Divider/>
+
       {periodsData?.months && periodsData.months.length > 0 && (
         <View style={{ marginBottom: 8, gap: 8 }}>
           <SectionHeader title="Months" />
@@ -71,6 +73,8 @@ export default function SelectInsightsPeriodScreen() {
           />
         </View>
       )}
+
+      <Divider/>
 
       {periodsData?.years && periodsData.years.length > 0 && (
         <View style={{ marginBottom: 8, gap: 8 }}>

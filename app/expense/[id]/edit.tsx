@@ -1,6 +1,5 @@
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 import CustomSnackbar from "@/components/ui/CustomSnackbar";
-import SheetGrabber from "@/components/ui/SheetGrabber";
 import ExpenseForm from "@/features/Expense/ExpenseForm";
 import { ExpenseData, ExpenseStoreProvider } from "@/features/Expense/ExpenseStoreProvider";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";

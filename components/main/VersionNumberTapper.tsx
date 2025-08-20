@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import CustomSnackbar from "@/components/ui/CustomSnackbar";
@@ -7,8 +7,8 @@ import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 
 export default function VersionNumberTapper() {
     const { colors } = useAppTheme();
-    const showDevOptions = usePersistentAppStore((state) => state.showDevOptions);
-    const setShowDevOptions = usePersistentAppStore((state) => state.setShowDevOptions);
+    const showDevOptions = usePersistentAppStore((state) => state.uiFlags.showDevOptions);
+    const updateUIFlag = usePersistentAppStore((state) => state.updateUIFlag);
 
     // Snackbar state
     const [isSnackbarVisible, setSnackbarVisibility] = useState(false);
@@ -32,7 +32,7 @@ export default function VersionNumberTapper() {
         }
 
         if (tapCountRef.current >= 5) {
-            setShowDevOptions(true);
+            updateUIFlag("showDevOptions", true);
             setSnackbarText("Dev options enabled");
             setSnackbarVisibility(true);
             tapCountRef.current = 0;

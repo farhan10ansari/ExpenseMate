@@ -22,8 +22,8 @@ export default function IncomeStatsScreen() {
 
     // Income stats query
     const { data: incomeStats } = useQuery({
-        queryKey: ['stats', 'income', 'stats-in-a-period', incomesPeriod.value],
-        queryFn: () => getIncomeStatsByPeriod(incomesPeriod.value),
+        queryKey: ['stats', 'income', 'stats-in-a-period', incomesPeriod],
+        queryFn: () => getIncomeStatsByPeriod(incomesPeriod),
     });
 
     const handleRefresh = async () => {

@@ -56,7 +56,7 @@ export default function PressableCard({
           backgroundColor: variantColors.background,
           paddingHorizontal: 20,
           paddingVertical: 12,
-          minWidth: 60,
+          minWidth: 80,
           minHeight: 40,
           justifyContent: 'center',
           alignItems: 'center',
@@ -69,7 +69,7 @@ export default function PressableCard({
       <View style={{ alignItems: 'center', justifyContent: 'center' }}>
         <ThemedText
           style={{
-            fontSize: secondaryLabel ? 11 : 12,
+            fontSize: secondaryLabel ? 12 : 14,
             fontWeight: '600',
             textAlign: 'center',
             color: variantColors.text,
@@ -82,7 +82,7 @@ export default function PressableCard({
         {secondaryLabel && (
           <ThemedText
             style={{
-              fontSize: 10,
+              fontSize: 12,
               textAlign: 'center',
               color: variantColors.text,
               opacity: 0.8,

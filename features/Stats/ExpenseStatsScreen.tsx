@@ -22,8 +22,8 @@ export default function ExpenseStatsScreen() {
 
     // Expense stats query
     const { data: expenseStats } = useQuery({
-        queryKey: ['stats', 'expense', 'stats-in-a-period', expensesPeriod.value],
-        queryFn: () => getExpenseStatsByPeriod(expensesPeriod.value),
+        queryKey: ['stats', 'expense', 'stats-in-a-period', expensesPeriod],
+        queryFn: () => getExpenseStatsByPeriod(expensesPeriod),
     });
 
     const handleRefresh = async () => {
