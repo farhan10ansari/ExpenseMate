@@ -10,7 +10,7 @@ import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import { useRouter } from "expo-router";
-import { hapticNotify } from "@/features/Haptics/HapticsEngine";
+import { useHaptics } from "@/contexts/HapticsProvider";
 
 export default function DevOptionsScreen() {
   const queryClient = useQueryClient();
@@ -19,6 +19,7 @@ export default function DevOptionsScreen() {
   const [numberOfExpenses, setNumberOfExpenses] = useState(0);
   const [numberOfIncomes, setNumberOfIncomes] = useState(0);
   const updateUIFlag = usePersistentAppStore((state) => state.updateUIFlag);
+  const { hapticNotify } = useHaptics();
 
   // Snackbar state
   const [snackbarVisible, setSnackbarVisible] = useState(false);

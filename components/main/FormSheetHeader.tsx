@@ -3,7 +3,7 @@ import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { Divider, IconButton } from "react-native-paper";
 import SheetGrabber from "../ui/SheetGrabber";
-import { hapticImpact } from "@/features/Haptics/HapticsEngine";
+import { useHaptics } from "@/contexts/HapticsProvider";
 
 type FormSheetHeaderProps = {
     title: string | React.ReactNode;
@@ -13,6 +13,7 @@ type FormSheetHeaderProps = {
 
 export default function FormSheetHeader({ title, onClose, headerStyle }: FormSheetHeaderProps) {
     const { colors } = useAppTheme();
+    const { hapticImpact } = useHaptics();
 
     const styles = StyleSheet.create({
         row: {

@@ -16,7 +16,7 @@ import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
 import { tryCatch } from "@/lib/try-catch";
 import useAppStore from "@/stores/useAppStore";
 import FormSheetHeader from "@/components/main/FormSheetHeader";
-import { hapticImpact, hapticNotify } from "@/features/Haptics/HapticsEngine";
+import { useHaptics } from "@/contexts/HapticsProvider";
 
 // Build source mapping for icons/labels/colors
 const sourceMapping = Object.fromEntries(DefaultIncomeSources.map(cat => [cat.name, cat]));
@@ -30,6 +30,7 @@ export default function IncomeInfoScreen() {
     const setGlobalSnackbar = useAppStore((state) => state.setGlobalSnackbar);
     const [showDeleteConfirmationDialog, setShowDeleteConfirmationDialog] = useState(false);
     const router = useRouter();
+    const { hapticImpact, hapticNotify } = useHaptics()
 
     const { data: income, isLoading, isError, error } = useQuery({
         queryKey: ['income', id],

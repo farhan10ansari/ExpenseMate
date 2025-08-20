@@ -17,7 +17,7 @@ import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
 import { tryCatch } from "@/lib/try-catch";
 import useAppStore from "@/stores/useAppStore";
 import FormSheetHeader from "@/components/main/FormSheetHeader";
-import { hapticImpact, hapticNotify } from "@/features/Haptics/HapticsEngine";
+import { useHaptics } from "@/contexts/HapticsProvider";
 
 export default function ExpenseInfoScreen() {
     const { colors } = useAppTheme();
@@ -29,6 +29,7 @@ export default function ExpenseInfoScreen() {
     const setGlobalSnackbar = useAppStore((state) => state.setGlobalSnackbar);
     const [showDeleteConfirmationDialog, setShowDeleteConfirmationDialog] = useState(false);
     const router = useRouter();
+    const { hapticImpact, hapticNotify } = useHaptics()
 
     const { data: expense, isLoading, isError, error } = useQuery({
         queryKey: ['expense', id],

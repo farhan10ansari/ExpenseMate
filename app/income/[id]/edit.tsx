@@ -1,6 +1,6 @@
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 import CustomSnackbar from "@/components/ui/CustomSnackbar";
-import { hapticNotify } from "@/features/Haptics/HapticsEngine";
+import { useHaptics } from "@/contexts/HapticsProvider";
 import IncomeForm from "@/features/Income/IncomeForm";
 import { IncomeData, IncomeStoreProvider } from "@/features/Income/IncomeStoreProvider";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
@@ -22,6 +22,7 @@ export default function EditIncomeScreen() {
     const { keyboardHeight, setKeyboardHeight } = useKeyboardHeight();
     const { id } = useLocalSearchParams<{ id: string }>();
     const insets = useSafeAreaInsets();
+    const { hapticNotify } = useHaptics();
 
     const { data: income, isLoading, isError, error } = useQuery({
         queryKey: ['income', id],

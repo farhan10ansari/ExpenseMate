@@ -5,7 +5,7 @@ import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { List, Switch } from "react-native-paper";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
-import { hapticImpact } from "@/features/Haptics/HapticsEngine";
+import { useHaptics } from "@/contexts/HapticsProvider";
 
 export default function SettingsScreen() {
   const { colors } = useAppTheme();
@@ -13,6 +13,8 @@ export default function SettingsScreen() {
   const setLanguage = usePersistentAppStore(state => state.setLanguage);
   const currency = usePersistentAppStore(state => state.currency);
   const setCurrency = usePersistentAppStore(state => state.setCurrency);
+  const { hapticImpact } = useHaptics()
+
 
   // Haptics settings
   const haptics = usePersistentAppStore(state => state.haptics);

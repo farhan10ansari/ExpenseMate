@@ -11,12 +11,13 @@ import { addExpense } from "@/repositories/ExpenseRepo";
 import { addIncome } from "@/repositories/IncomeRepo";
 import { ExpenseData } from "@/features/Expense/ExpenseStoreProvider";
 import { IncomeData } from "@/features/Income/IncomeStoreProvider";
-import { hapticNotify } from "@/features/Haptics/HapticsEngine";
+import { useHaptics } from "@/contexts/HapticsProvider";
 
 export function useTransactionForm() {
     const navigation = useNavigation();
     const queryClient = useQueryClient();
     const { colors } = useAppTheme();
+    const { hapticNotify } = useHaptics();
     const { keyboardHeight, setKeyboardHeight } = useKeyboardHeight();
 
     // Snackbar state

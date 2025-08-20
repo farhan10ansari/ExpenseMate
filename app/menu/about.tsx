@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import CustomSnackbar from "@/components/ui/CustomSnackbar";
-import { hapticNotify } from "@/features/Haptics/HapticsEngine";
+import { useHaptics } from "@/contexts/HapticsProvider";
 
 const APP_NAME = process.env.EXPO_PUBLIC_APP_NAME;
 const APP_VERSION = process.env.EXPO_PUBLIC_APP_VERSION;
@@ -20,6 +20,7 @@ export default function AboutScreen() {
     const { colors } = useAppTheme();
     const showDevOptions = usePersistentAppStore((state) => state.uiFlags.showDevOptions);
     const updateUiFlag = usePersistentAppStore((state) => state.updateUIFlag);
+    const { hapticNotify } = useHaptics();
 
     // Snackbar state
     const [isSnackbarVisible, setSnackbarVisibility] = useState(false);

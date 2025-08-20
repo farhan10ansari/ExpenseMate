@@ -21,7 +21,7 @@ import useAppStore from "@/stores/useAppStore";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import ErrorState from "@/components/main/ErrorState";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { hapticImpact } from "@/features/Haptics/HapticsEngine";
+import { useHaptics } from "@/contexts/HapticsProvider";
 
 type IncomeSection = {
     title: string;
@@ -38,6 +38,7 @@ export default function IncomesScreen() {
     const { handleScroll, scrollToTop, showScrollToTop } = useScrollToTop(scrollElementRef);
     const globalSnackbar = useAppStore((state) => state.globalSnackbar);
     const insets = useSafeAreaInsets();
+    const { hapticImpact } = useHaptics()
 
     // Fetch incomes by month with pagination
     const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage, isError, error } =

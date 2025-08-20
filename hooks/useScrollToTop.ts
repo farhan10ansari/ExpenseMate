@@ -1,4 +1,4 @@
-import { hapticImpact } from "@/features/Haptics/HapticsEngine";
+import { useHaptics } from "@/contexts/HapticsProvider";
 import { useCallback, useRef, useState } from "react";
 import { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 
@@ -6,6 +6,8 @@ import { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 export const useScrollToTop = (scrollElementRef: React.RefObject<any>) => {
     // FAB visibility state
     const [showScrollToTop, setShowScrollToTop] = useState(false);
+    // haptic feedback context
+    const { hapticImpact } = useHaptics();
     // track last scroll offset to detect direction
     const lastOffsetY = useRef(0);
     // handle scroll event to show/hide FAB

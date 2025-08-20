@@ -3,7 +3,7 @@ import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import ThemedButton from '@/components/ui/ThemedButton';
-import { hapticSelect } from "@/features/Haptics/HapticsEngine";
+import { useHaptics } from "@/contexts/HapticsProvider";
 
 
 type Tab = {
@@ -20,6 +20,7 @@ type FormSheetTabsProps = {
 
 export default function FormSheetTabs({ tabs, activeTab, onTabChange }: FormSheetTabsProps) {
     const { colors } = useAppTheme();
+    const { hapticSelect } = useHaptics();
 
     const styles = StyleSheet.create({
         container: {

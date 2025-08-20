@@ -5,8 +5,7 @@ import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
 import ThemedButton from "../ui/ThemedButton";
-import { hapticImpact } from "@/features/Haptics/HapticsEngine";
-
+import { useHaptics } from "@/contexts/HapticsProvider";
 
 type PaymentMethodInputProps = {
     paymentMethod: string | undefined | null;
@@ -14,6 +13,7 @@ type PaymentMethodInputProps = {
 }
 
 export default function PaymentMethodInput({ paymentMethod, setPaymentMethod }: PaymentMethodInputProps) {
+    const { hapticImpact } = useHaptics();
     const styles = StyleSheet.create({
         container: {
             flexDirection: 'row',

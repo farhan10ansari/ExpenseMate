@@ -1,4 +1,3 @@
-import { hapticImpact } from '@/features/Haptics/HapticsEngine';
 import { extractDateLabel } from '@/lib/functions';
 import React, { useCallback, useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
@@ -6,6 +5,7 @@ import { Button } from 'react-native-paper';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { SingleChange } from 'react-native-paper-dates/lib/typescript/Date/Calendar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useHaptics } from '@/contexts/HapticsProvider';
 
 type DateInputProps = {
     datetime: Date | undefined;
@@ -15,6 +15,7 @@ type DateInputProps = {
 
 export default function DateInput({ datetime, setDatetime, style }: DateInputProps) {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const { hapticImpact } = useHaptics();
 
     const styles = StyleSheet.create({
         button: {

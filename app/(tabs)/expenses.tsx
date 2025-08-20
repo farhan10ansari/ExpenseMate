@@ -9,7 +9,7 @@ import MonthTabsContainer from "@/features/Expense/components/MonthTabsContainer
 import ExpensesList from "@/features/Expense/components/ExpenseList";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { hapticImpact } from "@/features/Haptics/HapticsEngine";
+import { useHaptics } from "@/contexts/HapticsProvider";
 
 type ExpenseSection = {
     title: string;
@@ -23,6 +23,7 @@ export default function ExpensesScreen() {
     const isFocused = useIsFocused();
     const globalSnackbar = useAppStore((state) => state.globalSnackbar);
     const insets = useSafeAreaInsets();
+    const { hapticImpact } = useHaptics()
 
     const handleMonthSelect = (offsetMonth: number | null) => {
         hapticImpact();

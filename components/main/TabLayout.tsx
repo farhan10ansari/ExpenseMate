@@ -1,4 +1,4 @@
-import { hapticSelect } from '@/features/Haptics/HapticsEngine';
+import { useHaptics } from '@/contexts/HapticsProvider';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Tabs, useRouter } from 'expo-router';
@@ -9,6 +9,7 @@ import { IconButton } from 'react-native-paper';
 function TabLayout() {
   const router = useRouter();
   const { colors } = useAppTheme();
+  const { hapticSelect } = useHaptics();
 
   const handleNavigateToNewTransaction = () => {
     hapticSelect();

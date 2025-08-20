@@ -3,7 +3,7 @@ import { AddCategory, getCategoryRows } from '@/stores/useExpenseCategoriesStore
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import ThemedButton from '@/components/ui/ThemedButton';
-import { hapticImpact, hapticSelect } from '@/features/Haptics/HapticsEngine';
+import { useHaptics } from '@/contexts/HapticsProvider';
 
 type CategoryInputProps = {
     categories: Category[];
@@ -14,6 +14,8 @@ type CategoryInputProps = {
 
 export default function CategoriesInput({ categories, category, setCategory, colorType = "primary" }: CategoryInputProps) {
     const { colors } = useAppTheme();
+    const { hapticImpact } = useHaptics()
+
     // categories store
 
     const styles = StyleSheet.create({

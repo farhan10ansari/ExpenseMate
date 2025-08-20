@@ -14,7 +14,7 @@ import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { Button, IconButton, Menu } from 'react-native-paper';
 import { Href, useNavigation, useRouter } from 'expo-router';
 import usePersistentAppStore from '@/stores/usePersistentAppStore';
-import { hapticImpact } from '@/features/Haptics/HapticsEngine';
+import { useHaptics } from '@/contexts/HapticsProvider';
 
 
 export default function HomeScreen() {
@@ -23,6 +23,7 @@ export default function HomeScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { hapticImpact } = useHaptics()
   // Expense stats query
   const { data: expenseStats } = useQuery({
     queryKey: ['stats', 'expense', 'stats-in-a-period', expensesPeriod],

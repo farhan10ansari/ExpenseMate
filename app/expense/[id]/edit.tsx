@@ -1,8 +1,8 @@
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 import CustomSnackbar from "@/components/ui/CustomSnackbar";
+import { useHaptics } from "@/contexts/HapticsProvider";
 import ExpenseForm from "@/features/Expense/ExpenseForm";
 import { ExpenseData, ExpenseStoreProvider } from "@/features/Expense/ExpenseStoreProvider";
-import { hapticNotify } from "@/features/Haptics/HapticsEngine";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
 import { tryCatch } from "@/lib/try-catch";
 import { Screens } from "@/lib/types";
@@ -22,6 +22,7 @@ export default function EditExpenseScreen() {
     const { keyboardHeight, setKeyboardHeight } = useKeyboardHeight();
     const { id } = useLocalSearchParams<{ id: string }>();
     const insets = useSafeAreaInsets()
+    const { hapticNotify } = useHaptics()
 
     const { data: expense, isLoading, isError, error } = useQuery({
         queryKey: ['expense', id],

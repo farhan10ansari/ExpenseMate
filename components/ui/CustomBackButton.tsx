@@ -1,11 +1,12 @@
-import { hapticImpact } from "@/features/Haptics/HapticsEngine";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { memo } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
+import { useHaptics } from "@/contexts/HapticsProvider";
 
 const CustomBackButton = (({ onPress }: { onPress: () => void }) => {
     const { colors } = useAppTheme();
+    const { hapticImpact } = useHaptics();
 
     const styles = StyleSheet.create({
         container:{

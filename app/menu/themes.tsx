@@ -5,12 +5,14 @@ import { Button } from "react-native-paper";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { hapticImpact } from "@/features/Haptics/HapticsEngine";
+import { useHaptics } from "@/contexts/HapticsProvider";
 
 export default function ThemesScreen() {
   const { colors } = useAppTheme();
   const theme = usePersistentAppStore(state => state.theme);
   const setTheme = usePersistentAppStore(state => state.setTheme);
+  const { hapticImpact } = useHaptics()
+
 
   const styles = StyleSheet.create({
     container: {

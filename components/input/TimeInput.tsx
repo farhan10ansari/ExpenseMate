@@ -1,4 +1,3 @@
-import { hapticImpact } from '@/features/Haptics/HapticsEngine';
 import { useLocalization } from '@/hooks/useLocalization';
 import { extractTimeString } from '@/lib/functions';
 import React, { useCallback, useState } from 'react';
@@ -6,6 +5,7 @@ import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Button } from 'react-native-paper';
 import { TimePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useHaptics } from '@/contexts/HapticsProvider';
 
 type TimeInputProps = {
     datetime: Date | undefined;
@@ -16,6 +16,7 @@ type TimeInputProps = {
 export default function TimeInput({ datetime, setDatetime, style }: TimeInputProps) {
     const { uses24HourClock } = useLocalization()
     const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+    const { hapticImpact } = useHaptics();
 
     const styles = StyleSheet.create({
         button: {

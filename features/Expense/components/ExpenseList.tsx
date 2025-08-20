@@ -15,7 +15,8 @@ import {
 import { Button, ActivityIndicator } from "react-native-paper";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ErrorState from "@/components/main/ErrorState";
-import { hapticImpact } from "@/features/Haptics/HapticsEngine";
+import { useHaptics } from "@/contexts/HapticsProvider";
+
 
 type ExpenseSection = {
     title: string;
@@ -37,6 +38,8 @@ export default function ExpensesList({
     const queryClient = useQueryClient();
     const { colors } = useAppTheme();
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const { hapticImpact } = useHaptics()
+
 
     // Create query key based on selected month
     const queryKey = selectedOffsetMonth === null
