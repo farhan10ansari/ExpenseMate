@@ -17,6 +17,7 @@ import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
 import { tryCatch } from "@/lib/try-catch";
 import useAppStore from "@/stores/useAppStore";
 import FormSheetHeader from "@/components/main/FormSheetHeader";
+import { hapticImpact, hapticNotify } from "@/features/Haptics/HapticsEngine";
 
 export default function ExpenseInfoScreen() {
     const { colors } = useAppTheme();
@@ -37,7 +38,7 @@ export default function ExpenseInfoScreen() {
     });
 
     const styles = StyleSheet.create({
-        container:{
+        container: {
             backgroundColor: colors.card,
 
         },
@@ -83,6 +84,7 @@ export default function ExpenseInfoScreen() {
     const handleDelete = async () => {
         const { error } = await tryCatch(softDeleteExpenseById(id))
         if (error) {
+            hapticNotify("error");
             setGlobalSnackbar({
                 message: 'Error in deleting expense',
                 duration: 2000,
@@ -94,6 +96,7 @@ export default function ExpenseInfoScreen() {
             });
         }
         else {
+            hapticNotify("success");
             queryClient.invalidateQueries({ queryKey: ['expenses'] });
             queryClient.invalidateQueries({ queryKey: ['stats', 'expense'] });
             navigation.goBack()
@@ -110,6 +113,7 @@ export default function ExpenseInfoScreen() {
     }
 
     const handleEdit = () => {
+        hapticImpact("light");
         router.push(`/expense/${id}/edit`);
     }
 
@@ -194,7 +198,10 @@ export default function ExpenseInfoScreen() {
                             mode="elevated"
                             style={[styles.button, styles.deleteButton]}
                             labelStyle={styles.deleteButtonText}
-                            onPress={() => setShowDeleteConfirmationDialog(true)}
+                            onPress={() => {
+                                hapticImpact("light");
+                                setShowDeleteConfirmationDialog(true)
+                            }}
                         >
                             Delete
                         </Button>

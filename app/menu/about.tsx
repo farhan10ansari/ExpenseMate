@@ -7,6 +7,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import CustomSnackbar from "@/components/ui/CustomSnackbar";
+import { hapticNotify } from "@/features/Haptics/HapticsEngine";
 
 const APP_NAME = process.env.EXPO_PUBLIC_APP_NAME;
 const APP_VERSION = process.env.EXPO_PUBLIC_APP_VERSION;
@@ -51,6 +52,7 @@ export default function AboutScreen() {
 
         if (showDevOptions) {
             setSnackbarText("Dev options already enabled");
+            hapticNotify("warning");
             setSnackbarVisibility(true);
             tapCountRef.current = 0;
             return;
@@ -59,6 +61,7 @@ export default function AboutScreen() {
         if (tapCountRef.current >= 5) {
             updateUiFlag("showDevOptions", true);
             setSnackbarText("Dev options enabled");
+            hapticNotify("success")
             setSnackbarVisibility(true);
             tapCountRef.current = 0;
         }

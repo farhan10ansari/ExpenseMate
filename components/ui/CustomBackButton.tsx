@@ -1,3 +1,4 @@
+import { hapticImpact } from "@/features/Haptics/HapticsEngine";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { memo } from "react";
@@ -30,7 +31,10 @@ const CustomBackButton = (({ onPress }: { onPress: () => void }) => {
         <View style={styles.container}>
             <Pressable
                 style={styles.backButton}
-                onPress={onPress}
+                onPress={()=>{
+                    hapticImpact();
+                    onPress();
+                }}
                 android_ripple={{
                     color: colors.ripplePrimary,
                     borderless: false

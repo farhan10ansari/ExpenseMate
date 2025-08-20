@@ -3,8 +3,9 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { List } from "react-native-paper";
+import { List, Switch } from "react-native-paper";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
+import { hapticImpact } from "@/features/Haptics/HapticsEngine";
 
 export default function SettingsScreen() {
   const { colors } = useAppTheme();
@@ -12,6 +13,10 @@ export default function SettingsScreen() {
   const setLanguage = usePersistentAppStore(state => state.setLanguage);
   const currency = usePersistentAppStore(state => state.currency);
   const setCurrency = usePersistentAppStore(state => state.setCurrency);
+
+  // Haptics settings
+  const haptics = usePersistentAppStore(state => state.haptics);
+  const setHaptics = usePersistentAppStore(state => state.setHaptics);
 
   const styles = StyleSheet.create({
     container: {
@@ -71,6 +76,12 @@ export default function SettingsScreen() {
       borderRadius: 12,
       alignSelf: "flex-start",
     },
+    checkIconContainer: {
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 12,
+      alignSelf: "flex-start",
+    },
     comingSoonText: {
       color: colors.onPrimaryContainer,
       fontSize: 12,
@@ -125,14 +136,46 @@ export default function SettingsScreen() {
     },
   ];
 
+  const hapticsIntensityOptions = [
+    {
+      key: "light",
+      label: "Light",
+      description: "Subtle vibration feedback",
+      icon: "radiobox-blank", // Empty circle for light
+    },
+    {
+      key: "medium",
+      label: "Medium",
+      description: "Balanced vibration feedback",
+      icon: "checkbox-blank-circle", // Half-filled for medium
+    },
+    {
+      key: "heavy",
+      label: "Heavy",
+      description: "Strong vibration feedback",
+      icon: "checkbox-marked-circle", // Filled circle for heavy
+    },
+  ];
+
+
+  const handleHapticsToggle = (enabled: boolean) => {
+    setHaptics(enabled);
+    if (enabled) {
+      hapticImpact("medium");
+    }
+  };
+
+  const handleIntensityChange = (intensity: "light" | "medium" | "heavy") => {
+    setHaptics(true, intensity);
+    hapticImpact(intensity);
+  };
+
   return (
     <ScreenWrapper
       background="card"
       withScrollView
     >
-      <View
-        style={styles.container}
-      >
+      <View style={styles.container}>
         {/* Language Section */}
         <View style={styles.sectionContainer}>
           <View style={styles.sectionHeader}>
@@ -172,11 +215,13 @@ export default function SettingsScreen() {
               right={() => (
                 <>
                   {language === option.key && option.available && (
-                    <MaterialCommunityIcons
-                      name="check"
-                      size={20}
-                      color={colors.primary}
-                    />
+                    <View style={styles.checkIconContainer}>
+                      <MaterialCommunityIcons
+                        name="check"
+                        size={20}
+                        color={colors.primary}
+                      />
+                    </View>
                   )}
                   {!option.available && (
                     <View style={styles.comingSoonBadge}>
@@ -187,7 +232,12 @@ export default function SettingsScreen() {
                   )}
                 </>
               )}
-              onPress={() => option.available && setLanguage(option.key as "english")}
+              onPress={() => {
+                if (option.available) {
+                  hapticImpact("light");
+                  setLanguage(option.key as "english");
+                }
+              }}
               disabled={!option.available}
             />
           ))}
@@ -232,11 +282,13 @@ export default function SettingsScreen() {
               right={() => (
                 <>
                   {currency === option.key && option.available && (
-                    <MaterialCommunityIcons
-                      name="check"
-                      size={20}
-                      color={colors.primary}
-                    />
+                    <View style={styles.checkIconContainer}>
+                      <MaterialCommunityIcons
+                        name="check"
+                        size={20}
+                        color={colors.primary}
+                      />
+                    </View>
                   )}
                   {!option.available && (
                     <View style={styles.comingSoonBadge}>
@@ -247,10 +299,94 @@ export default function SettingsScreen() {
                   )}
                 </>
               )}
-              onPress={() => option.available && setCurrency(option.key as "rupees")}
+              onPress={() => {
+                if (option.available) {
+                  hapticImpact("light");
+                  setCurrency(option.key as "rupees");
+                }
+              }}
               disabled={!option.available}
             />
           ))}
+        </View>
+
+        {/* Haptics Section */}
+        <View style={styles.sectionContainer}>
+          <View style={styles.sectionHeader}>
+            <MaterialCommunityIcons
+              name="vibrate"
+              size={24}
+              color={colors.primary}
+              style={styles.sectionIcon}
+            />
+            <ThemedText style={styles.sectionTitle}>
+              Haptic Feedback
+            </ThemedText>
+          </View>
+
+          <ThemedText style={styles.descriptionText}>
+            Control vibration feedback when interacting with the app. Choose your preferred intensity level.
+          </ThemedText>
+
+          {/* Enable/Disable Haptics */}
+          <List.Item
+            title="Enable Haptic Feedback"
+            description="Feel vibrations when using the app"
+            titleStyle={styles.listItemTitle}
+            descriptionStyle={styles.listItemDescription}
+            style={styles.listItem}
+            left={(props) => (
+              <List.Icon
+                {...props}
+                icon={haptics.enabled ? "vibrate" : "vibrate-off"}
+                color={haptics.enabled ? colors.primary : colors.muted}
+              />
+            )}
+            right={() => (
+              <Switch
+                value={haptics.enabled}
+                onValueChange={handleHapticsToggle}
+                style={{ transform: [{ scale: 0.9 }] }}
+              />
+            )}
+            onPress={() => handleHapticsToggle(!haptics.enabled)}
+          />
+
+          {/* Intensity Options - Only show when haptics is enabled */}
+          {haptics.enabled && (
+            <>
+              <View style={{ height: 8 }} />
+              {hapticsIntensityOptions.map((option) => (
+                <List.Item
+                  key={option.key}
+                  title={option.label}
+                  description={option.description}
+                  titleStyle={styles.listItemTitle}
+                  descriptionStyle={styles.listItemDescription}
+                  style={styles.listItem}
+                  left={(props) => (
+                    <List.Icon
+                      {...props}
+                      icon={option.icon}
+                      color={haptics.intensity === option.key ? colors.primary : colors.muted}
+                    />
+                  )}
+                  right={() => (
+                    haptics.intensity === option.key && (
+                      <View style={styles.checkIconContainer}>
+                        <MaterialCommunityIcons
+                          name="check"
+                          size={20}
+                          color={colors.primary}
+                        />
+                      </View>
+                    )
+                  )}
+                  onPress={() => handleIntensityChange(option.key as "light" | "medium" | "heavy")}
+                />
+              ))}
+            </>
+          )}
         </View>
 
         {/* More Settings Coming Soon */}

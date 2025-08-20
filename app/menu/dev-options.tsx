@@ -10,6 +10,7 @@ import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import { useRouter } from "expo-router";
+import { hapticNotify } from "@/features/Haptics/HapticsEngine";
 
 export default function DevOptionsScreen() {
   const queryClient = useQueryClient();
@@ -134,6 +135,7 @@ export default function DevOptionsScreen() {
 
     const { error } = await tryCatch(seedDummyExpenses(numberOfExpenses));
     if (!error) {
+      hapticNotify("success");
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
       queryClient.invalidateQueries({ queryKey: ['stats'] });
       queryClient.invalidateQueries({ queryKey: ['incomes'] });
@@ -141,6 +143,7 @@ export default function DevOptionsScreen() {
       showSnackbar(`Successfully added ${numberOfExpenses} dummy expenses!`);
       setNumberOfExpenses(0);
     } else {
+      hapticNotify("error");
       showSnackbar("Failed to add dummy expenses. Please try again.", "error");
     }
     Keyboard.dismiss();
@@ -151,14 +154,16 @@ export default function DevOptionsScreen() {
 
     const { error } = await tryCatch(seedDummyIncome(numberOfIncomes));
     if (!error) {
+      hapticNotify("success");
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
       queryClient.invalidateQueries({ queryKey: ['stats'] });
       queryClient.invalidateQueries({ queryKey: ['incomes'] });
-      
+
       showSnackbar(`Successfully added ${numberOfIncomes} dummy incomes!`);
       setNumberOfIncomes(0);
       Keyboard.dismiss();
     } else {
+      hapticNotify("error");
       showSnackbar("Failed to add dummy incomes. Please try again.", "error");
     }
     Keyboard.dismiss();

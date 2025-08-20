@@ -3,6 +3,7 @@ import { AddCategory, getCategoryRows } from '@/stores/useExpenseCategoriesStore
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import ThemedButton from '@/components/ui/ThemedButton';
+import { hapticImpact, hapticSelect } from '@/features/Haptics/HapticsEngine';
 
 type CategoryInputProps = {
     categories: Category[];
@@ -51,6 +52,7 @@ export default function CategoriesInput({ categories, category, setCategory, col
                                 labelStyle={styles.categoryButtonLabelStyle}
                                 themedBorder
                                 onPress={() => {
+                                    hapticImpact();
                                     setCategory(c.name);
                                 }}
                             >

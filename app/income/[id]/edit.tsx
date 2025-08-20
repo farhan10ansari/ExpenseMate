@@ -1,5 +1,6 @@
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 import CustomSnackbar from "@/components/ui/CustomSnackbar";
+import { hapticNotify } from "@/features/Haptics/HapticsEngine";
 import IncomeForm from "@/features/Income/IncomeForm";
 import { IncomeData, IncomeStoreProvider } from "@/features/Income/IncomeStoreProvider";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
@@ -45,6 +46,7 @@ export default function EditIncomeScreen() {
         if (!amount) missingFields.push('amount');
         const actualAmount = parseFloat(amount ? amount : '0');
         if (actualAmount < 1) {
+            hapticNotify("warning");
             setErrorText('Minimum amount should be ₹1');
             setSnackbarVisibility(true);
             return;
@@ -53,6 +55,7 @@ export default function EditIncomeScreen() {
         if (!source) missingFields.push('source');
         if (!dateTime) missingFields.push('date');
         if (!amount || !source || !dateTime) {
+            hapticNotify("warning");
             setErrorText(`Please fill the missing fields: ${missingFields.join(', ')}`);
             setSnackbarVisibility(true);
             return;
@@ -69,6 +72,7 @@ export default function EditIncomeScreen() {
             (income.currency ?? "INR") !== (currency ?? "INR");
 
         if (!hasChanged) {
+            hapticNotify("warning");
             setErrorText("No changes detected.");
             setSnackbarVisibility(true);
             return;
@@ -87,11 +91,12 @@ export default function EditIncomeScreen() {
         );
 
         if (error) {
+            hapticNotify("error");
             setErrorText('Failed to update income. Please try again.');
             setSnackbarVisibility(true);
             return;
         }
-
+        hapticNotify("success");
         setGlobalSnackbar({
             message: 'Income updated successfully',
             duration: 2000,

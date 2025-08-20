@@ -11,6 +11,7 @@ import { addExpense } from "@/repositories/ExpenseRepo";
 import { addIncome } from "@/repositories/IncomeRepo";
 import { ExpenseData } from "@/features/Expense/ExpenseStoreProvider";
 import { IncomeData } from "@/features/Income/IncomeStoreProvider";
+import { hapticNotify } from "@/features/Haptics/HapticsEngine";
 
 export function useTransactionForm() {
     const navigation = useNavigation();
@@ -34,6 +35,7 @@ export function useTransactionForm() {
         if (!amount) missingFields.push('amount');
         const actualAmount = parseFloat(amount ? amount : '0');
         if (actualAmount < 1) {
+            hapticNotify('warning');
             setErrorText('Minimum amount should be ₹1');
             setSnackbarVisibility(true);
             return;
@@ -42,6 +44,7 @@ export function useTransactionForm() {
         if (!category) missingFields.push('category');
         if (!datetime) missingFields.push('datetime');
         if (!amount || !category || !datetime) {
+            hapticNotify('warning');
             setErrorText(`Please fill the missing fields i.e. ${missingFields.join(', ')}`);
             setSnackbarVisibility(true);
             return;
@@ -56,11 +59,12 @@ export function useTransactionForm() {
         }));
 
         if (error) {
+            hapticNotify('error');
             setErrorText('Failed to add expense. Please try again.');
             setSnackbarVisibility(true);
             return;
         }
-
+        hapticNotify('success');
         showSuccessAndNavigate('Expense added successfully', ['expenses']);
     };
 
@@ -71,6 +75,7 @@ export function useTransactionForm() {
         if (!amount) missingFields.push('amount');
         const actualAmount = parseFloat(amount ? amount : '0');
         if (actualAmount < 1) {
+            hapticNotify('warning');
             setErrorText('Minimum amount should be ₹1');
             setSnackbarVisibility(true);
             return;
@@ -79,6 +84,7 @@ export function useTransactionForm() {
         if (!source) missingFields.push('source');
         if (!dateTime) missingFields.push('date');
         if (!amount || !source || !dateTime) {
+            hapticNotify('warning');
             setErrorText(`Please fill the missing fields i.e. ${missingFields.join(', ')}`);
             setSnackbarVisibility(true);
             return;
@@ -95,11 +101,12 @@ export function useTransactionForm() {
         }));
 
         if (error) {
+            hapticNotify('error');
             setErrorText('Failed to add income. Please try again.');
             setSnackbarVisibility(true);
             return;
         }
-
+        hapticNotify('success');
         showSuccessAndNavigate('Income added successfully', ['incomes']);
     };
 

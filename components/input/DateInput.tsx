@@ -1,3 +1,4 @@
+import { hapticImpact } from '@/features/Haptics/HapticsEngine';
 import { extractDateLabel } from '@/lib/functions';
 import React, { useCallback, useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
@@ -51,7 +52,10 @@ export default function DateInput({ datetime, setDatetime, style }: DateInputPro
             <Button
                 icon="calendar"
                 mode="elevated"
-                onPress={() => setDatePickerVisibility(true)}
+                onPress={() => {
+                    hapticImpact()
+                    setDatePickerVisibility(true)
+                }}
                 style={styles.button}
             >
                 {datetime ? dateLabel : "Set date"}

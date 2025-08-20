@@ -1,3 +1,4 @@
+import { hapticImpact } from "@/features/Haptics/HapticsEngine";
 import { useCallback, useRef, useState } from "react";
 import { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 
@@ -25,6 +26,7 @@ export const useScrollToTop = (scrollElementRef: React.RefObject<any>) => {
 
     // scroll back to very top
     const scrollToTop = useCallback(() => {
+        hapticImpact();
         scrollElementRef.current?.scrollToLocation({
             sectionIndex: 0,
             itemIndex: 0,

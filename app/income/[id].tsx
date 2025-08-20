@@ -16,6 +16,7 @@ import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
 import { tryCatch } from "@/lib/try-catch";
 import useAppStore from "@/stores/useAppStore";
 import FormSheetHeader from "@/components/main/FormSheetHeader";
+import { hapticImpact, hapticNotify } from "@/features/Haptics/HapticsEngine";
 
 // Build source mapping for icons/labels/colors
 const sourceMapping = Object.fromEntries(DefaultIncomeSources.map(cat => [cat.name, cat]));
@@ -81,6 +82,7 @@ export default function IncomeInfoScreen() {
     const handleDelete = async () => {
         const { error } = await tryCatch(softDeleteIncomeById(id));
         if (error) {
+            hapticNotify("error");
             setGlobalSnackbar({
                 message: 'Error in deleting income',
                 duration: 2000,
@@ -91,6 +93,7 @@ export default function IncomeInfoScreen() {
                 offset: 80,
             });
         } else {
+            hapticNotify("success");
             queryClient.invalidateQueries({ queryKey: ['incomes'] });
             queryClient.invalidateQueries({ queryKey: ['stats', 'income'] });
             navigation.goBack();
@@ -107,6 +110,7 @@ export default function IncomeInfoScreen() {
     }
 
     const handleEdit = () => {
+        hapticImpact("light");
         router.push(`/income/${id}/edit`);
     }
 
@@ -196,7 +200,10 @@ export default function IncomeInfoScreen() {
                             mode="elevated"
                             style={[styles.button, styles.deleteButton]}
                             labelStyle={styles.deleteButtonText}
-                            onPress={() => setShowDeleteConfirmationDialog(true)}
+                            onPress={() => {
+                                hapticImpact("light");
+                                setShowDeleteConfirmationDialog(true);
+                            }}
                         >
                             Delete
                         </Button>

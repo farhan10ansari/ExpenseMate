@@ -1,8 +1,9 @@
 // components/main/FormSheetTabs.tsx
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { StyleSheet, View} from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import ThemedButton from '@/components/ui/ThemedButton';
+import { hapticSelect } from "@/features/Haptics/HapticsEngine";
 
 
 type Tab = {
@@ -61,7 +62,10 @@ export default function FormSheetTabs({ tabs, activeTab, onTabChange }: FormShee
                         <ThemedButton
                             compact
                             mode="text"
-                            onPress={() => onTabChange(tab.key)}
+                            onPress={() => {
+                                hapticSelect()
+                                onTabChange(tab.key)
+                            }}
                             style={styles.tab}
                             labelStyle={[
                                 styles.tabText,

@@ -5,6 +5,7 @@ import { Button } from "react-native-paper";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { hapticImpact } from "@/features/Haptics/HapticsEngine";
 
 export default function ThemesScreen() {
   const { colors } = useAppTheme();
@@ -109,7 +110,10 @@ export default function ThemesScreen() {
                 key={option.key}
                 mode={theme === option.key ? "contained" : "outlined"}
                 style={styles.themeButton}
-                onPress={() => setTheme(option.key)}
+                onPress={() => {
+                  hapticImpact();
+                  setTheme(option.key);
+                }}
                 icon={option.icon}
                 contentStyle={{ flexDirection: "column", paddingVertical: 12 }}
                 labelStyle={{ fontSize: 14, marginTop: 4 }}

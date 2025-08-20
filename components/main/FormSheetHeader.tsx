@@ -3,6 +3,7 @@ import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { Divider, IconButton } from "react-native-paper";
 import SheetGrabber from "../ui/SheetGrabber";
+import { hapticImpact } from "@/features/Haptics/HapticsEngine";
 
 type FormSheetHeaderProps = {
     title: string | React.ReactNode;
@@ -49,7 +50,10 @@ export default function FormSheetHeader({ title, onClose, headerStyle }: FormShe
                             icon="close"
                             size={15}
                             accessibilityLabel="Close"
-                            onPress={onClose}
+                            onPress={() => {
+                                hapticImpact();
+                                onClose();
+                            }}
                             style={{ marginRight: -8, marginLeft: 8 }}
                             mode="contained-tonal"
                         />

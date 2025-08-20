@@ -1,6 +1,6 @@
+import { hapticImpact } from '@/features/Haptics/HapticsEngine';
 import { useLocalization } from '@/hooks/useLocalization';
 import { extractTimeString } from '@/lib/functions';
-import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import React, { useCallback, useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Button } from 'react-native-paper';
@@ -51,7 +51,10 @@ export default function TimeInput({ datetime, setDatetime, style }: TimeInputPro
             <Button
                 icon="clock"
                 mode="elevated"
-                onPress={() => setTimePickerVisibility(true)}
+                onPress={() => {
+                    hapticImpact()
+                    setTimePickerVisibility(true)
+                }}
                 style={styles.button}
             >
                 {datetime ? timeString : "Set time"}

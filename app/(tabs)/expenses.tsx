@@ -9,6 +9,7 @@ import MonthTabsContainer from "@/features/Expense/components/MonthTabsContainer
 import ExpensesList from "@/features/Expense/components/ExpenseList";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { hapticImpact } from "@/features/Haptics/HapticsEngine";
 
 type ExpenseSection = {
     title: string;
@@ -24,6 +25,7 @@ export default function ExpensesScreen() {
     const insets = useSafeAreaInsets();
 
     const handleMonthSelect = (offsetMonth: number | null) => {
+        hapticImpact();
         setSelectedOffsetMonth(offsetMonth);
         // Scroll to top when changing tabs
         scrollToTop();

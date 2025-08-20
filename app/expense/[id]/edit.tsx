@@ -2,6 +2,7 @@ import FormSheetHeader from "@/components/main/FormSheetHeader";
 import CustomSnackbar from "@/components/ui/CustomSnackbar";
 import ExpenseForm from "@/features/Expense/ExpenseForm";
 import { ExpenseData, ExpenseStoreProvider } from "@/features/Expense/ExpenseStoreProvider";
+import { hapticNotify } from "@/features/Haptics/HapticsEngine";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
 import { tryCatch } from "@/lib/try-catch";
 import { Screens } from "@/lib/types";
@@ -45,6 +46,7 @@ export default function EditExpenseScreen() {
         if (!amount) missingFields.push('amount');
         const actualAmount = parseFloat(amount ? amount : '0');
         if (actualAmount < 1) {
+            hapticNotify("warning");
             setErrorText('Minimum amount should be ₹1');
             setSnackbarVisibility(true);
             return;
@@ -53,6 +55,7 @@ export default function EditExpenseScreen() {
         if (!category) missingFields.push('category');
         if (!datetime) missingFields.push('datetime');
         if (!amount || !category || !datetime) {
+            hapticNotify("warning");
             setErrorText(`Please fill the missing fields: ${missingFields.join(', ')}`);
             setSnackbarVisibility(true);
             return;
@@ -67,6 +70,7 @@ export default function EditExpenseScreen() {
             expense.paymentMethod !== paymentMethod;
 
         if (!hasChanged) {
+            hapticNotify("warning");
             setErrorText("No changes detected.");
             setSnackbarVisibility(true);
             return;
@@ -83,11 +87,12 @@ export default function EditExpenseScreen() {
         );
 
         if (error) {
+            hapticNotify("error");
             setErrorText('Failed to update expense. Please try again.');
             setSnackbarVisibility(true);
             return;
         }
-
+        hapticNotify("success");
         setGlobalSnackbar({
             message: 'Expense updated successfully',
             duration: 2000,

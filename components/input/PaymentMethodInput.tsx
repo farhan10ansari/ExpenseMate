@@ -5,6 +5,7 @@ import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
 import ThemedButton from "../ui/ThemedButton";
+import { hapticImpact } from "@/features/Haptics/HapticsEngine";
 
 
 type PaymentMethodInputProps = {
@@ -13,7 +14,6 @@ type PaymentMethodInputProps = {
 }
 
 export default function PaymentMethodInput({ paymentMethod, setPaymentMethod }: PaymentMethodInputProps) {
-    const { colors } = useAppTheme()
     const styles = StyleSheet.create({
         container: {
             flexDirection: 'row',
@@ -23,20 +23,13 @@ export default function PaymentMethodInput({ paymentMethod, setPaymentMethod }: 
         },
         buttonStyle: {
             borderRadius: 20,
-            // backgroundColor: colors.onTertiary,
             paddingHorizontal: 5
         },
         buttonLabelStyle: {
             marginVertical: 8,
             marginHorizontal: 10,
-            // color: colors.tertiary
+
         },
-        selectedButton: {
-            // backgroundColor: colors.tertiary,
-        },
-        selectedButtonLabel: {
-            // color: colors.onTertiary
-        }
     });
 
 
@@ -50,15 +43,12 @@ export default function PaymentMethodInput({ paymentMethod, setPaymentMethod }: 
                         mode={paymentMethod === method.name ? "contained" : "elevated"}
                         icon={method.icon}
                         colorType="tertiary"
-                        style={[
-                            styles.buttonStyle,
-                            paymentMethod === method.name && styles.selectedButton
-                        ]}
-                        labelStyle={[
-                            styles.buttonLabelStyle,
-                            paymentMethod === method.name && styles.selectedButtonLabel
-                        ]}
-                        onPress={() => setPaymentMethod(method.name)}
+                        style={styles.buttonStyle}
+                        labelStyle={styles.buttonLabelStyle}
+                        onPress={() => {
+                            hapticImpact()
+                            setPaymentMethod(method.name)
+                        }}
                     >
                         {method.label}
                     </ThemedButton>

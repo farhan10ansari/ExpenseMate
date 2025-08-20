@@ -16,6 +16,7 @@ import 'react-native-reanimated';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import useCurrentScreenTracker from '@/hooks/useCurrentScreenTracker';
 import CustomBackButton from '@/components/ui/CustomBackButton';
+import useSystemState from '@/hooks/useSystemState';
 const queryClient = new QueryClient()
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -70,6 +71,8 @@ function MainLayout() {
 
   // Track the current screen using the custom hook
   useCurrentScreenTracker()
+  // Track system state changes like low power mode
+  useSystemState()
   return (
     <Stack
       screenOptions={{

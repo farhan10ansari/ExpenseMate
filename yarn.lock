@@ -3905,6 +3905,11 @@ expo-asset@~11.1.7:
     "@expo/image-utils" "^0.7.6"
     expo-constants "~17.1.7"
 
+expo-battery@~9.1.4:
+  version "9.1.4"
+  resolved "https://registry.yarnpkg.com/expo-battery/-/expo-battery-9.1.4.tgz#12613e39a4dd4166f79471ad271b734fce30c4e1"
+  integrity sha512-iPV0ZIXVHfoVoxPwpCSkLKg4TFRexIGO7DLl/kZhXr70mR4IscanJwaWh9yvER80Lu6Q0WSp1afmJPJLu3Fesg==
+
 expo-blur@~14.1.5:
   version "14.1.5"
   resolved "https://registry.yarnpkg.com/expo-blur/-/expo-blur-14.1.5.tgz#910712389e19286ccdc136275bf569f427aa05ef"
@@ -6281,9 +6286,9 @@ react-native-paper-dates@^0.22.42:
     color "^4.2.3"
 
 react-native-paper@^5.14.4:
-  version "5.14.5"
-  resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-5.14.5.tgz#7995a2f8171c8355c1cb55c81a6d2074a7dd5abb"
-  integrity sha512-eaIH5bUQjJ/mYm4AkI6caaiyc7BcHDwX6CqNDi6RIxfxfWxROsHpll1oBuwn/cFvknvA8uEAkqLk/vzVihI3AQ==
+  version "5.14.4"
+  resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-5.14.4.tgz#8ff978d1aebd6388c752287d557a5f8cb3716fe5"
+  integrity sha512-XtL9ilZGNZfGopt469vNCYqePNvHrZ1v6if0EXIQfXUx0vZ+lY0Cq7wi0Ap4CBxJTPbj71A1BcRyZDu6ogJKpg==
   dependencies:
     "@callstack/react-theme-provider" "^3.0.9"
     color "^3.1.2"
@@ -7470,9 +7475,9 @@ uri-js@^4.2.2:
     punycode "^2.1.0"
 
 use-latest-callback@^0.2.3:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/use-latest-callback/-/use-latest-callback-0.2.4.tgz#35c0f028f85a3f4cf025b06011110e87cc18f57e"
-  integrity sha512-LS2s2n1usUUnDq4oVh1ca6JFX9uSqUncTfAm44WMg0v6TxL7POUTk1B044NH8TeLkFbNajIsgDHcgNpNzZucdg==
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/use-latest-callback/-/use-latest-callback-0.2.3.tgz#2d644d3063040b9bc2d4c55bb525a13ae3de9e16"
+  integrity sha512-7vI3fBuyRcP91pazVboc4qu+6ZqM8izPWX9k7cRnT8hbD5svslcknsh3S9BUhaK11OmgTV4oWZZVSeQAiV53SQ==
 
 use-sync-external-store@^1.5.0:
   version "1.5.0"

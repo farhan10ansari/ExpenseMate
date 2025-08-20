@@ -21,6 +21,7 @@ import useAppStore from "@/stores/useAppStore";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import ErrorState from "@/components/main/ErrorState";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { hapticImpact } from "@/features/Haptics/HapticsEngine";
 
 type IncomeSection = {
     title: string;
@@ -59,6 +60,7 @@ export default function IncomesScreen() {
     );
 
     const onPressIncomeCard = useCallback(async (id: number) => {
+        hapticImpact();
         await queryClient.prefetchQuery({
             queryKey: ["income", id.toString()],
             queryFn: () => getIncomeById(id),
@@ -68,6 +70,7 @@ export default function IncomesScreen() {
 
     const handleRefresh = useCallback(async () => {
         setIsRefreshing(true);
+        hapticImpact();
         try {
             await queryClient.refetchQueries({ queryKey: ["incomes"] });
         } finally {

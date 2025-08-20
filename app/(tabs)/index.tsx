@@ -14,6 +14,7 @@ import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { Button, IconButton, Menu } from 'react-native-paper';
 import { Href, useNavigation, useRouter } from 'expo-router';
 import usePersistentAppStore from '@/stores/usePersistentAppStore';
+import { hapticImpact } from '@/features/Haptics/HapticsEngine';
 
 
 export default function HomeScreen() {
@@ -36,6 +37,7 @@ export default function HomeScreen() {
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
+    hapticImpact();
     try {
       await queryClient.refetchQueries({ queryKey: ['stats'] });
     } finally {

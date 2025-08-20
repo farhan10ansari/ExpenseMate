@@ -23,6 +23,7 @@
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.43.1",
     "expo": "^53.0.20",
+    "expo-battery": "~9.1.4",
     "expo-blur": "~14.1.5",
     "expo-constants": "~17.1.7",
     "expo-drizzle-studio-plugin": "^0.2.0",

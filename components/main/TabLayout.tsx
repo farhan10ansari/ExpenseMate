@@ -1,3 +1,4 @@
+import { hapticSelect } from '@/features/Haptics/HapticsEngine';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Tabs, useRouter } from 'expo-router';
@@ -10,6 +11,7 @@ function TabLayout() {
   const { colors } = useAppTheme();
 
   const handleNavigateToNewTransaction = () => {
+    hapticSelect();
     router.push('/transaction/new');
   };
   return (

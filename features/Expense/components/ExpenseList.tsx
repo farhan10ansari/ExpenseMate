@@ -15,6 +15,7 @@ import {
 import { Button, ActivityIndicator } from "react-native-paper";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ErrorState from "@/components/main/ErrorState";
+import { hapticImpact } from "@/features/Haptics/HapticsEngine";
 
 type ExpenseSection = {
     title: string;
@@ -79,6 +80,7 @@ export default function ExpensesList({
     );
 
     const onPressExpenseCard = useCallback(async (id: number) => {
+        hapticImpact();
         await queryClient.prefetchQuery({
             queryKey: ["expense", id.toString()],
             queryFn: () => getExpenseById(id),
@@ -88,6 +90,7 @@ export default function ExpensesList({
 
     const handleRefresh = useCallback(async () => {
         setIsRefreshing(true);
+        hapticImpact();
         try {
             await refetch();
             // Also refresh available months
