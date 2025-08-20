@@ -1,5 +1,4 @@
-import { PeriodIncomeStats } from "@/repositories/IncomeRepo";
-import { PeriodExpenseStats } from "./types";
+import { PeriodExpenseStats, PeriodIncomeStats } from "./types";
 
 export interface FinancialSummary {
     netIncome: number;
