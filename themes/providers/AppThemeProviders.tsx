@@ -1,28 +1,35 @@
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import { ThemeProvider } from "@react-navigation/native";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useMemo } from "react";
 import { useColorScheme } from "react-native";
 import { PaperProvider } from "react-native-paper";
 import { customDarkTheme, customLightTheme } from "../theme";
 
-const ThemeContext = createContext(customLightTheme)
+const ThemeContext = createContext(customLightTheme);
 
 function AppThemeProvider({ children }: { children: React.ReactNode }) {
     const colorScheme = useColorScheme();
     const appliedTheme = usePersistentAppStore((state) => state.theme);
 
-    const theme = appliedTheme === "system" ? (colorScheme === 'dark' ? customDarkTheme : customLightTheme) :
-        (appliedTheme === "dark" ? customDarkTheme : customLightTheme)
+    const theme = useMemo(() => {
+        if (appliedTheme === "system") {
+            return colorScheme === 'dark' ? customDarkTheme : customLightTheme;
+        }
+        return appliedTheme === "dark" ? customDarkTheme : customLightTheme;
+    }, [appliedTheme, colorScheme]);
+
+    // ✅ Memoize context value to prevent provider re-renders
+    const contextValue = useMemo(() => theme, [theme]);
 
     return (
-        <ThemeContext.Provider value={theme}>
+        <ThemeContext.Provider value={contextValue}>
             <ThemeProvider value={theme}>
                 <PaperProvider theme={theme}>
                     {children}
                 </PaperProvider>
             </ThemeProvider>
         </ThemeContext.Provider>
-    )
+    );
 }
 
 function useAppTheme() {

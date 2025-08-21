@@ -11,12 +11,14 @@ import { StatsPeriodOption } from "@/lib/types";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useRouter } from "expo-router";
 import { getAvailablePeriodsWithData } from "@/repositories/CommonRepo";
+import { useHaptics } from "@/contexts/HapticsProvider";
 
 export default function SelectStatsPeriodScreen() {
   const { colors } = useAppTheme();
   const period = useStatsStore((state) => state.period);
   const setPeriod = useStatsStore((state) => state.setPeriod);
   const router = useRouter();
+  const { hapticImpact } = useHaptics();
 
   const { data: periodsData } = useQuery({
     queryKey: ["stats", "available-periods"],
@@ -30,6 +32,7 @@ export default function SelectStatsPeriodScreen() {
   ];
 
   const handleSelectPeriod = (selectedPeriod: StatsPeriodOption) => {
+    hapticImpact();
     setPeriod(selectedPeriod);
     setTimeout(() => router.back(), 150);
   };
@@ -59,7 +62,7 @@ export default function SelectStatsPeriodScreen() {
         />
       </View>
 
-      <Divider/>
+      <Divider />
 
       {periodsData?.months && periodsData.months.length > 0 && (
         <View style={{ marginBottom: 8, gap: 8 }}>
@@ -74,7 +77,7 @@ export default function SelectStatsPeriodScreen() {
         </View>
       )}
 
-      <Divider/>
+      <Divider />
 
       {periodsData?.years && periodsData.years.length > 0 && (
         <View style={{ marginBottom: 8, gap: 8 }}>

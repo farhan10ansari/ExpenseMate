@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useMemo, useCallback } from 'react';
 import * as Haptics from 'expo-haptics';
 import { useLowPowerMode } from 'expo-battery';
 import usePersistentAppStore from '@/stores/usePersistentAppStore';
@@ -17,20 +17,30 @@ interface HapticsContextType {
 
 const HapticsContext = createContext<HapticsContextType | undefined>(undefined);
 
+// Optimized selectors for Zustand
+const selectHapticsEnabled = (state: any) => state.haptics.enabled;
+const selectHapticsIntensity = (state: any) => state.haptics.intensity;
+
 export const HapticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const isLowPowerMode = useLowPowerMode();
 
-    // Get settings from your persistent store
-    const { enabled, intensity } = usePersistentAppStore(state => state.haptics);
+    // Use separate selectors to prevent unnecessary re-renders
+    const enabled = usePersistentAppStore(selectHapticsEnabled);
+    const intensity = usePersistentAppStore(selectHapticsIntensity);
 
-    // Calculate if haptics can actually be triggered
-    const canVibrate = enabled && !isLowPowerMode;
+    // Memoize derived state
+    const canVibrate = useMemo(() =>
+        enabled && !isLowPowerMode,
+        [enabled, isLowPowerMode]
+    );
 
-    // Core haptic functions
-    const hapticImpact = async (style?: "light" | "medium" | "heavy" | "rigid" | "soft") => {
+    // Memoize haptic functions with useCallback
+    const hapticImpact = useCallback(async (style?: "light" | "medium" | "heavy" | "rigid" | "soft") => {
         if (!canVibrate) return;
 
         const resolvedIntensity = style || intensity;
+
+        console.log("hapticImpact called");
 
         try {
             switch (resolvedIntensity) {
@@ -53,11 +63,12 @@ export const HapticsProvider: React.FC<{ children: React.ReactNode }> = ({ child
         } catch (error) {
             console.warn('Haptic impact failed:', error);
         }
-    };
+    }, [canVibrate, intensity]);
 
-    const hapticNotify = async (type: "success" | "error" | "warning") => {
+    const hapticNotify = useCallback(async (type: "success" | "error" | "warning") => {
         if (!canVibrate) return;
 
+        console.log("hapticNotify called");
         try {
             switch (type) {
                 case "success":
@@ -73,20 +84,21 @@ export const HapticsProvider: React.FC<{ children: React.ReactNode }> = ({ child
         } catch (error) {
             console.warn('Haptic notification failed:', error);
         }
-    };
+    }, [canVibrate]);
 
-    const hapticSelect = async () => {
+    const hapticSelect = useCallback(async () => {
         if (!canVibrate) return;
 
+        console.log("hapticSelect called");
         try {
             await Haptics.selectionAsync();
         } catch (error) {
             console.warn('Haptic selection failed:', error);
         }
-    };
+    }, [canVibrate]);
 
-
-    const value: HapticsContextType = {
+    //  Memoize the entire context value
+    const contextValue = useMemo((): HapticsContextType => ({
         // Core functions
         hapticImpact,
         hapticNotify,
@@ -96,10 +108,10 @@ export const HapticsProvider: React.FC<{ children: React.ReactNode }> = ({ child
         isEnabled: enabled,
         intensity: intensity,
         canVibrate,
-    };
+    }), [hapticImpact, hapticNotify, hapticSelect, enabled, intensity, canVibrate]);
 
     return (
-        <HapticsContext.Provider value={value}>
+        <HapticsContext.Provider value={contextValue}>
             {children}
         </HapticsContext.Provider>
     );

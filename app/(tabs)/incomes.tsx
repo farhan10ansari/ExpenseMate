@@ -41,7 +41,7 @@ export default function IncomesScreen() {
     const { hapticImpact } = useHaptics()
 
     // Fetch incomes by month with pagination
-    const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage, isError, error } =
+    const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage, isError, error, isRefetching } =
         useInfiniteQuery({
             queryKey: ["incomes"],
             queryFn: ({ pageParam = 0 }) =>
@@ -59,6 +59,8 @@ export default function IncomesScreen() {
             })) ?? [],
         [data]
     );
+
+    console.log("isRefetching:", isRefetching);
 
     const onPressIncomeCard = useCallback(async (id: number) => {
         hapticImpact();

@@ -1,7 +1,6 @@
 import { StyleSheet, Pressable, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import Color from "color";
 
 interface MonthTabProps {
     month: string;

@@ -15,7 +15,16 @@ import 'react-native-reanimated';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { HapticsProvider } from '@/contexts/HapticsProvider';
 import MainLayout from '@/components/main/MainLayout';
-const queryClient = new QueryClient()
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity, // Queries will only be refetched when invalidated or app is restarted
+      retry: 1, // Retry failed queries once
+      refetchOnWindowFocus: false,
+    }
+  }
+});
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -41,26 +50,33 @@ export default function RootLayout() {
     return null;
   }
 
-
   if (error) {
-    return <ThemedText>Migration error: {error.message}</ThemedText>;
+    return (
+      <AppThemeProvider>
+        <ThemedText>Migration error: {error.message}</ThemedText>
+      </AppThemeProvider>
+    );
   }
+
   if (!success) {
-    return <ThemedText>Running migrations…</ThemedText>;
+    return (
+      <AppThemeProvider>
+        <ThemedText>Running migrations…</ThemedText>
+      </AppThemeProvider>
+    );
   }
 
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
         <AppThemeProvider>
           <HapticsProvider>
             <MainLayout />
+            <GlobalLevelComponents />
+            <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
           </HapticsProvider>
-          <GlobalLevelComponents />
-          <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
         </AppThemeProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>
   );
 }
-

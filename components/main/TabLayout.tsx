@@ -2,8 +2,8 @@ import { useHaptics } from '@/contexts/HapticsProvider';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Tabs, useRouter } from 'expo-router';
-import React from 'react';
-import { View } from 'react-native';
+import React, { useCallback, useMemo } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { IconButton } from 'react-native-paper';
 
 function TabLayout() {
@@ -11,27 +11,31 @@ function TabLayout() {
   const { colors } = useAppTheme();
   const { hapticSelect } = useHaptics();
 
-  const handleNavigateToNewTransaction = () => {
+  const handleNavigateToNewTransaction = useCallback(() => {
     hapticSelect();
     router.push('/transaction/new');
-  };
+  }, [hapticSelect, router]);
+
+  const screenOptions = useMemo(() => ({
+    tabBarStyle: styles.tabBar,
+    tabBarItemStyle: styles.tabBarItem,
+    headerStyle: {
+      backgroundColor: colors.background,
+    },
+    headerShadowVisible: false,
+  }), [colors.background]);
+
+  const customTabButtonProps = useMemo(() => ({
+    onPress: handleNavigateToNewTransaction,
+    borderColor: colors.border,
+  }), [handleNavigateToNewTransaction, colors]);
+
+  const renderCustomTabButton = useCallback(() => (
+    <CustomTabButton {...customTabButtonProps} />
+  ), [customTabButtonProps]);
+
   return (
-    <Tabs
-      screenOptions={{
-        tabBarStyle: {
-          borderTopEndRadius: 24,
-          borderTopStartRadius: 24,
-          position: 'absolute',
-        },
-        tabBarItemStyle: {
-          backgroundColor: 'transparent',
-        },
-        headerStyle: {
-          backgroundColor: colors.background,
-        },
-        headerShadowVisible: false,
-      }}
-    >
+    <Tabs screenOptions={screenOptions}>
       <Tabs.Screen
         name="index"
         options={{
@@ -51,25 +55,9 @@ function TabLayout() {
         options={{
           title: 'Transaction',
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="add" color={color} />,
-          tabBarButton: (props) => (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <IconButton
-                icon="plus"
-                mode='contained'
-                size={48}
-                style={{
-                  borderColor: colors.border,
-                  borderWidth: 1,
-                  elevation: 5,
-                  top: -12,
-                }}
-                onPress={handleNavigateToNewTransaction}
-              />
-            </View>
-          ),
+          tabBarButton: renderCustomTabButton,
         }}
       />
-
       <Tabs.Screen
         name="incomes"
         options={{
@@ -88,5 +76,41 @@ function TabLayout() {
   );
 }
 
-
 export default TabLayout;
+
+
+
+const styles = StyleSheet.create({
+  tabBar: {
+    borderTopEndRadius: 24,
+    borderTopStartRadius: 24,
+    position: 'absolute',
+  },
+  tabBarItem: {
+    backgroundColor: 'transparent',
+  },
+  customTabButtonContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  customTabButtonIcon: {
+    borderWidth: 1,
+    elevation: 5,
+    top: -12,
+  },
+});
+
+const CustomTabButton = React.memo(({ onPress, borderColor }: { onPress: () => void, borderColor: string }) => (
+  <View style={styles.customTabButtonContainer}>
+    <IconButton
+      icon="plus"
+      mode='contained'
+      size={48}
+      style={[styles.customTabButtonIcon, { borderColor }]}
+      onPress={onPress}
+    />
+  </View>
+));
+
+CustomTabButton.displayName = 'CustomTabButton';
