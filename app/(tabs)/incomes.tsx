@@ -60,8 +60,6 @@ export default function IncomesScreen() {
         [data]
     );
 
-    console.log("isRefetching:", isRefetching);
-
     const onPressIncomeCard = useCallback(async (id: number) => {
         hapticImpact();
         await queryClient.prefetchQuery({

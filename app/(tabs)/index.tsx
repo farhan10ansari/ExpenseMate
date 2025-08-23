@@ -1,20 +1,23 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import PeriodCard from '@/features/Stats/components/PeriodCard';
-import useStatsStore from '@/stores/useStatsStore';
+import { Button, IconButton, Menu } from 'react-native-paper';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Href, useNavigation, useRouter } from 'expo-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getExpenseStatsByPeriod } from '@/repositories/ExpenseRepo';
-import { getIncomeStatsByPeriod } from '@/repositories/IncomeRepo';
+
 import { ScreenWrapper } from '@/components/main/ScreenWrapper';
+import PeriodCard from '@/features/Stats/components/PeriodCard';
 import FinancialSummaryStats from '@/features/Stats/FinancialOverviewStats';
 import ExpenseStats from '@/features/Stats/ExpenseStats';
 import IncomeStats from '@/features/Stats/IncomeStats';
-import { MaterialIcons } from '@expo/vector-icons';
-import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import { Button, IconButton, Menu } from 'react-native-paper';
-import { Href, useNavigation, useRouter } from 'expo-router';
+
+import { getExpenseStatsByPeriod } from '@/repositories/ExpenseRepo';
+import { getIncomeStatsByPeriod } from '@/repositories/IncomeRepo';
+
+import useStatsStore from '@/stores/useStatsStore';
 import usePersistentAppStore from '@/stores/usePersistentAppStore';
 import { useHaptics } from '@/contexts/HapticsProvider';
+import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 
 
 export default function HomeScreen() {
@@ -22,47 +25,37 @@ export default function HomeScreen() {
   const expensesPeriod = useStatsStore((state) => state.period);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const queryClient = useQueryClient();
-  const router = useRouter();
-  const { hapticImpact } = useHaptics()
-  // Expense stats query
+  const { hapticImpact } = useHaptics();
+
   const { data: expenseStats } = useQuery({
     queryKey: ['stats', 'expense', 'stats-in-a-period', expensesPeriod],
     queryFn: () => getExpenseStatsByPeriod(expensesPeriod),
   });
 
-  // Income stats query
   const { data: incomeStats } = useQuery({
     queryKey: ['stats', 'income', 'stats-in-a-period', expensesPeriod],
     queryFn: () => getIncomeStatsByPeriod(expensesPeriod),
   });
 
-  const handleRefresh = async () => {
+  const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
     hapticImpact();
     try {
-      await queryClient.refetchQueries({ queryKey: ['stats'] });
+      await Promise.all([
+        queryClient.refetchQueries({
+          queryKey: ['stats', 'expense'],
+        }),
+        queryClient.refetchQueries({
+          queryKey: ['stats', 'income'],
+        }),
+      ]);
     } finally {
       setIsRefreshing(false);
     }
-  };
-  // Set up screen menu
-  useScreenMenu({ onRefresh: () => handleRefresh() });
+  }, [hapticImpact]);
 
-  const MoreStatsButton = ({ routeName }: { routeName: Href }) => (
-    <View style={styles.moreStatsButtonContainer}>
-      <Button
-        mode="text"
-        compact
-        icon={() => <MaterialIcons name="chevron-right" size={20} color={colors.primary} />}
-        contentStyle={{ flexDirection: 'row-reverse' }}
-        labelStyle={{ fontSize: 12, fontWeight: '600' }}
-        textColor={colors.primary}
-        onPress={() => router.push(routeName)}
-      >
-        More Stats
-      </Button>
-    </View>
-  )
+  // Setup screen menu with options
+  useScreenMenu({ onRefresh: handleRefresh });
 
   return (
     <ScreenWrapper
@@ -76,83 +69,118 @@ export default function HomeScreen() {
       <FinancialSummaryStats expenseStats={expenseStats} incomeStats={incomeStats} />
       <View style={styles.section}>
         <ExpenseStats expenseStats={expenseStats} showTitle />
-        <MoreStatsButton routeName="/stats/expenses" />
+        <MoreStatsButton routeName="/stats/expenses" color={colors.primary} />
       </View>
       <View style={styles.section}>
         <IncomeStats incomeStats={incomeStats} showTitle />
-        <MoreStatsButton routeName="/stats/incomes" />
+        <MoreStatsButton routeName="/stats/incomes" color={colors.primary} />
       </View>
     </ScreenWrapper>
   );
 }
 
-const useScreenMenu = ({ onRefresh }: { onRefresh: () => void }) => {
+function useScreenMenu({ onRefresh }: { onRefresh: () => void }) {
   const navigation = useNavigation();
   const { colors } = useAppTheme();
-  const showNegativeStats = usePersistentAppStore((state) => state.uiFlags.showNegativeStats);
-  const updateUiFlag = usePersistentAppStore((state) => state.updateUIFlag);
+
+  const showNegativeStats = usePersistentAppStore((s) => s.uiFlags.showNegativeStats);
+  const updateUiFlag = usePersistentAppStore((s) => s.updateUIFlag);
+
   const [showMenu, setShowMenu] = useState(false);
 
+  const openMenu = useCallback(() => setShowMenu(true), []);
+  const closeMenu = useCallback(() => setShowMenu(false), []);
+
+  const toggleNegativeStats = useCallback(() => {
+    updateUiFlag('showNegativeStats', !showNegativeStats);
+    closeMenu();
+  }, [updateUiFlag, showNegativeStats, closeMenu]);
+
+  const triggerRefresh = useCallback(() => {
+    onRefresh();
+    closeMenu();
+  }, [onRefresh, closeMenu]);
+
+  // Header right component memoized to avoid remounting
+  const HeaderMenu = useMemo(
+    () =>
+      function HeaderMenu() {
+        return (
+          <Menu
+            visible={showMenu}
+            onDismiss={closeMenu}
+            anchor={<IconButton icon="dots-vertical" onPress={openMenu} />}
+            anchorPosition="bottom"
+            contentStyle={{ backgroundColor: colors.surface }}
+          >
+            <Menu.Item
+              leadingIcon={showNegativeStats ? 'eye-off' : 'eye'}
+              title={showNegativeStats ? 'Hide Negative Stats' : 'Show Negative Stats'}
+              onPress={toggleNegativeStats}
+            />
+            <Menu.Item leadingIcon="refresh" title="Refresh Data" onPress={triggerRefresh} />
+          </Menu>
+        );
+      },
+    [showMenu, closeMenu, openMenu, colors.surface, showNegativeStats, toggleNegativeStats, triggerRefresh]
+  );
+
+  // Set once per dependency change; avoids inline object churn
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <Menu
-          visible={showMenu}
-          onDismiss={() => setShowMenu(false)}
-          anchor={
-            <IconButton
-              icon="dots-vertical"
-              onPress={() => setShowMenu(true)}
-            />
-          }
-          anchorPosition='bottom'
-          contentStyle={{ backgroundColor: colors.surface }} // Optional: styled menu
-        >
-          <Menu.Item
-            leadingIcon={showNegativeStats ? "eye-off" : "eye"}
-            title={showNegativeStats ? "Hide Negative Stats" : "Show Negative Stats"}
-            onPress={() => {
-              updateUiFlag("showNegativeStats", !showNegativeStats);
-              setShowMenu(false); // Close after click
-            }}
-          />
-          <Menu.Item
-            leadingIcon="refresh"
-            title="Refresh Data"
-            onPress={() => {
-              onRefresh();
-              setShowMenu(false);
-            }}
-          />
-        </Menu>
-      ),
+      headerRight: HeaderMenu,
     });
-  }, [showMenu, showNegativeStats, colors, onRefresh, navigation]);
+  }, [navigation, HeaderMenu]);
 }
 
+// Extracted and memoized child to avoid recreation per render
+const MoreStatsButton = React.memo(function MoreStatsButton({
+  routeName,
+  color,
+}: {
+  routeName: Href;
+  color: string;
+}) {
+  const router = useRouter();
+  const onPress = useCallback(() => router.push(routeName), [router, routeName]);
+
+  return (
+    <View style={styles.moreStatsButtonContainer}>
+      <Button
+        mode="text"
+        compact
+        icon={() => <MaterialIcons name="chevron-right" size={20} color={color} />}
+        contentStyle={styles.moreStatsButtonContent}
+        labelStyle={styles.moreStatsButtonLabel}
+        textColor={color}
+        onPress={onPress}
+      >
+        More Stats
+      </Button>
+    </View>
+  );
+});
+
 const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-  },
   scrollContainer: {
     padding: 16,
     paddingBottom: 100,
     flexGrow: 1,
-    gap: 20
+    gap: 20,
   },
   moreStatsButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
-  section: {
-    gap: 10
+  moreStatsButtonContent: {
+    flexDirection: 'row-reverse',
   },
-  menuItemWithSwitch: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    paddingRight: 10,
-  }
+  moreStatsButtonLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  section: {
+    gap: 10,
+  },
 });

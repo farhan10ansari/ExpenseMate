@@ -40,8 +40,6 @@ export const HapticsProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
         const resolvedIntensity = style || intensity;
 
-        console.log("hapticImpact called");
-
         try {
             switch (resolvedIntensity) {
                 case "light":
@@ -68,7 +66,6 @@ export const HapticsProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const hapticNotify = useCallback(async (type: "success" | "error" | "warning") => {
         if (!canVibrate) return;
 
-        console.log("hapticNotify called");
         try {
             switch (type) {
                 case "success":
@@ -89,7 +86,6 @@ export const HapticsProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const hapticSelect = useCallback(async () => {
         if (!canVibrate) return;
 
-        console.log("hapticSelect called");
         try {
             await Haptics.selectionAsync();
         } catch (error) {

@@ -1,35 +1,23 @@
+import React, { useCallback, useMemo } from "react";
 import { StyleSheet, ScrollView, View } from "react-native";
-import { List } from "react-native-paper";
 import { Href, useRouter } from "expo-router";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { ThemedText } from "@/components/base/ThemedText";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
+import MenuItemComponent from "@/components/main/ScreenMenuItem";
 
-type MenuSection = {
-  title: string;
-  items: {
-    title: string;
-    description: string;
-    icon: string;
-    route: Href; // Use Href type for better type safety of available routes
-  }[];
-}
-
-export default function MenuScreen() {
+function MenuScreenBase() {
   const router = useRouter();
   const { colors } = useAppTheme();
   const showDevOptions = usePersistentAppStore((state) => state.uiFlags.showDevOptions);
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      paddingHorizontal: 16,
-      paddingTop: 12,
-    },
-    scrollContentContainer: {
-      paddingBottom: 32,
-    },
+  const handleItemPress = useCallback((route: Href) => {
+    router.push(route);
+  }, [router]);
+
+
+  const dynamicStyles = useMemo(() => StyleSheet.create({
     sectionContainer: {
       backgroundColor: colors.surface,
       borderRadius: 12,
@@ -51,73 +39,25 @@ export default function MenuScreen() {
       textTransform: 'uppercase',
       letterSpacing: 0.5,
     },
-  });
-
-
-  const menuSections: MenuSection[] = [
-    {
-      title: "Preferences",
-      items: [
-        {
-          title: "Themes",
-          description: "Switch light/dark/system",
-          icon: "theme-light-dark",
-          route: "/menu/themes",
-        },
-        {
-          title: "Settings",
-          description: "Configure app preferences",
-          icon: "cog",
-          route: "/menu/settings",
-        },
-      ]
-    },
-    {
-      title: "Information",
-      items: [
-        {
-          title: "About",
-          description: "App info and version details",
-          icon: "information-outline",
-          route: "/menu/about",
-        },
-      ]
-    },
-    {
-      title: "Developer",
-      items: [
-        {
-          title: "Dev Options",
-          description: "Seed data and debug tools",
-          icon: "tools",
-          route: "/menu/dev-options",
-        },
-      ]
-    }
-  ];
-
-  const handleItemPress = (route: Href) => {
-    router.push(route);
-  };
+  }), [colors]);
 
   return (
-    <ScreenWrapper
-      background="background"
-    >
+    <ScreenWrapper background="background">
       <ScrollView
         style={styles.container}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContentContainer}
       >
-        {menuSections.map((section, sectionIndex) => {
-          if (section.title === "Developer" && !showDevOptions) return null; // Skip if dev options are hidden
+        {menuSections.map((section) => {
+          // Skip Developer section if dev options are hidden
+          if (section.title === "Developer" && !showDevOptions) return null;
 
           return (
             <View key={section.title}>
-              <ThemedText style={styles.sectionTitle}>
+              <ThemedText style={dynamicStyles.sectionTitle}>
                 {section.title}
               </ThemedText>
-              <View style={styles.sectionContainer}>
+              <View style={dynamicStyles.sectionContainer}>
                 {section.items.map((item, itemIndex) => (
                   <MenuItemComponent
                     key={item.title}
@@ -128,7 +68,7 @@ export default function MenuScreen() {
                 ))}
               </View>
             </View>
-          )
+          );
         })}
       </ScrollView>
     </ScreenWrapper>
@@ -136,77 +76,68 @@ export default function MenuScreen() {
 }
 
 
-type MenuItem = {
+
+type MenuSection = {
   title: string;
-  description: string;
-  icon: string;
-  route: Href;
-};
-
-type MenuItemComponentProps = {
-  item: MenuItem;
-  isLast: boolean;
-  onPress: (route: Href) => void;
-};
-
-function MenuItemComponent({ item, isLast, onPress }: MenuItemComponentProps) {
-  const { colors } = useAppTheme();
-
-  const styles = StyleSheet.create({
-    listItem: {
-      paddingVertical: 16,
-      paddingHorizontal: 16,
-      backgroundColor: 'transparent',
-    },
-    listItemTitle: {
-      fontSize: 16,
-      fontWeight: '500',
-      color: colors.text,
-    },
-    listItemDescription: {
-      fontSize: 14,
-      color: colors.muted,
-      marginTop: 2,
-    },
-    divider: {
-      height: 0.5,
-      backgroundColor: colors.border,
-      marginLeft: 56,
-    },
-    leftIcon: {
-      color: colors.primary,
-    },
-    rightIcon: {
-      color: colors.muted,
-    }
-  });
-
-  return (
-    <View>
-      <List.Item
-        title={item.title}
-        description={item.description}
-        titleStyle={styles.listItemTitle}
-        descriptionStyle={styles.listItemDescription}
-        style={styles.listItem}
-        left={(props) => (
-          <List.Icon
-            {...props}
-            icon={item.icon}
-            color={styles.leftIcon.color}
-          />
-        )}
-        right={(props) => (
-          <List.Icon
-            {...props}
-            icon="chevron-right"
-            color={styles.rightIcon.color}
-          />
-        )}
-        onPress={() => onPress(item.route)}
-        rippleColor={colors.ripplePrimary}
-      />
-      {!isLast && <View style={styles.divider} />}
-    </View>
-  );
+  items: {
+    title: string;
+    description: string;
+    icon: string;
+    route: Href;
+  }[];
 }
+
+const menuSections: MenuSection[] = [
+  {
+    title: "Preferences",
+    items: [
+      {
+        title: "Themes",
+        description: "Switch light/dark/system",
+        icon: "theme-light-dark",
+        route: "/menu/themes",
+      },
+      {
+        title: "Settings",
+        description: "Configure app preferences",
+        icon: "cog",
+        route: "/menu/settings",
+      },
+    ]
+  },
+  {
+    title: "Information",
+    items: [
+      {
+        title: "About",
+        description: "App info and version details",
+        icon: "information-outline",
+        route: "/menu/about",
+      },
+    ]
+  },
+  {
+    title: "Developer",
+    items: [
+      {
+        title: "Dev Options",
+        description: "Seed data and debug tools",
+        icon: "tools",
+        route: "/menu/dev-options",
+      },
+    ]
+  }
+]
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+  },
+  scrollContentContainer: {
+    paddingBottom: 32,
+  },
+});
+
+export default MenuScreenBase;

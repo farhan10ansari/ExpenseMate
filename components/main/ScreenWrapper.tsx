@@ -1,8 +1,14 @@
-import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import React from "react";
-import { View, StyleSheet, ScrollView, ViewStyle, StyleProp } from "react-native";
-import { RefreshControl } from "react-native-gesture-handler";
+import {
+    View,
+    StyleSheet,
+    ScrollView,
+    ViewStyle,
+    StyleProp,
+    RefreshControl,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 
 type ScreenWrapperProps = {
     children: React.ReactNode;
@@ -29,16 +35,21 @@ export function ScreenWrapper({
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            backgroundColor: background === "background" ? colors.background : colors.card,
+            borderTopWidth: 1,
+            backgroundColor:
+                background === "background" ? colors.background : colors.card,
             paddingLeft: insets.left,
             paddingRight: insets.right,
-            borderTopWidth: 1,
             borderTopColor: colors.border,
         },
         content: {
             flex: 1,
         },
-        nonScrollContent: {
+        scrollContent: {
+            flexGrow: 1,
+            paddingBottom: insets.bottom,
+        },
+        nonScroll: {
             flex: 1,
             paddingBottom: insets.bottom,
         },
@@ -46,28 +57,34 @@ export function ScreenWrapper({
 
     return (
         <View style={[styles.container, containerStyle]}>
-            {/* Main content */}
             {withScrollView ? (
                 <ScrollView
                     style={styles.content}
                     contentContainerStyle={[
-                        { paddingBottom: insets.bottom },
-                        contentContainerStyle
+                        styles.scrollContent,
+                        contentContainerStyle,
                     ]}
                     showsVerticalScrollIndicator={false}
                     refreshControl={
-                        onRefresh ? (
-                            <RefreshControl
-                                refreshing={isRefreshing}
-                                onRefresh={onRefresh}
-                            />
-                        ) : undefined
+                        onRefresh
+                            ? (
+                                <RefreshControl
+                                    refreshing={!!isRefreshing}
+                                    onRefresh={onRefresh}
+                                    colors={[colors.primary]}
+                                    tintColor={colors.primary}
+                                    progressBackgroundColor={
+                                        background === "background" ? colors.card : colors.background
+                                    }
+                                />
+                            )
+                            : undefined
                     }
                 >
                     {children}
                 </ScrollView>
             ) : (
-                <View style={[styles.nonScrollContent, contentContainerStyle]}>
+                <View style={[styles.nonScroll, contentContainerStyle]}>
                     {children}
                 </View>
             )}

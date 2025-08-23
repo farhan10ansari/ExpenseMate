@@ -13,12 +13,7 @@ export default function ThemesScreen() {
   const setTheme = usePersistentAppStore(state => state.setTheme);
   const { hapticImpact } = useHaptics()
 
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 18,
-    },
+  const dynamicStyles = StyleSheet.create({
     sectionContainer: {
       backgroundColor: colors.surface,
       borderRadius: 12,
@@ -30,26 +25,10 @@ export default function ThemesScreen() {
       shadowOpacity: 0.1,
       shadowRadius: 2,
     },
-    sectionHeader: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginBottom: 16,
-    },
-    sectionIcon: {
-      marginRight: 12,
-    },
     sectionTitle: {
       fontSize: 18,
       fontWeight: "600",
       color: colors.primary,
-    },
-    themeButtonsContainer: {
-      flexDirection: "row",
-      gap: 12,
-      marginTop: 8,
-    },
-    themeButton: {
-      flex: 1,
     },
     descriptionText: {
       color: colors.muted,
@@ -58,27 +37,6 @@ export default function ThemesScreen() {
       marginBottom: 16,
     },
   });
-
-  const themeOptions = [
-    {
-      key: "light" as const,
-      label: "Light",
-      icon: "weather-sunny",
-      description: "Always use light theme",
-    },
-    {
-      key: "dark" as const,
-      label: "Dark",
-      icon: "weather-night",
-      description: "Always use dark theme",
-    },
-    {
-      key: "system" as const,
-      label: "System",
-      icon: "theme-light-dark",
-      description: "Follow system preference",
-    },
-  ];
 
   return (
     <ScreenWrapper
@@ -89,7 +47,7 @@ export default function ThemesScreen() {
         style={styles.container}
       >
         {/* Theme Selection Section */}
-        <View style={styles.sectionContainer}>
+        <View style={dynamicStyles.sectionContainer}>
           <View style={styles.sectionHeader}>
             <MaterialCommunityIcons
               name="palette"
@@ -97,12 +55,12 @@ export default function ThemesScreen() {
               color={colors.primary}
               style={styles.sectionIcon}
             />
-            <ThemedText style={styles.sectionTitle}>
+            <ThemedText style={dynamicStyles.sectionTitle}>
               App Appearance
             </ThemedText>
           </View>
 
-          <ThemedText style={styles.descriptionText}>
+          <ThemedText style={dynamicStyles.descriptionText}>
             Choose your preferred theme for the app. System theme will automatically switch between light and dark based on your device settings.
           </ThemedText>
 
@@ -127,7 +85,7 @@ export default function ThemesScreen() {
         </View>
 
         {/* Current Selection Info */}
-        <View style={styles.sectionContainer}>
+        <View style={dynamicStyles.sectionContainer}>
           <View style={styles.sectionHeader}>
             <MaterialCommunityIcons
               name="information-outline"
@@ -135,7 +93,7 @@ export default function ThemesScreen() {
               color={colors.secondary}
               style={styles.sectionIcon}
             />
-            <ThemedText style={[styles.sectionTitle, { fontSize: 16 }]}>
+            <ThemedText style={[dynamicStyles.sectionTitle, { fontSize: 16 }]}>
               Current Selection
             </ThemedText>
           </View>
@@ -145,7 +103,7 @@ export default function ThemesScreen() {
               {themeOptions.find(opt => opt.key === theme)?.label} Theme
             </ThemedText>
             {"\n"}
-            <ThemedText style={styles.descriptionText}>
+            <ThemedText style={dynamicStyles.descriptionText}>
               {themeOptions.find(opt => opt.key === theme)?.description}
             </ThemedText>
           </ThemedText>
@@ -154,3 +112,47 @@ export default function ThemesScreen() {
     </ScreenWrapper>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 18,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  sectionIcon: {
+    marginRight: 12,
+  },
+  themeButtonsContainer: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 8,
+  },
+  themeButton: {
+    flex: 1,
+  },
+})
+
+const themeOptions = [
+  {
+    key: "light" as const,
+    label: "Light",
+    icon: "weather-sunny",
+    description: "Always use light theme",
+  },
+  {
+    key: "dark" as const,
+    label: "Dark",
+    icon: "weather-night",
+    description: "Always use dark theme",
+  },
+  {
+    key: "system" as const,
+    label: "System",
+    icon: "theme-light-dark",
+    description: "Follow system preference",
+  },
+];

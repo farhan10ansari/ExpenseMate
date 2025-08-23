@@ -39,41 +39,7 @@ const StatsCard = ({
     const { colors } = useAppTheme();
     const [showDesc, setShowDesc] = useState(false);
     const resolvedTextColor = textColor ?? colors.text;
-    const styles = StyleSheet.create({
-        card: {
-            flex: 1,
-            // minHeight: 30,
-            overflow: "hidden",
-            padding: 12,
-            position: "relative",
-        },
-        cardHeader: {
-            flexDirection: "row",
-            alignItems: "center",
-            marginBottom: 4,
-            gap: 8,
-            paddingHorizontal: 4,
-        },
-        cardTitle: {
-            fontSize: 16,
-        },
-        cardValueContainer: {
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 4,
-            height: 24,
-        },
-        cardValue: {
-            fontSize: 20,
-            fontWeight: "700",
-        },
-        infoIconContainer: {
-            position: "absolute",
-            top: -8,
-            right: -8,
-            // zIndex: 1,
-        },
-    });
+
     // Helper function to render prefix/suffix
     const renderTextOrNode = (item: React.ReactNode) => {
         if (typeof item === "string") {
@@ -150,5 +116,39 @@ const StatsCard = ({
         </Card>
     );
 };
+
+const styles = StyleSheet.create({
+    card: {
+        flex: 1,
+        overflow: "hidden",
+        padding: 12,
+        position: "relative",
+    },
+    cardHeader: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 4,
+        gap: 8,
+        paddingHorizontal: 4,
+    },
+    cardTitle: {
+        fontSize: 16,
+    },
+    cardValueContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 4,
+        height: 24,
+    },
+    cardValue: {
+        fontSize: 20,
+        fontWeight: "700",
+    },
+    infoIconContainer: {
+        position: "absolute",
+        top: -8,
+        right: -8,
+    },
+});
 
 export default StatsCard;

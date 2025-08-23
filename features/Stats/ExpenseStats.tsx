@@ -3,7 +3,7 @@ import { PeriodExpenseStats } from "@/lib/types";
 import styles from "./styles";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import StatsCard from "./components/StatsCard";
-import { AntDesign, Feather, FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { View } from "react-native";
 import useExpenseCategoriesStore from "@/stores/useExpenseCategoriesStore";
 
