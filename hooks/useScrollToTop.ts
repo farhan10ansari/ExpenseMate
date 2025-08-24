@@ -29,11 +29,7 @@ export const useScrollToTop = (scrollElementRef: React.RefObject<any>) => {
     // scroll back to very top
     const scrollToTop = useCallback(() => {
         hapticImpact();
-        scrollElementRef.current?.scrollToLocation({
-            sectionIndex: 0,
-            itemIndex: 0,
-            animated: true,
-        });
+        scrollElementRef.current.scrollToTop?.()
     }, []);
 
     return {

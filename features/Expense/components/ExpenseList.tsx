@@ -1,32 +1,36 @@
+import React, { useCallback, useMemo, useEffect, useRef, useState } from "react";
+import { View, StyleSheet, RefreshControl } from "react-native";
+import { FlashList, FlashListRef } from "@shopify/flash-list";
+import { useRouter } from "expo-router";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { Button, ActivityIndicator, Portal, FAB } from "react-native-paper";
+
 import { ThemedText } from "@/components/base/ThemedText";
 import ExpenseCard from "@/components/main/ExpenseCard";
 import { Expense } from "@/db/schema";
 import { getExpenseById, getExpensesByMonthPaginated } from "@/repositories/ExpenseRepo";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
-import {
-    SectionList,
-    RefreshControl,
-    StyleSheet,
-    View,
-    SectionListRenderItem,
-} from "react-native";
-import { Button, ActivityIndicator } from "react-native-paper";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import ErrorState from "@/components/main/ErrorState";
 import { useHaptics } from "@/contexts/HapticsProvider";
+import ErrorState from "@/components/main/ErrorState";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-
-type ExpenseSection = {
+type HeaderItem = {
+    type: 'header';
+    id: string;
     title: string;
-    data: Expense[];
 };
 
-interface ExpensesListProps {
+export type ExpenseListItem = HeaderItem | Expense;
+
+// Type guard function
+const isHeaderItem = (item: ExpenseListItem): item is HeaderItem => {
+    return 'type' in item && item.type === 'header';
+};
+
+type ExpensesListProps = {
     selectedOffsetMonth: number | null;
     onScroll?: (event: any) => void;
-    scrollRef?: React.Ref<SectionList<Expense, ExpenseSection>>
+    scrollRef?: React.Ref<FlashListRef<ExpenseListItem>>;
 }
 
 export default function ExpensesList({
@@ -38,58 +42,65 @@ export default function ExpensesList({
     const queryClient = useQueryClient();
     const { colors } = useAppTheme();
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const { hapticImpact } = useHaptics()
+    const { hapticImpact } = useHaptics();
 
-
-    // Create query key based on selected month
     const queryKey = selectedOffsetMonth === null
         ? ["expenses", "all"]
         : ["expenses", "month", selectedOffsetMonth];
 
-    // Fetch expenses based on selected month
-    const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage, refetch, isError, error } =
-        useInfiniteQuery({
-            queryKey,
-            queryFn: ({ pageParam = 0 }) => {
-                if (selectedOffsetMonth === null) {
-                    // For "All", start from current month and go backwards
-                    return getExpensesByMonthPaginated({ offsetMonth: pageParam });
-                } else {
-                    // For specific month, only fetch that month
-                    return getExpensesByMonthPaginated({ offsetMonth: selectedOffsetMonth });
-                }
-            },
-            initialPageParam: selectedOffsetMonth ?? 0,
-            getNextPageParam: (last, allPages) => {
-                if (selectedOffsetMonth !== null) {
-                    // For specific month, no pagination needed
-                    return undefined;
-                }
-                // For "All", continue with next month
-                return last.hasMore ? last.offsetMonth + 1 : undefined;
-            },
-            enabled: true,
-        });
+    const {
+        data,
+        fetchNextPage,
+        hasNextPage,
+        isLoading,
+        isFetchingNextPage,
+        refetch,
+        isError,
+        error
+    } = useInfiniteQuery({
+        queryKey,
+        queryFn: ({ pageParam = 0 }) => {
+            if (selectedOffsetMonth === null) {
+                // For "All", start from current month and go backwards
+                return getExpensesByMonthPaginated({ offsetMonth: pageParam });
+            } else {
+                // For specific month, only fetch that month
+                return getExpensesByMonthPaginated({ offsetMonth: selectedOffsetMonth });
+            }
+        },
+        initialPageParam: selectedOffsetMonth ?? 0,
+        getNextPageParam: (last) => {
+            if (selectedOffsetMonth !== null) {
+                // For specific month, no pagination needed
+                return undefined;
+            }
+            // For "All", continue with next month
+            return last.hasMore ? last.offsetMonth + 1 : undefined;
+        },
+        enabled: true,
+    });
 
-    const sections: ExpenseSection[] = useMemo(
-        () =>
-            data?.pages
-                .filter((p) => p.expenses.length > 0)
-                .map((p) => ({
-                    title: p.month,
-                    data: p.expenses,
-                })) ?? [],
-        [data]
-    );
+    const listData = useMemo((): ExpenseListItem[] => {
+        if (!data?.pages || !data?.pages.some(page => page.expenses.length > 0)) return [];
+        return data.pages.flatMap((page) => [
+            {
+                type: 'header' as const,
+                id: `header-${page.month}`,
+                title: page.month
+            },
+            ...page.expenses
+        ]);
+    }, [data]);
 
-    const onPressExpenseCard = useCallback(async (id: number) => {
+
+    const handleExpensePress = useCallback(async (id: number) => {
         hapticImpact();
         await queryClient.prefetchQuery({
             queryKey: ["expense", id.toString()],
             queryFn: () => getExpenseById(id),
         });
         router.push(`/expense/${id}`);
-    }, []);
+    }, [hapticImpact, queryClient, router]);
 
     const handleRefresh = useCallback(async () => {
         setIsRefreshing(true);
@@ -101,103 +112,69 @@ export default function ExpensesList({
         } finally {
             setIsRefreshing(false);
         }
-    }, [refetch]);
+    }, [refetch, hapticImpact, queryClient]);
 
-    const totalExpenses = useMemo(() => {
-        return data?.pages.reduce((prev, item) => prev + item.expenses.length, 0) ?? 0;
-    }, [data]);
-
-    // Auto-load more for "All" view if needed
-    useEffect(() => {
-        if (selectedOffsetMonth === null && data && data.pages) {
-            const lastPage = data.pages[data.pages.length - 1];
-            if (lastPage?.hasMore === true && totalExpenses <= 20) {
-                fetchNextPage();
-            }
+    const handleEndReached = useCallback(() => {
+        if (hasNextPage && !isFetchingNextPage && selectedOffsetMonth === null) {
+            fetchNextPage();
         }
-    }, [data, selectedOffsetMonth, totalExpenses]);
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage, selectedOffsetMonth]);
 
-    const renderItem: SectionListRenderItem<Expense, ExpenseSection> = useCallback(
-        ({ item }) => <ExpenseCard expense={item} onPress={onPressExpenseCard} />,
-        [onPressExpenseCard]
-    );
+    const renderItem = useCallback(({ item }: { item: ExpenseListItem }) => {
+        if (isHeaderItem(item)) {
+            return (
+                <ThemedText
+                    type="defaultSemiBold"
+                    fontSize={20}
+                    style={[styles.sectionHeader, { color: colors.text }]}
+                >
+                    {item.title}
+                </ThemedText>
+            );
+        }
 
-    const styles = StyleSheet.create({
-        sectionHeader: {
-            marginTop: 10,
-            marginBottom: 4,
-            paddingHorizontal: 10,
-        },
-        sectionList: {
-            padding: 10,
-            paddingTop: 0,
-        },
-        sectionListContentContainer: {
-            paddingBottom: 150,
-            flexGrow: 1,
-        },
-        loadingMore: {
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            marginVertical: 16,
-        },
-        itemSeparator: {
-            height: 1,
-            marginVertical: 10,
-            backgroundColor: colors.border,
-        },
-        emptyContainer: {
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 5,
-        },
-        errorContainer: {
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            paddingHorizontal: 24,
-            paddingVertical: 32,
-        },
-        errorIcon: {
-            marginBottom: 16,
-        },
-        errorTitle: {
-            fontSize: 18,
-            fontWeight: "600",
-            color: colors.onSurface,
-            marginBottom: 8,
-            textAlign: "center",
-        },
-        errorMessage: {
-            fontSize: 14,
-            color: colors.error,
-            marginBottom: 12,
-            textAlign: "center",
-            lineHeight: 20,
-        },
-        errorHint: {
-            fontSize: 14,
-            color: colors.onSurfaceVariant,
-            marginBottom: 24,
-            textAlign: "center",
-            opacity: 0.8,
-        },
-        retryButton: {
-            marginBottom: 16,
-            paddingHorizontal: 24,
-        },
-        errorFooter: {
-            fontSize: 12,
-            color: colors.onSurfaceVariant,
-            textAlign: "center",
-            opacity: 0.6,
-            fontStyle: "italic",
-        },
-    });
+        // TypeScript now knows item is Expense
+        return (
+            <ExpenseCard
+                expense={item}
+                onPress={() => handleExpensePress(item.id!)}
+            />
+        );
+    }, [colors.text, handleExpensePress]);
 
-    if (isLoading) return null; // Show nothing while loading to avoid flicker as data fetching is very fast
+    // Get item type for FlashList optimization
+    const getItemType = useCallback((item: ExpenseListItem) => {
+        return isHeaderItem(item) ? 'header' : 'expense';
+    }, []);
+
+    // Key extractor that handles both types
+    const keyExtractor = useCallback((item: ExpenseListItem) => {
+        if (isHeaderItem(item)) {
+            return item.id; // Already a string
+        }
+        return `expense-${item.id!.toString()}`; // Convert number to string with prefix
+    }, []);
+
+    // Total expenses for auto-loading
+    const totalExpenses = useMemo(() => (
+        data?.pages.reduce((total, page) => total + page.expenses.length, 0) ?? 0
+    ), [data]);
+
+    // Auto-load more data for "All" view if needed
+    useEffect(() => {
+        // if (selectedOffsetMonth === null && data?.pages) {
+        //     const lastPage = data.pages[data.pages.length - 1];
+        //     if (lastPage?.hasMore === true && totalExpenses <= 20) {
+        //         fetchNextPage();
+        //     }
+        // }
+        if (data?.pages && hasNextPage && totalExpenses < 20) {
+            fetchNextPage();
+        }
+    }, [data, selectedOffsetMonth, totalExpenses, fetchNextPage]);
+
+    // ✅ Loading and error states
+    if (isLoading) return null;
 
     if (isError) {
         console.error("Error fetching expenses:", error);
@@ -206,29 +183,31 @@ export default function ExpensesList({
                 title="Failed to load expenses"
                 message={error instanceof Error ? error.message : "Unknown error occurred"}
                 onRetry={handleRefresh}
-                showRestartHint={true}
+                showRestartHint
             />
         );
     }
 
 
     return (
-        <SectionList<Expense, ExpenseSection>
+        <FlashList<ExpenseListItem>
             ref={scrollRef}
-            sections={totalExpenses > 0 ? sections : []}
-            keyExtractor={(item) => item.id!.toString()}
+            data={listData}
             renderItem={renderItem}
-            renderSectionHeader={({ section }) => (
-                <ThemedText type="defaultSemiBold" fontSize={16} style={styles.sectionHeader}>
-                    {section.title}
-                </ThemedText>
-            )}
-            onEndReached={() => {
-                if (hasNextPage && !isFetchingNextPage && selectedOffsetMonth === null) {
-                    fetchNextPage();
-                }
-            }}
-            onEndReachedThreshold={1}
+            keyExtractor={keyExtractor}
+            getItemType={getItemType}
+            onEndReached={handleEndReached}
+            onEndReachedThreshold={0.8}
+            onScroll={onScroll}
+            scrollEventThrottle={16}
+            refreshControl={
+                <RefreshControl
+                    refreshing={isRefreshing}
+                    onRefresh={handleRefresh}
+                    colors={[colors.primary]}
+                    tintColor={colors.primary}
+                />
+            }
             ListFooterComponent={
                 isFetchingNextPage ? (
                     <View style={styles.loadingMore}>
@@ -236,22 +215,59 @@ export default function ExpensesList({
                     </View>
                 ) : null
             }
-            refreshControl={
-                <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
-            }
-            onScroll={onScroll}
-            scrollEventThrottle={100}
-            ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
-            style={styles.sectionList}
-            contentContainerStyle={styles.sectionListContentContainer}
             ListEmptyComponent={
                 <View style={styles.emptyContainer}>
                     <ThemedText type="subtitle">No expenses records found...</ThemedText>
-                    <Button onPress={() => router.push("/transaction/new")}>
+                    <Button
+                        onPress={() => router.push("/transaction/new")}
+                        textColor={colors.tertiary}
+                    >
                         Add Expense
                     </Button>
                 </View>
             }
+            ItemSeparatorComponent={() => (
+                <View style={[styles.itemSeparator, { backgroundColor: colors.border }]} />
+            )}
+            contentContainerStyle={styles.contentContainer}
         />
+
     );
 }
+
+const styles = StyleSheet.create({
+    sectionHeader: {
+        marginTop: 10,
+        marginBottom: -10,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+    },
+    loadingMore: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        marginVertical: 16,
+    },
+    itemSeparator: {
+        height: 1,
+        marginVertical: 10,
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingTop: 100,
+        gap: 12,
+    },
+    contentContainer: {
+        paddingHorizontal: 10,
+        paddingBottom: 150,
+    },
+    fab: {
+        position: "absolute",
+        height: 48,
+        width: 48,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+});

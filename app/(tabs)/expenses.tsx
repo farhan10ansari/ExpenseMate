@@ -1,23 +1,19 @@
-import { SectionList, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { FAB, Portal } from "react-native-paper";
 import { useRef, useState } from "react";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { useIsFocused } from "@react-navigation/native";
 import useAppStore from "@/stores/useAppStore";
-import { Expense } from "@/db/schema";
 import MonthTabsContainer from "@/features/Expense/components/MonthTabsContainer";
-import ExpensesList from "@/features/Expense/components/ExpenseList";
+import ExpensesList, { ExpenseListItem } from "@/features/Expense/components/ExpenseList";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { FlashListRef } from "@shopify/flash-list";
 
-type ExpenseSection = {
-    title: string;
-    data: Expense[];
-};
 
 export default function ExpensesScreen() {
     const [selectedOffsetMonth, setSelectedOffsetMonth] = useState<number | null>(null);
-    const scrollElementRef = useRef<SectionList<Expense, ExpenseSection>>(null);
+    const scrollElementRef = useRef<FlashListRef<ExpenseListItem>>(null);
     const { handleScroll, scrollToTop, showScrollToTop } = useScrollToTop(scrollElementRef);
     const isFocused = useIsFocused();
     const globalSnackbar = useAppStore((state) => state.globalSnackbar);
