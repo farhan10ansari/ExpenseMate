@@ -33,11 +33,12 @@ export default function TimeInput({ datetime, setDatetime, style }: TimeInputPro
         hours: number;
         minutes: number;
     }) => {
-        setTimePickerVisibility(false);
         const date = new Date(datetime ?? new Date());
         date.setHours(params.hours);
         date.setMinutes(params.minutes);
         date.setSeconds(0);
+        setTimePickerVisibility(false);
+        hapticImpact()
         setDatetime(date);
     }, [datetime, setDatetime]);
 
@@ -52,10 +53,7 @@ export default function TimeInput({ datetime, setDatetime, style }: TimeInputPro
             <Button
                 icon="clock"
                 mode="elevated"
-                onPress={() => {
-                    hapticImpact()
-                    setTimePickerVisibility(true)
-                }}
+                onPress={() => setTimePickerVisibility(true)}
                 style={styles.button}
             >
                 {datetime ? timeString : "Set time"}

@@ -38,8 +38,9 @@ export default function DateInput({ datetime, setDatetime, style }: DateInputPro
             date.setFullYear(params.date.getFullYear());
             date.setMonth(params.date.getMonth());
             date.setDate(params.date.getDate());
-            setDatetime(date);
             setDatePickerVisibility(false);
+            hapticImpact()
+            setDatetime(date);
         }, [datetime, setDatetime]);
 
     const onDismissDate = useCallback(() => {
@@ -53,10 +54,7 @@ export default function DateInput({ datetime, setDatetime, style }: DateInputPro
             <Button
                 icon="calendar"
                 mode="elevated"
-                onPress={() => {
-                    hapticImpact()
-                    setDatePickerVisibility(true)
-                }}
+                onPress={() => setDatePickerVisibility(true)}
                 style={styles.button}
             >
                 {datetime ? dateLabel : "Set date"}

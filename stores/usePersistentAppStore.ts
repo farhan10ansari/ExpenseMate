@@ -9,16 +9,13 @@ type PersistentAppStore = {
     setLanguage: (language: "english") => void;
     currency: "rupees";
     setCurrency: (currency: "rupees") => void;
-
     // Haptics settings
     haptics: {
         enabled: boolean;
         intensity: "light" | "medium" | "heavy";
     };
-    // setHapticsEnabled: (enabled: boolean) => void;
-    // setHapticsIntensity: (intensity: "light" | "medium" | "heavy") => void;
     setHaptics: (enabled: boolean, intensity?: "light" | "medium" | "heavy") => void;
-
+    // UI Flags
     uiFlags: {
         showDevOptions: boolean;
         showNegativeStats: boolean;
@@ -47,7 +44,7 @@ const usePersistentAppStore = create<PersistentAppStore>()(persist(
                 ...(intensity && { intensity }),
             }
         })),
-
+        // UI Flags
         uiFlags: {
             showDevOptions: false,
             showNegativeStats: true,

@@ -138,39 +138,39 @@ export default function SettingsScreen() {
     },
   ];
 
-  const hapticsIntensityOptions = [
-    {
-      key: "light",
-      label: "Light",
-      description: "Subtle vibration feedback",
-      icon: "radiobox-blank", // Empty circle for light
-    },
-    {
-      key: "medium",
-      label: "Medium",
-      description: "Balanced vibration feedback",
-      icon: "checkbox-blank-circle", // Half-filled for medium
-    },
-    {
-      key: "heavy",
-      label: "Heavy",
-      description: "Strong vibration feedback",
-      icon: "checkbox-marked-circle", // Filled circle for heavy
-    },
-  ];
+  // const hapticsIntensityOptions = [
+  //   {
+  //     key: "light",
+  //     label: "Light",
+  //     description: "Subtle vibration feedback",
+  //     icon: "radiobox-blank", // Empty circle for light
+  //   },
+  //   {
+  //     key: "medium",
+  //     label: "Medium",
+  //     description: "Balanced vibration feedback",
+  //     icon: "checkbox-blank-circle", // Half-filled for medium
+  //   },
+  //   {
+  //     key: "heavy",
+  //     label: "Heavy",
+  //     description: "Strong vibration feedback",
+  //     icon: "checkbox-marked-circle", // Filled circle for heavy
+  //   },
+  // ];
 
 
   const handleHapticsToggle = (enabled: boolean) => {
     setHaptics(enabled);
     if (enabled) {
-      hapticImpact("medium");
+      hapticImpact(undefined, true);
     }
   };
 
-  const handleIntensityChange = (intensity: "light" | "medium" | "heavy") => {
-    setHaptics(true, intensity);
-    hapticImpact(intensity);
-  };
+  // const handleIntensityChange = (intensity: "light" | "medium" | "heavy") => {
+  //   setHaptics(true, intensity);
+  //   hapticImpact(intensity);
+  // };
 
   return (
     <ScreenWrapper
@@ -355,7 +355,7 @@ export default function SettingsScreen() {
           />
 
           {/* Intensity Options - Only show when haptics is enabled */}
-          {haptics.enabled && (
+          {/* {haptics.enabled && (
             <>
               <View style={{ height: 8 }} />
               {hapticsIntensityOptions.map((option) => (
@@ -388,7 +388,7 @@ export default function SettingsScreen() {
                 />
               ))}
             </>
-          )}
+          )} */}
         </View>
 
         {/* More Settings Coming Soon */}

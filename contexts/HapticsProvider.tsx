@@ -5,9 +5,9 @@ import usePersistentAppStore from '@/stores/usePersistentAppStore';
 
 interface HapticsContextType {
     // Core haptic functions
-    hapticImpact: (style?: "light" | "medium" | "heavy" | "rigid" | "soft") => Promise<void>;
-    hapticNotify: (type: "success" | "error" | "warning") => Promise<void>;
-    hapticSelect: () => Promise<void>;
+    hapticImpact: (style?: "light" | "medium" | "heavy" | "rigid" | "soft", force?: boolean) => Promise<void>;
+    hapticNotify: (type: "success" | "error" | "warning", force?: boolean) => Promise<void>;
+    hapticSelect: (force?: boolean) => Promise<void>;
 
     // Status information
     isEnabled: boolean;
@@ -35,8 +35,8 @@ export const HapticsProvider: React.FC<{ children: React.ReactNode }> = ({ child
     );
 
     // Memoize haptic functions with useCallback
-    const hapticImpact = useCallback(async (style?: "light" | "medium" | "heavy" | "rigid" | "soft") => {
-        if (!canVibrate) return;
+    const hapticImpact: HapticsContextType['hapticImpact'] = useCallback(async (style, force = false) => {
+        if (!force && !canVibrate) return;
 
         const resolvedIntensity = style || intensity;
 
@@ -63,8 +63,8 @@ export const HapticsProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
     }, [canVibrate, intensity]);
 
-    const hapticNotify = useCallback(async (type: "success" | "error" | "warning") => {
-        if (!canVibrate) return;
+    const hapticNotify: HapticsContextType['hapticNotify'] = useCallback(async (type, force = false) => {
+        if (!force && !canVibrate) return;
 
         try {
             switch (type) {
@@ -83,8 +83,8 @@ export const HapticsProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
     }, [canVibrate]);
 
-    const hapticSelect = useCallback(async () => {
-        if (!canVibrate) return;
+    const hapticSelect: HapticsContextType['hapticSelect'] = useCallback(async (force = false) => {
+        if (!force && !canVibrate) return;
 
         try {
             await Haptics.selectionAsync();
