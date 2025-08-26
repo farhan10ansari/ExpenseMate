@@ -1,6 +1,6 @@
 import { Expense } from "@/db/schema";
 import { paymentMethodsMapping } from "@/lib/constants";
-import useExpenseCategoriesStore from "@/stores/useExpenseCategoriesStore";
+import { useCategoryMapping } from "@/stores/useExpenseCategoriesStore";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
@@ -21,7 +21,8 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
     const { uses24HourClock } = useLocalization()
 
     // Get the category mapping from the categories store
-    const categoryMapping = useExpenseCategoriesStore((state) => state.categoryMapping);
+    const categoryMapping = useCategoryMapping()
+
 
     const formattedDate = extractDateLabel(expense.dateTime)
     const formattedTime = extractTimeString(expense.dateTime, uses24HourClock)
@@ -76,7 +77,7 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
         <View style={styles.wrapper}>
             <Pressable
                 onPress={handleOnPress}
-                android_ripple={{ color: colors.ripplePrimary}}
+                android_ripple={{ color: colors.ripplePrimary }}
                 style={styles.card}
             >
                 <View style={styles.topRow}>

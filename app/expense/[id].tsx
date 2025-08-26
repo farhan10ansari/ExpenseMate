@@ -6,7 +6,7 @@ import { useLocalization } from "@/hooks/useLocalization";
 import { paymentMethodsMapping } from "@/lib/constants";
 import { extractDateLabel, extractTimeString } from "@/lib/functions";
 import { softDeleteExpenseById, getExpenseById } from "@/repositories/ExpenseRepo";
-import useExpenseCategoriesStore from "@/stores/useExpenseCategoriesStore";
+import { useCategoryMapping } from "@/stores/useExpenseCategoriesStore";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { FontAwesome } from "@expo/vector-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -22,7 +22,8 @@ import { useHaptics } from "@/contexts/HapticsProvider";
 export default function ExpenseInfoScreen() {
     const { colors } = useAppTheme();
     const { id } = useLocalSearchParams<{ id: string }>();
-    const categoryMapping = useExpenseCategoriesStore((state) => state.categoryMapping);
+
+    const categoryMapping = useCategoryMapping()
     const { uses24HourClock } = useLocalization();
     const queryClient = useQueryClient();
     const navigation = useNavigation();

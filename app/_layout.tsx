@@ -15,6 +15,7 @@ import 'react-native-reanimated';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { HapticsProvider } from '@/contexts/HapticsProvider';
 import MainLayout from '@/components/main/MainLayout';
+import { ConfirmationProvider } from '@/components/main/Alert';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -71,9 +72,11 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <AppThemeProvider>
           <HapticsProvider>
-            <MainLayout />
-            <GlobalLevelComponents />
-            <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
+            <ConfirmationProvider>
+              <MainLayout />
+              <GlobalLevelComponents />
+              <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
+            </ConfirmationProvider>
           </HapticsProvider>
         </AppThemeProvider>
       </QueryClientProvider>
