@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { Category } from '@/lib/types';
 import { DefaultExpenseCategories } from '@/lib/constants';
+import { useMemo } from 'react';
 
 type ExpenseCategoriesStore = {
     categories: Category[],
@@ -33,3 +34,16 @@ export const getCategoryRows = (categories: Category[]) => {
     }
     return rows;
 }
+
+export const useCategoryMapping = () => {
+    const categories = useExpenseCategoriesStore(state => state.categories);
+
+    return useMemo(() => {
+        return categories
+            // .filter(cat => cat.enabled)
+            .reduce((acc, category) => {
+                acc[category.name] = category;
+                return acc;
+            }, {} as Record<string, Category>);
+    }, [categories]);
+};
