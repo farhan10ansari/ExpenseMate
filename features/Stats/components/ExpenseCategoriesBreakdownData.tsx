@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Card, Avatar } from 'react-native-paper';
 import { ThemedText } from '@/components/base/ThemedText';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import { useCategoryMapping } from '@/stores/useExpenseCategoriesStore';
+import { useExpenseCategoryMapping } from '@/contexts/CategoryDataProvider';
 
 interface ExpenseCategoryStat {
   category: string;
@@ -21,7 +21,7 @@ export default function ExpenseCategoryBreakdownCard({
   title = 'Expense Categories',
 }: Props) {
   const { colors } = useAppTheme();
-  const categoryMapping = useCategoryMapping()
+  const categoryMapping = useExpenseCategoryMapping()
 
 
   if (!data || data.length === 0) {

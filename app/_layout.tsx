@@ -15,7 +15,10 @@ import 'react-native-reanimated';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { HapticsProvider } from '@/contexts/HapticsProvider';
 import MainLayout from '@/components/main/MainLayout';
-import { ConfirmationProvider } from '@/components/main/Alert';
+import { ConfirmationProvider } from '@/components/main/ConfirmationDialog';
+import useSeedData from '@/hooks/useSeedData';
+import { ThemedView } from '@/components/base/ThemedView';
+import { CategoryDataProvider } from '@/contexts/CategoryDataProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,32 +40,47 @@ export default function RootLayout() {
   // drizzle migrations for schema changes
   const { success, error } = useMigrations(db, migrations);
 
+  // seed data after migrations are done
+  const { success: seedSuccess, error: seedError } = useSeedData(success);
+
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
   useEffect(() => {
-    if (loaded) {
+    // hide splash when everything is ready
+    if (loaded && success && seedSuccess) {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  useEffect(() => {
+    // hide splash on error for showing the error message
+    if (error || seedError) {
+      SplashScreen.hideAsync();
+    }
+  }, [error, seedError]);
 
   if (!loaded) {
     return null;
   }
 
-  if (error) {
+  if (error || seedError) {
     return (
       <AppThemeProvider>
-        <ThemedText>Migration error: {error.message}</ThemedText>
+        <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+          <ThemedText>Migration/Seed error: {error ? error?.message : seedError?.message}</ThemedText>
+        </ThemedView>
       </AppThemeProvider>
     );
   }
 
-  if (!success) {
+  if (!success || !seedSuccess) {
     return (
       <AppThemeProvider>
-        <ThemedText>Running migrations…</ThemedText>
+        <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} >
+          <ThemedText>Running migrations/seeding data…</ThemedText>
+        </ThemedView>
       </AppThemeProvider>
     );
   }
@@ -72,11 +90,13 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <AppThemeProvider>
           <HapticsProvider>
-            <ConfirmationProvider>
-              <MainLayout />
-              <GlobalLevelComponents />
-              <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
-            </ConfirmationProvider>
+            <CategoryDataProvider>
+              <ConfirmationProvider>
+                <MainLayout />
+                <GlobalLevelComponents />
+                <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
+              </ConfirmationProvider>
+            </CategoryDataProvider>
           </HapticsProvider>
         </AppThemeProvider>
       </QueryClientProvider>

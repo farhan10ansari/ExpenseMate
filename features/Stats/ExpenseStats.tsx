@@ -5,7 +5,7 @@ import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import StatsCard from "./components/StatsCard";
 import { AntDesign, FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { View } from "react-native";
-import { useCategoryMapping } from "@/stores/useExpenseCategoriesStore";
+import { useExpenseCategoryMapping } from "@/contexts/CategoryDataProvider";
 
 type Props = {
     expenseStats?: PeriodExpenseStats;
@@ -15,7 +15,7 @@ type Props = {
 
 export default function ExpenseStats({ expenseStats, showTitle = false }: Props) {
     const { colors } = useAppTheme();
-    const categoryMapping = useCategoryMapping()
+    const categoryMapping = useExpenseCategoryMapping()
 
 
     const topCategory = expenseStats?.topCategory

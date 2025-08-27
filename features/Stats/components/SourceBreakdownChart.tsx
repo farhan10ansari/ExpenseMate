@@ -4,9 +4,8 @@ import { PieChart, BarChart } from 'react-native-gifted-charts';
 import { Card, Switch } from 'react-native-paper';
 import { ThemedText } from '@/components/base/ThemedText';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import useIncomeSourcesStore from '@/stores/useIncomeSourcesStore'; // Replace with your actual income source store import
 import { IncomeSourceStat } from '@/lib/types';
-// import { IncomeSourceStat } from '@/lib/types'; // Replace with your types
+import { useIncomeSourceMapping } from '@/contexts/CategoryDataProvider';
 
 type IncomeBreakdownData = { data?: IncomeSourceStat[] };
 
@@ -14,7 +13,8 @@ export default function IncomeSourceBreakdownChart({ data }: IncomeBreakdownData
   const { colors, dark } = useAppTheme();
   const { width: windowWidth } = useWindowDimensions();
   const chartSize = windowWidth - 54;
-  const sourceMapping = useIncomeSourcesStore((state) => state.sourceMapping);
+  // Get the source mapping
+  const sourceMapping = useIncomeSourceMapping()
 
   const [showAbsolute, setShowAbsolute] = useState(true);
   const [chartType, setChartType] = useState<'pie' | 'bar'>('pie');

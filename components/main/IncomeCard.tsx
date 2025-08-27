@@ -6,9 +6,9 @@ import CustomChip from "@/components/ui/CustomChip";
 import { memo } from "react";
 import { extractDateLabel, extractTimeString } from "@/lib/functions";
 import { useLocalization } from "@/hooks/useLocalization";
-import useIncomeSourcesStore from "@/stores/useIncomeSourcesStore";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Color from 'color';
+import { useIncomeSourceMapping } from "@/contexts/CategoryDataProvider";
 
 type IncomeCardProps = {
     income: Income;
@@ -19,8 +19,8 @@ function IncomeCard({ income, onPress }: IncomeCardProps) {
     const { colors } = useAppTheme();
     const { uses24HourClock } = useLocalization();
 
-    // Get the source mapping from the income sources store
-    const sourceMapping = useIncomeSourcesStore((state) => state.sourceMapping);
+    // Get the source mapping
+    const sourceMapping = useIncomeSourceMapping()
 
     const formattedDate = extractDateLabel(income.dateTime);
     const formattedTime = extractTimeString(income.dateTime, uses24HourClock);

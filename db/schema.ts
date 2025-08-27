@@ -1,4 +1,4 @@
-import { InferInsertModel } from 'drizzle-orm';
+import { InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 
@@ -67,3 +67,33 @@ export const incomesSchema = sqliteTable('incomes', {
 });
 
 export type Income = InferInsertModel<typeof incomesSchema>;
+
+
+/**
+ * Schema for expense categories
+ */
+export const expenseCategoriesSchema = sqliteTable('expense_categories', {
+  name: text('name').primaryKey().notNull(),
+  label: text('label').notNull(),
+  icon: text('icon').notNull(),
+  color: text('color').notNull(),
+  enabled: integer('enabled', { mode: 'boolean' }).notNull().default(true),
+  deletable: integer('deletable', { mode: 'boolean' }).notNull().default(true),
+});
+
+/**
+ * Schema for income sources
+ */
+export const incomeSourcesSchema = sqliteTable('income_sources', {
+  name: text('name').primaryKey().notNull(),
+  label: text('label').notNull(),
+  icon: text('icon').notNull(),
+  color: text('color').notNull(),
+  enabled: integer('enabled', { mode: 'boolean' }).notNull().default(true),
+  deletable: integer('deletable', { mode: 'boolean' }).notNull().default(true),
+});
+
+export type ExpenseCategoryDB = InferInsertModel<typeof expenseCategoriesSchema>;
+export type ExpenseCategory = InferSelectModel<typeof expenseCategoriesSchema>;
+export type IncomeSourceDB = InferInsertModel<typeof incomeSourcesSchema>;
+export type IncomeSource = InferSelectModel<typeof incomeSourcesSchema>;

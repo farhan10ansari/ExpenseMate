@@ -1,6 +1,8 @@
 import { Category, PaymentMethod } from "./types";
 
-export const DefaultExpenseCategories: Category[] = [
+type CategoryData = Omit<Category, "enabled" | "deletable">;
+
+export const DefaultExpenseCategories: CategoryData[] = [
     {
         name: "food",
         label: "Food",
@@ -52,7 +54,7 @@ export const DefaultExpenseCategories: Category[] = [
 ]
 
 
-export const DefaultIncomeSources: Category[] = [
+export const DefaultIncomeSources: CategoryData[] = [
     {
         name: "salary",
         label: "Salary",
@@ -148,3 +150,40 @@ export const paymentMethodsMapping = paymentMethods.reduce((acc, paymentMethod) 
     acc[paymentMethod.name] = paymentMethod;
     return acc;
 }, {} as Record<string, PaymentMethod>);
+
+
+// ✅ Comprehensive icon list organized by category
+// constants/icons.ts
+export const CATEGORY_ICONS = [
+    // Money & Banking
+    'cash', 'credit-card', 'bank', 'wallet', 'piggy-bank', 'currency-usd',
+    'currency-eur', 'currency-gbp', 'currency-inr', 'hand-coin', 'safe',
+
+    // Shopping & Commerce
+    'shopping', 'store', 'cart', 'receipt', 'sale', 'gift', 'card-account-details',
+
+    // Food & Dining
+    'food', 'coffee', 'pizza', 'hamburger', 'silverware', 'glass-wine', 'tea',
+
+    // Transportation
+    'car', 'gas-station', 'bus', 'train', 'train-car', 'airplane', 'taxi', 'bicycle', 'parking',
+
+    // Utilities & Bills
+    'home', 'file-document', 'lightbulb', 'water', 'fire', 'power-plug', 'phone', 'wifi', 'fuel',
+
+    // Health & Medical
+    'medical-bag', 'walk', 'pill', 'heart', 'hospital', 'tooth', 'eye', 'stethoscope',
+
+    // Entertainment
+    'movie', 'music', 'gamepad-variant', 'television', 'camera', 'book-open',
+    'football', 'theater',
+
+    // Work & Education
+    'briefcase', 'school', 'book', 'laptop', 'printer',
+
+    // Personal Care
+    'face-man', 'spa', 'glasses', 'watch', 'tshirt-crew',
+
+    // Miscellaneous
+    'star', 'heart-outline', 'gift-outline', 'bell', 'flag', 'shield', 'dots-horizontal-circle-outline'
+] as const;

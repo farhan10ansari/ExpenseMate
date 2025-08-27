@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Card, Avatar } from 'react-native-paper';
 import { ThemedText } from '@/components/base/ThemedText';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import useIncomeSourcesStore from '@/stores/useIncomeSourcesStore';
+import { useIncomeSourceMapping } from '@/contexts/CategoryDataProvider';
 
 interface IncomeSourceStat {
   source: string;
@@ -21,7 +21,8 @@ export default function IncomeSourcesBreakdownCard({
   title = 'Income Sources',
 }: Props) {
   const { colors } = useAppTheme();
-  const sourceMapping = useIncomeSourcesStore((state) => state.sourceMapping);
+  // Get the source mapping
+  const sourceMapping = useIncomeSourceMapping()
 
   if (!data || data.length === 0) {
     return (

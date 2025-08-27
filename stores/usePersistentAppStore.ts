@@ -21,10 +21,17 @@ type PersistentAppStore = {
         showNegativeStats: boolean;
     }
     updateUIFlag: (flag: keyof PersistentAppStore['uiFlags'], value: boolean) => void;
+
+    //  Data seeding flags
+    seededKeys: string[];
+    markDataSeeded: (key: string) => void;
+    isDataSeeded: (key: string) => boolean;
+
+
 }
 
 const usePersistentAppStore = create<PersistentAppStore>()(persist(
-    (set) => ({
+    (set, get) => ({
         theme: "system",
         setTheme: (theme) => set({ theme }),
         language: "english",
@@ -55,6 +62,14 @@ const usePersistentAppStore = create<PersistentAppStore>()(persist(
                 [flag]: value,
             }
         })),
+
+        seededKeys: [],
+        markDataSeeded: (key) => set((state) => ({
+            seededKeys: state.seededKeys.includes(key)
+                ? state.seededKeys
+                : [...state.seededKeys, key]
+        })),
+        isDataSeeded: (key) => get().seededKeys.includes(key),
     }), {
     name: "app-storage", // unique name
     storage: createJSONStorage(() => AsyncStorage),

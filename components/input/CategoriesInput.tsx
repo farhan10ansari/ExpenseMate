@@ -1,5 +1,5 @@
 import { Category, ColorType } from '@/lib/types';
-import { AddCategory, getCategoryRows } from '@/stores/useExpenseCategoriesStore';
+import { getCategoryRows } from '@/contexts/CategoryDataProvider';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import ThemedButton from '@/components/ui/ThemedButton';
@@ -64,7 +64,7 @@ export default function CategoriesInput({ categories, category, setCategory, col
                         {rowIndex === categoryRows.length - 1 && (
                             <ThemedButton
                                 compact
-                                icon={AddCategory.icon}
+                                icon={"plus"}
                                 mode='outlined'
                                 style={[styles.categoryButtonStyle, {
                                     borderColor: colors.muted
@@ -74,7 +74,7 @@ export default function CategoriesInput({ categories, category, setCategory, col
                                 // disabled
                                 textColor={colors.muted}
 
-                            >{AddCategory.label}
+                            >Add Category
                             </ThemedButton>)
                         }
                     </View>

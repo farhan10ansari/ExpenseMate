@@ -5,7 +5,6 @@ import CustomChip from "@/components/ui/CustomChip";
 import { useLocalization } from "@/hooks/useLocalization";
 import { extractDateLabel, extractTimeString } from "@/lib/functions";
 import { softDeleteIncomeById, getIncomeById } from "@/repositories/IncomeRepo";
-import { DefaultIncomeSources } from "@/lib/constants";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { FontAwesome } from "@expo/vector-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -17,9 +16,8 @@ import { tryCatch } from "@/lib/try-catch";
 import useAppStore from "@/stores/useAppStore";
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 import { useHaptics } from "@/contexts/HapticsProvider";
+import { useIncomeSourceMapping } from "@/contexts/CategoryDataProvider";
 
-// Build source mapping for icons/labels/colors
-const sourceMapping = Object.fromEntries(DefaultIncomeSources.map(cat => [cat.name, cat]));
 
 export default function IncomeInfoScreen() {
     const { colors } = useAppTheme();
@@ -31,6 +29,8 @@ export default function IncomeInfoScreen() {
     const [showDeleteConfirmationDialog, setShowDeleteConfirmationDialog] = useState(false);
     const router = useRouter();
     const { hapticImpact, hapticNotify } = useHaptics()
+    // Get the source mapping
+    const sourceMapping = useIncomeSourceMapping()
 
     const { data: income, isLoading, isError, error } = useQuery({
         queryKey: ['income', id],

@@ -3,9 +3,11 @@ import { IconSource } from "react-native-paper/lib/typescript/components/Icon";
 export type Category = {
   name: string;
   label: string;
-  icon?: IconSource;
-  color?: string; // Optional color for the category
-}
+  icon: string;
+  color: string;
+  enabled: boolean;
+  deletable: boolean;
+};
 
 export type PaymentMethod = {
   name: "upi" | "cash" | "bank-transfer" | "credit-card" | "other";

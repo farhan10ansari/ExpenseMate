@@ -5,7 +5,7 @@ import StatsCard from "./components/StatsCard";
 import { AntDesign, FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { View } from "react-native";
 import { PeriodIncomeStats } from "@/lib/types";
-import useIncomeSourcesStore from "@/stores/useIncomeSourcesStore";
+import { useIncomeSourceMapping } from "@/contexts/CategoryDataProvider";
 
 type Props = {
     incomeStats?: PeriodIncomeStats;
@@ -15,7 +15,7 @@ type Props = {
 export default function IncomeStats({ incomeStats, showTitle = false }: Props) {
     const { colors } = useAppTheme();
 
-    const sourceMapping = useIncomeSourcesStore((state) => state.sourceMapping);
+    const sourceMapping = useIncomeSourceMapping()
 
     const topSource = incomeStats?.topSource
         ? sourceMapping[incomeStats?.topSource] : null;
