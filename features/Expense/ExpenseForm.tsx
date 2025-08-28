@@ -11,7 +11,7 @@ import NotesInput from '@/components/input/NotesInput';
 import PaymentMethodInput from '@/components/input/PaymentMethodInput';
 import TimeInput from '@/components/input/TimeInput';
 import { ExpenseData, useExpenseStore } from './ExpenseStoreProvider';
-import { useEnabledExpenseCategories } from '@/contexts/CategoryDataProvider';
+import { useEnabledExpenseCategories } from '@/stores/useExpenseCategoriesStore';
 
 type ExpenseFormProps = {
   showSubmitButton?: boolean;
@@ -25,7 +25,6 @@ export default function ExpenseForm({ showSubmitButton, onSubmit, type = "create
 
   const expense = useExpenseStore((state) => state.expense);
   const updateExpense = useExpenseStore((state) => state.updateExpense);
-  // const categories = useExpenseCategoriesStore((state) => state.categories);
   const categories = useEnabledExpenseCategories()
 
 

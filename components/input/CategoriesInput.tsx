@@ -1,9 +1,9 @@
 import { Category, ColorType } from '@/lib/types';
-import { getCategoryRows } from '@/contexts/CategoryDataProvider';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import ThemedButton from '@/components/ui/ThemedButton';
 import { useHaptics } from '@/contexts/HapticsProvider';
+import { getCategoryRows } from '@/stores/useExpenseCategoriesStore';
 
 type CategoryInputProps = {
     categories: Category[];

@@ -126,6 +126,17 @@ const menuSections: MenuSection[] = [
         route: "/menu/dev-options",
       },
     ]
+  },
+  {
+    title: "Management",
+    items: [
+      {
+        title: "Manage Categories",
+        description: "Add, edit, or delete categories",
+        icon: "shape-outline",
+        route: "/menu/(manage-categories)/expense-categories",
+      },
+    ]
   }
 ]
 
@@ -136,7 +147,7 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   scrollContentContainer: {
-    paddingBottom: 32,
+    paddingBottom: 150,
   },
 });
 

@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Card, Avatar } from 'react-native-paper';
 import { ThemedText } from '@/components/base/ThemedText';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import { useExpenseCategoryMapping } from '@/contexts/CategoryDataProvider';
+import { useExpenseCategoryMapping } from '@/stores/useExpenseCategoriesStore';
 
 interface ExpenseCategoryStat {
   category: string;

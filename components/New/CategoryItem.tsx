@@ -1,0 +1,166 @@
+// components/ui/CategoryItem.tsx
+import React, { useCallback, useMemo } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { Surface, Text, Switch, IconButton, Avatar } from 'react-native-paper';
+import { useAppTheme } from '@/themes/providers/AppThemeProviders';
+import { useHaptics } from '@/contexts/HapticsProvider';
+import { Category } from '@/lib/types';
+
+interface CategoryItemProps {
+    category: Category;
+    onToggle: (name: string, enabled: boolean) => void;
+    onEdit: (category: Category) => void;
+    onDelete: (category: Category) => void;
+}
+
+export const CategoryItem = React.memo<CategoryItemProps>(({
+    category,
+    onToggle,
+    onEdit,
+    onDelete
+}) => {
+    const { colors } = useAppTheme();
+    const { hapticImpact } = useHaptics();
+
+    const handleToggle = useCallback(() => {
+        hapticImpact('light');
+        onToggle(category.name, !category.enabled);
+    }, [category.name, category.enabled, onToggle, hapticImpact]);
+
+    const handleEdit = useCallback(() => {
+        hapticImpact('medium');
+        onEdit(category);
+    }, [category, onEdit, hapticImpact]);
+
+    const handleDelete = useCallback(() => {
+        hapticImpact('heavy');
+        onDelete(category);
+    }, [category, onDelete, hapticImpact]);
+
+    const itemStyle = useMemo(() => [
+        styles.item,
+        {
+            backgroundColor: colors.surface,
+            opacity: category.enabled ? 1 : 0.7,
+        }
+    ], [colors.surface, category.enabled]);
+
+    const avatarStyle = useMemo(() => [
+        styles.avatar,
+        { backgroundColor: category.color + '20' }
+    ], [category.color]);
+
+    const labelStyle = useMemo(() => [
+        styles.label,
+        {
+            color: colors.onSurface,
+            opacity: category.enabled ? 1 : 0.7,
+        }
+    ], [colors.onSurface, category.enabled]);
+
+    return (
+        <Surface style={itemStyle} elevation={1}>
+            <Avatar.Icon
+                size={44}
+                icon={category.icon}
+                style={avatarStyle}
+                color={category.color}
+            />
+
+            <View style={styles.labelContainer}>
+                <Text variant="bodyLarge" style={labelStyle}>
+                    {category.label}
+                </Text>
+                {category.deletable && (
+                    <Surface
+                        style={[styles.customBadge, { backgroundColor: colors.primaryContainer }]}
+                        elevation={0}
+                    >
+                        <Text
+                            variant="labelSmall"
+                            style={[styles.customText, { color: colors.onPrimaryContainer }]}
+                        >
+                            Custom
+                        </Text>
+                    </Surface>
+                )}
+            </View>
+
+            <View style={styles.actions}>
+                {category.deletable && (
+                    <IconButton
+                        icon="delete-outline"
+                        size={18}
+                        iconColor={colors.error}
+                        onPress={handleDelete}
+                        style={styles.actionButton}
+                    />
+                )}
+                <Switch
+                    value={category.enabled}
+                    onValueChange={handleToggle}
+                    thumbColor={category.enabled ? colors.primary : colors.outline}
+                    trackColor={{
+                        false: colors.surfaceVariant,
+                        true: colors.primary + '40'
+                    }}
+                />
+                <IconButton
+                    icon="square-edit-outline"
+                    size={18}
+                    iconColor={colors.onSurfaceVariant}
+                    onPress={handleEdit}
+                    style={styles.actionButton}
+                />
+            </View>
+        </Surface>
+    );
+});
+
+CategoryItem.displayName = 'CategoryItem';
+
+const styles = StyleSheet.create({
+    item: {
+        borderRadius: 16,
+        marginHorizontal: 16,
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 16,
+        gap: 16,
+        minHeight: 76,
+    },
+    avatar: {
+        borderRadius: 12,
+    },
+    labelContainer: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    label: {
+        fontWeight: '600',
+        lineHeight: 22,
+    },
+    customBadge: {
+        alignSelf: 'flex-start',
+        paddingHorizontal: 6,
+        paddingVertical: 2,
+        borderRadius: 4,
+        marginTop: 4,
+    },
+    customText: {
+        fontSize: 9,
+        fontWeight: '700',
+        textTransform: 'uppercase',
+        lineHeight: 12,
+    },
+    actions: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 2,
+    },
+    actionButton: {
+        margin: 0,
+        width: 36,
+        height: 36,
+    },
+});

@@ -4,8 +4,8 @@ import { PieChart, BarChart } from 'react-native-gifted-charts';
 import { Card, Switch } from 'react-native-paper';
 import { ThemedText } from '@/components/base/ThemedText';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import { useExpenseCategoryMapping } from '@/contexts/CategoryDataProvider';
 import { ExpenseCategoryStat } from '@/lib/types';
+import { useExpenseCategoryMapping } from '@/stores/useExpenseCategoriesStore';
 
 type CategoryBreakdownData = { data?: ExpenseCategoryStat[] };
 

@@ -16,9 +16,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { HapticsProvider } from '@/contexts/HapticsProvider';
 import MainLayout from '@/components/main/MainLayout';
 import { ConfirmationProvider } from '@/components/main/ConfirmationDialog';
-import useSeedData from '@/hooks/useSeedData';
 import { ThemedView } from '@/components/base/ThemedView';
-import { CategoryDataProvider } from '@/contexts/CategoryDataProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,42 +38,39 @@ export default function RootLayout() {
   // drizzle migrations for schema changes
   const { success, error } = useMigrations(db, migrations);
 
-  // seed data after migrations are done
-  const { success: seedSuccess, error: seedError } = useSeedData(success);
-
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
   useEffect(() => {
     // hide splash when everything is ready
-    if (loaded && success && seedSuccess) {
+    if (loaded && success) {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
 
   useEffect(() => {
     // hide splash on error for showing the error message
-    if (error || seedError) {
+    if (error) {
       SplashScreen.hideAsync();
     }
-  }, [error, seedError]);
+  }, [error]);
 
   if (!loaded) {
     return null;
   }
 
-  if (error || seedError) {
+  if (error) {
     return (
       <AppThemeProvider>
         <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-          <ThemedText>Migration/Seed error: {error ? error?.message : seedError?.message}</ThemedText>
+          <ThemedText>Migration/Seed error: {error?.message}</ThemedText>
         </ThemedView>
       </AppThemeProvider>
     );
   }
 
-  if (!success || !seedSuccess) {
+  if (!success) {
     return (
       <AppThemeProvider>
         <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} >
@@ -90,13 +85,11 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <AppThemeProvider>
           <HapticsProvider>
-            <CategoryDataProvider>
-              <ConfirmationProvider>
-                <MainLayout />
-                <GlobalLevelComponents />
-                <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
-              </ConfirmationProvider>
-            </CategoryDataProvider>
+            <ConfirmationProvider>
+              <MainLayout />
+              <GlobalLevelComponents />
+              <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
+            </ConfirmationProvider>
           </HapticsProvider>
         </AppThemeProvider>
       </QueryClientProvider>

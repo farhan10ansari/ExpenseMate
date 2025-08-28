@@ -82,7 +82,7 @@ export default function ExpensesList({
 
     const listData = useMemo((): ExpenseListItem[] => {
         if (!data?.pages || !data?.pages.some(page => page.expenses.length > 0)) return [];
-        return data.pages.flatMap((page) => [
+        return data.pages.filter(page => page.expenses.length > 0).flatMap((page) => [
             {
                 type: 'header' as const,
                 id: `header-${page.month}`,

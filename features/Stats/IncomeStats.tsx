@@ -5,7 +5,7 @@ import StatsCard from "./components/StatsCard";
 import { AntDesign, FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { View } from "react-native";
 import { PeriodIncomeStats } from "@/lib/types";
-import { useIncomeSourceMapping } from "@/contexts/CategoryDataProvider";
+import { useIncomeSourceMapping } from "@/stores/useIncomeSourcesStore";
 
 type Props = {
     incomeStats?: PeriodIncomeStats;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
     View,
     StyleSheet,
@@ -32,7 +32,7 @@ export function ScreenWrapper({
     const { colors } = useAppTheme();
     const insets = useSafeAreaInsets();
 
-    const styles = StyleSheet.create({
+    const styles = useMemo(() => StyleSheet.create({
         container: {
             flex: 1,
             borderTopWidth: 1,
@@ -53,7 +53,8 @@ export function ScreenWrapper({
             flex: 1,
             paddingBottom: insets.bottom,
         },
-    });
+    }), [colors, insets, background]);
+
 
     return (
         <View style={[styles.container, containerStyle]}>

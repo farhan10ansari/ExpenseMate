@@ -5,7 +5,7 @@ import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import StatsCard from "./components/StatsCard";
 import { AntDesign, FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { View } from "react-native";
-import { useExpenseCategoryMapping } from "@/contexts/CategoryDataProvider";
+import { useExpenseCategoryMapping } from "@/stores/useExpenseCategoriesStore";
 
 type Props = {
     expenseStats?: PeriodExpenseStats;

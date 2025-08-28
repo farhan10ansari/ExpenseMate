@@ -8,7 +8,7 @@ import { extractDateLabel, extractTimeString } from "@/lib/functions";
 import { useLocalization } from "@/hooks/useLocalization";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Color from 'color';
-import { useIncomeSourceMapping } from "@/contexts/CategoryDataProvider";
+import { useIncomeSourceMapping } from "@/stores/useIncomeSourcesStore";
 
 type IncomeCardProps = {
     income: Income;

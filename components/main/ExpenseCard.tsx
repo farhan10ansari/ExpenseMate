@@ -1,6 +1,5 @@
 import { Expense } from "@/db/schema";
 import { paymentMethodsMapping } from "@/lib/constants";
-import { useExpenseCategoryMapping } from "@/contexts/CategoryDataProvider";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
@@ -10,6 +9,7 @@ import { extractDateLabel, extractTimeString } from "@/lib/functions";
 import { useLocalization } from "@/hooks/useLocalization";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Color from "color";
+import { useExpenseCategoryMapping } from "@/stores/useExpenseCategoriesStore";
 
 type ExpenseCardProps = {
     expense: Expense;

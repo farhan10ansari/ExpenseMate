@@ -6,7 +6,6 @@ import { useLocalization } from "@/hooks/useLocalization";
 import { paymentMethodsMapping } from "@/lib/constants";
 import { extractDateLabel, extractTimeString } from "@/lib/functions";
 import { softDeleteExpenseById, getExpenseById } from "@/repositories/ExpenseRepo";
-import { useExpenseCategoryMapping } from "@/contexts/CategoryDataProvider";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { FontAwesome } from "@expo/vector-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -18,6 +17,7 @@ import { tryCatch } from "@/lib/try-catch";
 import useAppStore from "@/stores/useAppStore";
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 import { useHaptics } from "@/contexts/HapticsProvider";
+import { useExpenseCategoryMapping } from "@/stores/useExpenseCategoriesStore";
 
 export default function ExpenseInfoScreen() {
     const { colors } = useAppTheme();

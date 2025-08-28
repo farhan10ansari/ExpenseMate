@@ -16,7 +16,7 @@ import { tryCatch } from "@/lib/try-catch";
 import useAppStore from "@/stores/useAppStore";
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 import { useHaptics } from "@/contexts/HapticsProvider";
-import { useIncomeSourceMapping } from "@/contexts/CategoryDataProvider";
+import { useIncomeSourceMapping } from "@/stores/useIncomeSourcesStore";
 
 
 export default function IncomeInfoScreen() {

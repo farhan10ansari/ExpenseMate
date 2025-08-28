@@ -135,6 +135,11 @@ export default function MainLayout() {
         options={{ title: 'App Info' }}
       />
 
+       <Stack.Screen
+        name="menu/(manage-categories)"
+        options={{ title: 'Expense Categories' }}
+      />
+
       {/* Stats Screens */}
       <Stack.Screen
         name="stats/expenses"

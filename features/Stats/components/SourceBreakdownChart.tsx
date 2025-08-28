@@ -5,7 +5,7 @@ import { Card, Switch } from 'react-native-paper';
 import { ThemedText } from '@/components/base/ThemedText';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { IncomeSourceStat } from '@/lib/types';
-import { useIncomeSourceMapping } from '@/contexts/CategoryDataProvider';
+import { useIncomeSourceMapping } from '@/stores/useIncomeSourcesStore';
 
 type IncomeBreakdownData = { data?: IncomeSourceStat[] };
 

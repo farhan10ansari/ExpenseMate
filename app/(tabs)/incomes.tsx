@@ -62,7 +62,7 @@ export default function IncomesScreen() {
 
   const listData = useMemo((): ListItem[] => {
     if (!data?.pages || !data?.pages.some(page => page.incomes.length > 0)) return [];
-    return data.pages.flatMap((page) => [
+    return data.pages.filter((page) => page.incomes.length > 0).flatMap((page) => [
       {
         type: 'header' as const,
         id: `header-${page.month}`,

@@ -1,4 +1,4 @@
-import { Category, PaymentMethod } from "./types";
+import { Category, IconWithColor, PaymentMethod } from "./types";
 
 type CategoryData = Omit<Category, "enabled" | "deletable">;
 
@@ -152,38 +152,94 @@ export const paymentMethodsMapping = paymentMethods.reduce((acc, paymentMethod) 
 }, {} as Record<string, PaymentMethod>);
 
 
-// ✅ Comprehensive icon list organized by category
-// constants/icons.ts
-export const CATEGORY_ICONS = [
-    // Money & Banking
-    'cash', 'credit-card', 'bank', 'wallet', 'piggy-bank', 'currency-usd',
-    'currency-eur', 'currency-gbp', 'currency-inr', 'hand-coin', 'safe',
 
-    // Shopping & Commerce
-    'shopping', 'store', 'cart', 'receipt', 'sale', 'gift', 'card-account-details',
+export const ICON_COLORS: IconWithColor[] = [
+    // Existing colors from your categories
+    { icon: 'food', color: '#A8D0E6' },
+    { icon: 'train-car', color: '#F76C6C' },
+    { icon: 'shopping', color: '#F8E9A1' },
+    { icon: 'movie', color: '#8BC6A3' },
+    { icon: 'heart', color: '#CBAACB' },
+    { icon: 'walk', color: '#FFBCB3' },
+    { icon: 'file-document', color: '#B8E6B8' }, // Changed from gray to soft green
+    { icon: 'cash', color: '#8BC34A' },
+    { icon: 'briefcase', color: '#4FC3F7' },
+    { icon: 'laptop', color: '#FFB300' },
+    { icon: 'gift', color: '#E57373' },
+    { icon: 'star', color: '#F06292' },
+    { icon: 'dots-horizontal-circle-outline', color: '#C8A2C8' }, // Changed from gray to soft purple
 
-    // Food & Dining
-    'food', 'coffee', 'pizza', 'hamburger', 'silverware', 'glass-wine', 'tea',
+    // New colors for remaining icons
+    { icon: 'credit-card', color: '#87CEEB' },
+    { icon: 'bank', color: '#98D8C8' },
+    { icon: 'wallet', color: '#F7DC6F' },
+    { icon: 'piggy-bank', color: '#F1948A' },
+    { icon: 'currency-usd', color: '#85C1E9' },
+    { icon: 'currency-eur', color: '#A9DFBF' },
+    { icon: 'currency-gbp', color: '#F8C471' },
+    { icon: 'currency-inr', color: '#D7BDE2' },
+    { icon: 'hand-coin', color: '#82E0AA' },
+    { icon: 'safe', color: '#AED6F1' },
 
-    // Transportation
-    'car', 'gas-station', 'bus', 'train', 'train-car', 'airplane', 'taxi', 'bicycle', 'parking',
+    { icon: 'store', color: '#FAD7A0' },
+    { icon: 'cart', color: '#A3E4D7' },
+    { icon: 'receipt', color: '#D5A6BD' },
+    { icon: 'sale', color: '#F9E79F' },
+    { icon: 'card-account-details', color: '#85C1E9' },
 
-    // Utilities & Bills
-    'home', 'file-document', 'lightbulb', 'water', 'fire', 'power-plug', 'phone', 'wifi', 'fuel',
+    { icon: 'coffee', color: '#D2B48C' },
+    { icon: 'pizza', color: '#FF9999' },
+    { icon: 'hamburger', color: '#DEB887' },
+    { icon: 'silverware', color: '#B0C4DE' },
+    { icon: 'glass-wine', color: '#DDA0DD' },
+    { icon: 'tea', color: '#90EE90' },
 
-    // Health & Medical
-    'medical-bag', 'walk', 'pill', 'heart', 'hospital', 'tooth', 'eye', 'stethoscope',
+    { icon: 'car', color: '#87CEFA' },
+    { icon: 'gas-station', color: '#F0E68C' },
+    { icon: 'bus', color: '#FFA07A' },
+    { icon: 'train', color: '#98FB98' },
+    { icon: 'airplane', color: '#ADD8E6' },
+    { icon: 'taxi', color: '#FFFF99' },
+    { icon: 'bicycle', color: '#90EE90' },
+    { icon: 'parking', color: '#D8BFD8' },
 
-    // Entertainment
-    'movie', 'music', 'gamepad-variant', 'television', 'camera', 'book-open',
-    'football', 'theater',
+    { icon: 'home', color: '#FFD54F' }, // Similar to home-city
+    { icon: 'lightbulb', color: '#FFEB9C' },
+    { icon: 'water', color: '#7FB3D3' },
+    { icon: 'fire', color: '#F1948A' },
+    { icon: 'power-plug', color: '#F7DC6F' },
+    { icon: 'phone', color: '#AED6F1' },
+    { icon: 'wifi', color: '#82E0AA' },
+    { icon: 'fuel', color: '#FAD7A0' },
 
-    // Work & Education
-    'briefcase', 'school', 'book', 'laptop', 'printer',
+    { icon: 'medical-bag', color: '#FF6B6B' },
+    { icon: 'pill', color: '#4ECDC4' },
+    { icon: 'hospital', color: '#45B7D1' },
+    { icon: 'tooth', color: '#96CEB4' },
+    { icon: 'eye', color: '#FFEAA7' },
+    { icon: 'stethoscope', color: '#DDA0DD' },
 
-    // Personal Care
-    'face-man', 'spa', 'glasses', 'watch', 'tshirt-crew',
+    { icon: 'music', color: '#A8E6CF' },
+    { icon: 'gamepad-variant', color: '#FFB3BA' },
+    { icon: 'television', color: '#BFBFFF' },
+    { icon: 'camera', color: '#FFDFBA' },
+    { icon: 'book-open', color: '#FFFFBA' },
+    { icon: 'football', color: '#BAE1FF' },
+    { icon: 'theater', color: '#F0B3FF' },
 
-    // Miscellaneous
-    'star', 'heart-outline', 'gift-outline', 'bell', 'flag', 'shield', 'dots-horizontal-circle-outline'
+    { icon: 'school', color: '#C7CEEA' },
+    { icon: 'book', color: '#FFEAA7' },
+    { icon: 'printer', color: '#A8D5BA' },
+
+    { icon: 'face-man', color: '#FFCCCB' },
+    { icon: 'spa', color: '#E6E6FA' },
+    { icon: 'glasses', color: '#B0E0E6' },
+    { icon: 'watch', color: '#F0E68C' },
+    { icon: 'tshirt-crew', color: '#FFB6C1' },
+
+    { icon: 'heart-outline', color: '#F8BBD9' },
+    { icon: 'gift-outline', color: '#F5B7B1' },
+    { icon: 'bell', color: '#F7DC6F' },
+    { icon: 'flag', color: '#AED6F1' },
+    { icon: 'shield', color: '#A9DFBF' }
 ] as const;

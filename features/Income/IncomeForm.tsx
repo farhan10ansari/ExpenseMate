@@ -11,6 +11,7 @@ import DateInput from '@/components/input/DateInput';
 import NotesInput from '@/components/input/NotesInput';
 import TimeInput from '@/components/input/TimeInput';
 import { DefaultIncomeSources } from '@/lib/constants';
+import { useEnabledIncomeSources } from '@/stores/useIncomeSourcesStore';
 // import RecurringInput from '@/components/input/RecurringInput';
 type IncomeFormProps = {
     showSubmitButton?: boolean;
@@ -24,6 +25,7 @@ export default function IncomeForm({ showSubmitButton, onSubmit, type = "create"
 
     const income = useIncomeStore((state) => state.income);
     const updateIncome = useIncomeStore((state) => state.updateIncome);
+    const sources = useEnabledIncomeSources()
 
     const styles = StyleSheet.create({
         container: {
@@ -82,7 +84,7 @@ export default function IncomeForm({ showSubmitButton, onSubmit, type = "create"
                         Source
                     </ThemedText>
                     <CategoriesInput
-                        categories={DefaultIncomeSources}
+                        categories={sources}
                         category={income.source}
                         setCategory={(category) => updateIncome({ source: category })}
                         colorType='tertiary'
