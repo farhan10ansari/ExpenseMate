@@ -18,10 +18,11 @@ export default function IncomeSourcesScreen() {
 
     const deleteSourceWithCorrespondingIncomes = (source: string) => {
         // First, soft-delete all incomes with this source
-        softDeleteIncomesBySource(source).then(async () => {
+        softDeleteIncomesBySource(source).then(() => {
             // Then, delete the source from the store
-            await queryClient.invalidateQueries({ queryKey: ['incomes'] });
-            await queryClient.invalidateQueries({ queryKey: ['income'] });
+            queryClient.invalidateQueries({ queryKey: ['incomes'] });
+            queryClient.invalidateQueries({ queryKey: ['income'] });
+            queryClient.invalidateQueries({ queryKey: ['stats', 'income'] });
             deleteSource(source);
         }).catch((error) => {
             console.error('Error deleting incomes for source:', error);

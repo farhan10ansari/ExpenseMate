@@ -15,24 +15,17 @@ export default function ExpenseCategoriesScreen() {
     const { addCategory, updateCategory, deleteCategory } = useExpenseCategoriesStore();
 
     const deleteCategoryWithCorrespondingExpenses = async (category: string) => {
-        try {
-            // First, soft-delete all expenses with this category
-            await softDeleteExpensesByCategory(category);
-
+        // First, soft-delete all expenses with this category
+        softDeleteExpensesByCategory(category).then(() => {
             // Then, delete the category from the store
-            deleteCategory(category);
-
-            // Remove specific expense queries from cache
+            queryClient.invalidateQueries({ queryKey: ['expenses'] });
             queryClient.invalidateQueries({ queryKey: ['expense'] });
-            queryClient.removeQueries({ queryKey: ['expense'] });
-
-            // Invalidate expenses list
-            await queryClient.invalidateQueries({ queryKey: ['expenses'] });
-
-            console.log('Category and expenses deleted successfully');
-        } catch (error) {
-            console.error('Error deleting expenses for category:', error);
-        }
+            queryClient.invalidateQueries({ queryKey: ['stats', 'expense'] });
+            deleteCategory(category);
+        }).catch((error) => {
+            console.error('Error deleting expenses for source:', error);
+            // Optionally, show an error message to the user
+        });
     }
 
     return (

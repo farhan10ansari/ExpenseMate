@@ -9,7 +9,8 @@
     "ios": "expo start --ios",
     "lint": "expo lint",
     "db:migrate": "drizzle-kit generate",
-    "doctor": "npx expo-doctor"
+    "doctor": "npx expo-doctor",
+    "build:preview": "eas build -p android --profile preview"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
