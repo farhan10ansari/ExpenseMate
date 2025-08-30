@@ -131,8 +131,8 @@ const menuSections: MenuSection[] = [
     title: "Management",
     items: [
       {
-        title: "Manage Categories",
-        description: "Add, edit, or delete categories",
+        title: "Manage Categories & Sources",
+        description: "Customize categories & sources",
         icon: "shape-outline",
         route: "/menu/(manage-categories)/expense-categories",
       },

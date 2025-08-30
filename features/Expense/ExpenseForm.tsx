@@ -12,6 +12,7 @@ import PaymentMethodInput from '@/components/input/PaymentMethodInput';
 import TimeInput from '@/components/input/TimeInput';
 import { ExpenseData, useExpenseStore } from './ExpenseStoreProvider';
 import { useEnabledExpenseCategories } from '@/stores/useExpenseCategoriesStore';
+import { useIsFocused } from '@react-navigation/native';
 
 type ExpenseFormProps = {
   showSubmitButton?: boolean;
@@ -22,6 +23,8 @@ type ExpenseFormProps = {
 export default function ExpenseForm({ showSubmitButton, onSubmit, type = "create" }: ExpenseFormProps) {
   const { colors } = useAppTheme();
   const { keyboardHeight } = useKeyboardHeight();
+  const isFocused = useIsFocused()
+
 
   const expense = useExpenseStore((state) => state.expense);
   const updateExpense = useExpenseStore((state) => state.updateExpense);
@@ -94,6 +97,7 @@ export default function ExpenseForm({ showSubmitButton, onSubmit, type = "create
             categories={categories}
             category={expense.category}
             setCategory={(category) => updateExpense({ category })}
+            type='expense'
           />
         </View>
         {/* Notes */}
@@ -127,7 +131,7 @@ export default function ExpenseForm({ showSubmitButton, onSubmit, type = "create
 
 
       {/* Confirm Button */}
-      {showSubmitButton && <ConfirmButton onPress={handleSubmit} keyboardHeight={keyboardHeight} type={type} />}
+      {isFocused && showSubmitButton && <ConfirmButton onPress={handleSubmit} keyboardHeight={keyboardHeight} type={type} />}
 
     </View>
   );

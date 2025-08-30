@@ -19,7 +19,7 @@ export default function ExpenseStats({ expenseStats, showTitle = false }: Props)
 
 
     const topCategory = expenseStats?.topCategory
-        ? categoryMapping[expenseStats?.topCategory] : null
+        ? categoryMapping.get(expenseStats?.topCategory) : null
 
     return (
         <View style={styles.section} >

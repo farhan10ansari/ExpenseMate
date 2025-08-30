@@ -1,8 +1,16 @@
-import { StyleSheet, ScrollView, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
+import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import { getAvailableExpenseMonths } from "@/repositories/ExpenseRepo";
 import MonthTab from "./MonthTab";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
+
+// Define the type for month data
+interface MonthData {
+    offsetMonth: number;
+    month: string;
+    count: number;
+}
 
 interface MonthTabsContainerProps {
     selectedOffsetMonth: number | null; // null means "All"
@@ -43,33 +51,34 @@ export default function MonthTabsContainer({
     // Calculate total count for "All" tab
     const totalCount = availableMonths.reduce((sum, month) => sum + month.count, 0);
 
+    const renderMonthTab: ListRenderItem<MonthData> = ({ item }) => (
+        <MonthTab
+            month={item.month}
+            count={item.count}
+            isSelected={selectedOffsetMonth === item.offsetMonth}
+            onPress={() => onMonthSelect(item.offsetMonth)}
+        />
+    );
+
     return (
         <View style={styles.container}>
-            <ScrollView
+            <FlashList
+                data={availableMonths}
+                renderItem={renderMonthTab}
+                keyExtractor={(item) => item.offsetMonth.toString()}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                style={styles.scrollContainer}
                 contentContainerStyle={styles.contentContainer}
-            >
-                {/* All Tab */}
-                <MonthTab
-                    month="All"
-                    count={totalCount}
-                    isSelected={selectedOffsetMonth === null}
-                    onPress={() => onMonthSelect(null)}
-                />
-
-                {/* Month Tabs */}
-                {availableMonths.map((monthData) => (
+                style={styles.scrollContainer}
+                ListHeaderComponent={
                     <MonthTab
-                        key={monthData.offsetMonth}
-                        month={monthData.month}
-                        count={monthData.count}
-                        isSelected={selectedOffsetMonth === monthData.offsetMonth}
-                        onPress={() => onMonthSelect(monthData.offsetMonth)}
+                        month="All"
+                        count={totalCount}
+                        isSelected={selectedOffsetMonth === null}
+                        onPress={() => onMonthSelect(null)}
                     />
-                ))}
-            </ScrollView>
+                }
+            />
         </View>
     );
 }

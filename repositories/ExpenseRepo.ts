@@ -196,6 +196,15 @@ export const softDeleteExpenseById = async (id: string | number): Promise<void> 
   }
 }
 
+// Delete all expense for a given category
+export const softDeleteExpensesByCategory = async (category: string): Promise<void> => {
+  await db
+    .update(expensesSchema)
+    .set({ isTrashed: true })
+    .where(eq(expensesSchema.category, category))
+    .run();
+}
+
 export const updateExpenseById = async (id: string | number, expense: NewExpense): Promise<void> => {
   const numericId = Number(id); // Convert string to number
   if (isNaN(numericId)) {

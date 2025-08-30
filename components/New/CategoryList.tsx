@@ -14,6 +14,7 @@ interface CategoryListProps {
   onEditCategory: (category: Category) => void;
   onDeleteCategory: (category: Category) => void;
   loading?: boolean;
+  type?: 'expense' | 'income';
 }
 
 export const CategoryList = React.memo<CategoryListProps>(({
@@ -21,7 +22,8 @@ export const CategoryList = React.memo<CategoryListProps>(({
   onToggleCategory,
   onEditCategory,
   onDeleteCategory,
-  loading = false
+  loading = false,
+  type = 'expense',
 }) => {
   const { colors } = useAppTheme();
 
@@ -31,6 +33,7 @@ export const CategoryList = React.memo<CategoryListProps>(({
       onToggle={onToggleCategory}
       onEdit={onEditCategory}
       onDelete={onDeleteCategory}
+      type={type}
     />
   ), [onToggleCategory, onEditCategory, onDeleteCategory]);
 

@@ -1,27 +1,28 @@
 import { Category, ColorType } from '@/lib/types';
-import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import ThemedButton from '@/components/ui/ThemedButton';
 import { useHaptics } from '@/contexts/HapticsProvider';
-import { getCategoryRows } from '@/stores/useExpenseCategoriesStore';
+import { useRouter } from 'expo-router';
+import { getCategoryRows } from '@/lib/helpers';
 
 type CategoryInputProps = {
     categories: Category[];
     category: string | null;
     setCategory: (category: string) => void;
     colorType?: ColorType;
+    type: "expense" | "income"
 };
 
-export default function CategoriesInput({ categories, category, setCategory, colorType = "primary" }: CategoryInputProps) {
-    const { colors } = useAppTheme();
+export default function CategoriesInput({ categories, category, setCategory, colorType = "primary", type }: CategoryInputProps) {
     const { hapticImpact } = useHaptics()
-
-    // categories store
+    const router = useRouter();
 
     const styles = StyleSheet.create({
         categoriesMain: {
             flexDirection: 'column',
             gap: 10,
+            paddingVertical: 3, // to correctly show elevation shadow for the elevated button
+            paddingRight: 5, //to correctly show elevation shadow for the elevated button
         },
         categoryRow: {
             flexDirection: 'row',
@@ -37,6 +38,13 @@ export default function CategoriesInput({ categories, category, setCategory, col
     });
 
     const categoryRows = getCategoryRows(categories);
+
+    const handleNavigateToManage = () => {
+        router.back()
+        setTimeout(() => {
+            router.push(type === 'expense' ? '/menu/(manage-categories)/expense-categories' : '/menu/(manage-categories)/income-sources');
+        }, 100);
+    }
 
     return (
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -64,17 +72,17 @@ export default function CategoriesInput({ categories, category, setCategory, col
                         {rowIndex === categoryRows.length - 1 && (
                             <ThemedButton
                                 compact
-                                icon={"plus"}
-                                mode='outlined'
+                                icon="cog-outline"
+                                mode='elevated'
                                 style={[styles.categoryButtonStyle, {
-                                    borderColor: colors.muted
+                                    // borderColor: colors.muted
                                 }]}
+                                colorType={type === "expense" ? "primary" : "tertiary"}
                                 labelStyle={styles.categoryButtonLabelStyle}
-                                onPress={() => { }}
-                                // disabled
-                                textColor={colors.muted}
+                                onPress={handleNavigateToManage}
+                            // textColor={colors.muted}
 
-                            >Add Category
+                            >{type === 'expense' ? "Manage Category" : "Manage Source"}
                             </ThemedButton>)
                         }
                     </View>

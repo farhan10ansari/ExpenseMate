@@ -10,6 +10,7 @@ import { useLocalization } from "@/hooks/useLocalization";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Color from "color";
 import { useExpenseCategoryMapping } from "@/stores/useExpenseCategoriesStore";
+import { Category } from "@/lib/types";
 
 type ExpenseCardProps = {
     expense: Expense;
@@ -26,6 +27,16 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
 
     const formattedDate = extractDateLabel(expense.dateTime)
     const formattedTime = extractTimeString(expense.dateTime, uses24HourClock)
+
+    // Lookup the category definition (icon, label, color) by expense.category (string)
+    const categoryDef = categoryMapping.get(expense.category) as Category ?? {
+        name: expense.category,
+        label: expense.category,
+        icon: 'help',
+        color: colors.error,
+        deletable: false,
+        enabled: true,
+    };
 
     const styles = StyleSheet.create({
         wrapper: {
@@ -91,8 +102,8 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
                         <CustomChip
                             size="small"
                             variant="primary"
-                            icon={categoryMapping?.[expense.category]?.icon}
-                            label={categoryMapping?.[expense.category]?.label}
+                            icon={categoryDef?.icon}
+                            label={categoryDef?.label}
                         />
                         {expense.paymentMethod && (
                             <CustomChip

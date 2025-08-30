@@ -6,6 +6,7 @@ import { ICON_COLORS } from '@/lib/constants';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { FlashList } from '@shopify/flash-list';
 import { IconWithColor } from '@/lib/types';
+import Color from 'color';
 
 
 
@@ -22,7 +23,7 @@ const IconItem = React.memo<IconItemProps>(({
   onSelect,
   disabled = false
 }) => {
-  const { colors } = useAppTheme();
+  const { colors, dark } = useAppTheme();
 
   const handlePress = useCallback(() => {
     if (!disabled) {
@@ -33,9 +34,9 @@ const IconItem = React.memo<IconItemProps>(({
   const avatarStyle = useMemo(() => [
     styles.avatar,
     {
-      backgroundColor: iconData.color + '20',
-      borderWidth: isSelected ? 2 : 0,
-      borderColor: isSelected ? colors.primary : 'transparent',
+      backgroundColor: dark ? Color(iconData.color).alpha(0.1).string() : Color(iconData.color).lighten(0.15).alpha(0.2).string(),
+      borderWidth: isSelected ? 2 : 1,
+      borderColor: isSelected ? colors.primary : dark ? "transparent" : colors.border,
     }
   ], [iconData.color, isSelected, colors.primary]);
 

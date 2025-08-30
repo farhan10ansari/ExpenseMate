@@ -7,6 +7,7 @@ export type ThemedTextProps = TextProps & {
   darkColor?: string; // Optional color for dark theme. If provided, it will override the color prop in dark mode
   fontSize?: number; // Optional font size, can be used to override default sizes
   type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
+  centered?: boolean;
 };
 
 export function ThemedText({
@@ -16,6 +17,7 @@ export function ThemedText({
   darkColor,
   fontSize,
   type = 'default',
+  centered = false,
   ...rest
 }: ThemedTextProps) {
   const { colors } = useAppTheme();
@@ -34,6 +36,7 @@ export function ThemedText({
         lightColor ? { color: lightColor } : undefined,
         darkColor ? { color: darkColor } : undefined,
         fontSize ? { fontSize } : undefined,
+        centered ? { textAlign: 'center' } : undefined,
       ]}
       {...rest}
     />

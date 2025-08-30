@@ -110,7 +110,7 @@ export const getIncomeById = async (id: string | number): Promise<Income | undef
 };
 
 
-// Soft-delete an income by setting isTrashed: true
+// Delete an income by setting isTrashed: true
 export const softDeleteIncomeById = async (id: string | number): Promise<void> => {
   const numericId = Number(id); // Convert string to number
   if (isNaN(numericId)) {
@@ -127,6 +127,16 @@ export const softDeleteIncomeById = async (id: string | number): Promise<void> =
     throw new Error(`Income with ID ${id} not found or already deleted.`);
   }
 }
+
+// Delete all expense for a given source
+export const softDeleteIncomesBySource = async (source: string): Promise<void> => {
+  await db
+    .update(incomesSchema)
+    .set({ isTrashed: true })
+    .where(eq(incomesSchema.source, source))
+    .run();
+}
+
 
 
 export const updateIncomeById = async (
@@ -169,7 +179,7 @@ export const getIncomeStatsByPeriod = async (
   // 1. Get period start & end dates, calculate days in period
   const { start: startDate, end: endDate } = getPeriodStartEnd(period);
   const msPerDay = 1000 * 60 * 60 * 24;
-  
+
   // Calculate the total days in the period (inclusive)
   const days = Math.floor((endDate.getTime() - startDate.getTime()) / msPerDay) + 1;
 

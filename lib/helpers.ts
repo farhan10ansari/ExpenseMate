@@ -1,4 +1,4 @@
-import { PeriodExpenseStats, PeriodIncomeStats } from "./types";
+import { Category, PeriodExpenseStats, PeriodIncomeStats } from "./types";
 
 export interface FinancialSummary {
     netIncome: number;
@@ -24,3 +24,13 @@ export const getFinancialSummary = (
         // incomeExpenseRatio,
     };
 };
+
+export const getCategoryRows = (categories: Category[]) => {
+  const rows = [];
+  const numberOfRows = 2; // Number of categories per row
+  const rowSize = Math.ceil(categories.length / numberOfRows);
+  for (let i = 0; i < categories.length; i += rowSize) {
+    rows.push(categories.slice(i, i + rowSize));
+  }
+  return rows;
+}

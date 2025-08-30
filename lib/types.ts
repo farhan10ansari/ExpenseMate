@@ -15,6 +15,10 @@ export type CategoryFormData = {
   color?: string | null;
 }
 
+export type CreateCategoryData = Omit<Category, 'enabled' | 'deletable'>;
+export type UpdateCategoryData = Partial<Omit<Category, 'name' | 'deletable'>>;
+
+
 export type IconWithColor = {
     icon: IconSource;
     color: string;

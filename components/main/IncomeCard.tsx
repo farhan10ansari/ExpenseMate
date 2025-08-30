@@ -9,11 +9,13 @@ import { useLocalization } from "@/hooks/useLocalization";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Color from 'color';
 import { useIncomeSourceMapping } from "@/stores/useIncomeSourcesStore";
+import { Category } from "@/lib/types";
 
 type IncomeCardProps = {
     income: Income;
     onPress?: (id: number) => void;
 };
+
 
 function IncomeCard({ income, onPress }: IncomeCardProps) {
     const { colors } = useAppTheme();
@@ -26,7 +28,14 @@ function IncomeCard({ income, onPress }: IncomeCardProps) {
     const formattedTime = extractTimeString(income.dateTime, uses24HourClock);
 
     // Lookup the source definition (icon, label, color) by income.source (string)
-    const sourceDef = sourceMapping[income.source];
+    const sourceDef = sourceMapping.get(income.source) as Category ?? {
+        name: income.source,
+        label: income.source,
+        icon: 'help',
+        color: colors.error,
+        deletable: false,
+        enabled: true,
+    };
 
     const styles = StyleSheet.create({
         wrapper: {

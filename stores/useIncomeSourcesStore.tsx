@@ -2,30 +2,17 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { useMemo } from 'react';
-import { Category } from '@/lib/types';
+import { Category, CreateCategoryData, UpdateCategoryData } from '@/lib/types';
 import { DefaultIncomeSources } from '@/lib/constants';
 
-interface CreateIncomeSourceData {
-    name: string;
-    label: string;
-    icon: string;
-    color: string;
-}
-
-interface UpdateIncomeSourceData {
-    label?: string;
-    icon?: string;
-    color?: string;
-    enabled?: boolean;
-}
 
 interface IncomeSourcesStore {
     sources: Category[];
 
     // Basic operations
     setSources: (sources: Category[]) => void;
-    addSource: (source: CreateIncomeSourceData) => void;
-    updateSource: (name: string, updates: UpdateIncomeSourceData) => void;
+    addSource: (source: CreateCategoryData) => void;
+    updateSource: (name: string, updates: UpdateCategoryData) => void;
     deleteSource: (name: string) => void;
 
     // Utility functions
@@ -130,9 +117,10 @@ export const useEnabledIncomeSources = () => {
 export const useIncomeSourceMapping = () => {
     const sources = useIncomeSourcesStore(state => state.sources);
     return useMemo(() => {
-        return sources.reduce((acc, source) => {
-            acc[source.name] = source;
-            return acc;
-        }, {} as Record<string, Category>);
+        const map = new Map<string, Category>();
+        sources.forEach(source => {
+            map.set(source.name, source);
+        });
+        return map;
     }, [sources]);
 };

@@ -27,7 +27,14 @@ export default function CategoryBreakdownChart({ data }: CategoryBreakdownData) 
   const chartData = useMemo(
     () =>
       data?.map((cat) => {
-        const cfg = categoryMapping[cat.category] || {};
+        const cfg = categoryMapping.get(cat.category) ?? {
+          name: cat.category,
+          label: cat.category,
+          icon: 'help',
+          color: colors.error,
+          deletable: false,
+          enabled: true,
+        };
         const absVal = parseFloat(cat.total.toFixed(2));
         const pctVal = totalSum > 0 ? parseFloat(((cat.total / totalSum) * 100).toFixed(1)) : 0;
         return {

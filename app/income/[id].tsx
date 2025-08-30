@@ -17,20 +17,22 @@ import useAppStore from "@/stores/useAppStore";
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 import { useHaptics } from "@/contexts/HapticsProvider";
 import { useIncomeSourceMapping } from "@/stores/useIncomeSourcesStore";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
 export default function IncomeInfoScreen() {
     const { colors } = useAppTheme();
-    const { id } = useLocalSearchParams<{ id: string }>();
     const { uses24HourClock } = useLocalization();
-    const queryClient = useQueryClient();
     const navigation = useNavigation();
+    const queryClient = useQueryClient();
+    const { id } = useLocalSearchParams<{ id: string }>();
     const setGlobalSnackbar = useAppStore((state) => state.setGlobalSnackbar);
+
     const [showDeleteConfirmationDialog, setShowDeleteConfirmationDialog] = useState(false);
-    const router = useRouter();
-    const { hapticImpact, hapticNotify } = useHaptics()
-    // Get the source mapping
     const sourceMapping = useIncomeSourceMapping()
+    const router = useRouter();
+    const insets = useSafeAreaInsets();
+    const { hapticImpact, hapticNotify } = useHaptics()
 
     const { data: income, isLoading, isError, error } = useQuery({
         queryKey: ['income', id],
@@ -42,11 +44,11 @@ export default function IncomeInfoScreen() {
     const styles = StyleSheet.create({
         container: {
             backgroundColor: colors.card,
+            paddingBottom: insets.bottom,
         },
         mainContainer: {
             paddingHorizontal: 20,
             paddingTop: 10,
-            paddingBottom: 20,
         },
         title: {
             fontSize: 24,
@@ -127,7 +129,7 @@ export default function IncomeInfoScreen() {
     const timeString = income?.dateTime ? extractTimeString(income?.dateTime, uses24HourClock) : "";
     const dateLabel = income?.dateTime ? extractDateLabel(income?.dateTime) : "";
     const formattedDateTime = income?.dateTime ? `${dateLabel} at ${timeString}` : "Not Provided";
-    const sourceDef = income?.source ? sourceMapping[income.source] || sourceMapping["other"] : null;
+    const sourceDef = income?.source ? sourceMapping.get(income.source) : null;
 
     return (
         <ThemedView style={styles.container}>
@@ -135,94 +137,102 @@ export default function IncomeInfoScreen() {
                 title="Income Info"
                 onClose={() => navigation.goBack()}
             />
-            <View style={styles.mainContainer}>
-                <View>
-                    {/* Amount */}
-                    <InfoRow
-                        label="Amount"
-                        content={
-                            <View style={styles.amountContentContainer}>
-                                <FontAwesome name="rupee" size={24} color={colors.tertiary || colors.primary} />
-                                <ThemedText type="defaultSemiBold" color={colors.tertiary || colors.primary} fontSize={24}>
-                                    {income?.amount ? income.amount.toLocaleString() : "Not Provided"}
-                                </ThemedText>
+            {
+                !income?.isTrashed ? (
+                    <View style={styles.mainContainer}>
+                        <View>
+                            {/* Amount */}
+                            <InfoRow
+                                label="Amount"
+                                content={
+                                    <View style={styles.amountContentContainer}>
+                                        <FontAwesome name="rupee" size={24} color={colors.tertiary || colors.primary} />
+                                        <ThemedText type="defaultSemiBold" color={colors.tertiary || colors.primary} fontSize={24}>
+                                            {income?.amount ? income.amount.toLocaleString() : "Not Provided"}
+                                        </ThemedText>
+                                    </View>
+                                }
+                            />
+                            {/* Source */}
+                            <InfoRow
+                                label="Source"
+                                content={income?.source ?
+                                    <CustomChip
+                                        size="default"
+                                        variant="primary"
+                                        icon={sourceDef?.icon}
+                                        label={sourceDef?.label ?? "Unknown Source"}
+                                    /> : "Not Provided"}
+                            />
+                            {/* Description */}
+                            <InfoRow
+                                label="Description"
+                                content={income?.description ? <ThemedText>{income?.description}</ThemedText> : "Not Provided"}
+                                layout={income?.description ? "vertical" : "horizontal"}
+                                scrollable
+                                height={100}
+                            />
+                            {/* Recurring */}
+                            <InfoRow
+                                label="Recurring"
+                                content={income?.recurring ? (
+                                    <CustomChip size="default" variant="secondary" icon="repeat" label="Recurring" />
+                                ) : "No"}
+                            />
+                            {/* Currency */}
+                            <InfoRow
+                                label="Currency"
+                                content={income?.currency || "INR"}
+                            />
+                            {/* Date & Time */}
+                            <InfoRow
+                                label="Date & Time"
+                                content={formattedDateTime}
+                            />
+                            {/* Action */}
+                            <View style={styles.buttonContainer}>
+                                <Button
+                                    mode="elevated"
+                                    style={[styles.button, styles.editButton]}
+                                    labelStyle={styles.editButtonText}
+                                    rippleColor={colors.rippleTertiary}
+                                    onPress={handleEdit}
+                                >
+                                    Edit
+                                </Button>
+                                <Button
+                                    mode="elevated"
+                                    style={[styles.button, styles.deleteButton]}
+                                    labelStyle={styles.deleteButtonText}
+                                    onPress={() => {
+                                        hapticImpact("light");
+                                        setShowDeleteConfirmationDialog(true);
+                                    }}
+                                >
+                                    Delete
+                                </Button>
                             </View>
-                        }
-                    />
-                    {/* Source */}
-                    <InfoRow
-                        label="Source"
-                        content={income?.source ?
-                            <CustomChip
-                                size="default"
-                                variant="primary"
-                                icon={sourceDef?.icon}
-                                label={sourceDef?.label ?? ""}
-                            // color={sourceDef?.color}
-                            /> : "Not Provided"}
-                    />
-                    {/* Description */}
-                    <InfoRow
-                        label="Description"
-                        content={income?.description ? <ThemedText>{income?.description}</ThemedText> : "Not Provided"}
-                        layout={income?.description ? "vertical" : "horizontal"}
-                        scrollable
-                        height={100}
-                    />
-                    {/* Recurring */}
-                    <InfoRow
-                        label="Recurring"
-                        content={income?.recurring ? (
-                            <CustomChip size="default" variant="secondary" icon="repeat" label="Recurring" />
-                        ) : "No"}
-                    />
-                    {/* Currency */}
-                    <InfoRow
-                        label="Currency"
-                        content={income?.currency || "INR"}
-                    />
-                    {/* Date & Time */}
-                    <InfoRow
-                        label="Date & Time"
-                        content={formattedDateTime}
-                    />
-                    {/* Action */}
-                    <View style={styles.buttonContainer}>
-                        <Button
-                            mode="elevated"
-                            style={[styles.button, styles.editButton]}
-                            labelStyle={styles.editButtonText}
-                            rippleColor={colors.rippleTertiary}
-                            onPress={handleEdit}
-                        >
-                            Edit
-                        </Button>
-                        <Button
-                            mode="elevated"
-                            style={[styles.button, styles.deleteButton]}
-                            labelStyle={styles.deleteButtonText}
-                            onPress={() => {
-                                hapticImpact("light");
-                                setShowDeleteConfirmationDialog(true);
-                            }}
-                        >
-                            Delete
-                        </Button>
+                        </View>
+                        <Portal>
+                            <Dialog visible={showDeleteConfirmationDialog} onDismiss={() => setShowDeleteConfirmationDialog(false)}>
+                                <Dialog.Title>Delete Income?</Dialog.Title>
+                                <Dialog.Content>
+                                    <ThemedText>Are you sure you want to delete this income? This action cannot be undone.</ThemedText>
+                                </Dialog.Content>
+                                <Dialog.Actions>
+                                    <Button onPress={() => setShowDeleteConfirmationDialog(false)}>Cancel</Button>
+                                    <Button onPress={handleDelete} textColor={colors.error}>Delete</Button>
+                                </Dialog.Actions>
+                            </Dialog>
+                        </Portal>
                     </View>
-                </View>
-                <Portal>
-                    <Dialog visible={showDeleteConfirmationDialog} onDismiss={() => setShowDeleteConfirmationDialog(false)}>
-                        <Dialog.Title>Delete Income?</Dialog.Title>
-                        <Dialog.Content>
-                            <ThemedText>Are you sure you want to delete this income? This action cannot be undone.</ThemedText>
-                        </Dialog.Content>
-                        <Dialog.Actions>
-                            <Button onPress={() => setShowDeleteConfirmationDialog(false)}>Cancel</Button>
-                            <Button onPress={handleDelete} textColor={colors.error}>Delete</Button>
-                        </Dialog.Actions>
-                    </Dialog>
-                </Portal>
-            </View>
+                ) : (
+                    <ThemedView style={[styles.mainContainer, { minHeight: 200, paddingTop: 40 }]}>
+                        <ThemedText type="title" style={styles.title} color={colors.error}>Income Not Found</ThemedText>
+                        <ThemedText centered>This income has been deleted.</ThemedText>
+                    </ThemedView>
+                )
+            }
         </ThemedView>
     );
 }

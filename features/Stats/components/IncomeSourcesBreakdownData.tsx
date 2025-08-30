@@ -44,7 +44,14 @@ export default function IncomeSourcesBreakdownCard({
       <Card.Content>
         <ThemedText style={[styles.title, { color: colors.text }]}>{title}</ThemedText>
         {data.map((item, index) => {
-          const cfg = sourceMapping[item.source] || {};
+          const cfg = sourceMapping.get(item.source) ?? {
+            name: item.source,
+            label: item.source,
+            icon: 'help',
+            color: colors.error,
+            deletable: false,
+            enabled: true,
+          };
           const label = cfg.label || item.source;
           const iconName = cfg.icon || 'help-circle';
           const color = cfg.color || colors.primary;

@@ -10,8 +10,8 @@ import ConfirmButton from '@/components/input/ConfirmButton';
 import DateInput from '@/components/input/DateInput';
 import NotesInput from '@/components/input/NotesInput';
 import TimeInput from '@/components/input/TimeInput';
-import { DefaultIncomeSources } from '@/lib/constants';
 import { useEnabledIncomeSources } from '@/stores/useIncomeSourcesStore';
+import { useIsFocused } from '@react-navigation/native';
 // import RecurringInput from '@/components/input/RecurringInput';
 type IncomeFormProps = {
     showSubmitButton?: boolean;
@@ -22,6 +22,7 @@ type IncomeFormProps = {
 export default function IncomeForm({ showSubmitButton, onSubmit, type = "create" }: IncomeFormProps) {
     const { colors } = useAppTheme();
     const { keyboardHeight } = useKeyboardHeight();
+    const isFocused = useIsFocused()
 
     const income = useIncomeStore((state) => state.income);
     const updateIncome = useIncomeStore((state) => state.updateIncome);
@@ -88,6 +89,7 @@ export default function IncomeForm({ showSubmitButton, onSubmit, type = "create"
                         category={income.source}
                         setCategory={(category) => updateIncome({ source: category })}
                         colorType='tertiary'
+                        type='income'
                     />
                 </View>
                 {/* Description (Notes) */}
@@ -130,7 +132,7 @@ export default function IncomeForm({ showSubmitButton, onSubmit, type = "create"
                 </View>
             </View>
             {/* Confirm Button */}
-            {showSubmitButton && (
+            {isFocused && showSubmitButton && (
                 <ConfirmButton
                     onPress={handleSubmit}
                     keyboardHeight={keyboardHeight}

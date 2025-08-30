@@ -44,7 +44,14 @@ export default function ExpenseCategoryBreakdownCard({
       <Card.Content>
         <ThemedText style={[styles.title, { color: colors.text }]}>{title}</ThemedText>
         {data.map((item, index) => {
-          const cfg = categoryMapping[item.category] || {};
+          const cfg = categoryMapping.get(item.category) ?? {
+            name: item.category,
+            label: item.category,
+            icon: 'help',
+            color: colors.error,
+            deletable: false,
+            enabled: true,
+          };
           const label = cfg.label || item.category;
           const iconName = cfg.icon || 'help-circle';
           const color = cfg.color || colors.primary;

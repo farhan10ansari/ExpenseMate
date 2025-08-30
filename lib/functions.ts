@@ -34,3 +34,30 @@ export function extractTimeString(date: Date, is24HourClock: boolean): string {
     }).format(date);
 }
 
+export function getName(inputString: string) {
+    // Trim the string to remove leading and trailing spaces
+    const trimmedString = inputString.trim();
+
+    // Replace multiple spaces with a single space
+    const singleSpacedString = trimmedString.replace(/\s+/g, ' ');
+
+    // Convert to lowercase and replace spaces with hyphens
+    const name = singleSpacedString.toLowerCase().replace(/\s/g, '-');
+
+    return name;
+}
+
+export function getLabel(inputString: string) {
+    // Trim the string to remove leading and trailing spaces
+    const trimmedString = inputString.trim();
+
+    // Replace multiple spaces with a single space
+    const singleSpacedString = trimmedString.replace(/\s+/g, ' ');
+
+    // Capitalize the first letter
+    const label = singleSpacedString.length > 0
+        ? singleSpacedString.charAt(0).toUpperCase() + singleSpacedString.slice(1)
+        : '';
+
+    return label;
+}

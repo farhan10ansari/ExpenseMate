@@ -18,7 +18,7 @@ export default function IncomeStats({ incomeStats, showTitle = false }: Props) {
     const sourceMapping = useIncomeSourceMapping()
 
     const topSource = incomeStats?.topSource
-        ? sourceMapping[incomeStats?.topSource] : null;
+        ? sourceMapping.get(incomeStats?.topSource) : null;
 
     return (
         <View style={styles.section}>

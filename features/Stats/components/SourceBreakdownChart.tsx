@@ -27,7 +27,14 @@ export default function IncomeSourceBreakdownChart({ data }: IncomeBreakdownData
   const chartData = useMemo(
     () =>
       data?.map((src) => {
-        const cfg = sourceMapping[src.source] || {};
+        const cfg = sourceMapping.get(src.source) ?? {
+          name: src.source,
+          label: src.source,
+          icon: 'help',
+          color: colors.error,
+          deletable: false,
+          enabled: true,
+        };
         const absVal = parseFloat(src.total.toFixed(2));
         const pctVal = totalSum > 0 ? parseFloat(((src.total / totalSum) * 100).toFixed(1)) : 0;
         return {

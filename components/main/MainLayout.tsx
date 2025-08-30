@@ -135,9 +135,13 @@ export default function MainLayout() {
         options={{ title: 'App Info' }}
       />
 
-       <Stack.Screen
+      <Stack.Screen
         name="menu/(manage-categories)"
-        options={{ title: 'Expense Categories' }}
+        options={{
+          title: 'Manage Categories & Sources',
+          headerTitleStyle: { fontSize: 18 },
+          // headerLeft: () => <CustomBackButton } />
+        }}
       />
 
       {/* Stats Screens */}

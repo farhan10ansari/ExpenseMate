@@ -11,29 +11,28 @@ interface CategoryItemProps {
     onToggle: (name: string, enabled: boolean) => void;
     onEdit: (category: Category) => void;
     onDelete: (category: Category) => void;
+    type?: 'expense' | 'income';
 }
 
 export const CategoryItem = React.memo<CategoryItemProps>(({
     category,
     onToggle,
     onEdit,
-    onDelete
+    onDelete,
+    type = 'expense',
 }) => {
     const { colors } = useAppTheme();
     const { hapticImpact } = useHaptics();
 
     const handleToggle = useCallback(() => {
-        hapticImpact('light');
         onToggle(category.name, !category.enabled);
     }, [category.name, category.enabled, onToggle, hapticImpact]);
 
     const handleEdit = useCallback(() => {
-        hapticImpact('medium');
         onEdit(category);
     }, [category, onEdit, hapticImpact]);
 
     const handleDelete = useCallback(() => {
-        hapticImpact('heavy');
         onDelete(category);
     }, [category, onDelete, hapticImpact]);
 
@@ -90,7 +89,7 @@ export const CategoryItem = React.memo<CategoryItemProps>(({
                 {category.deletable && (
                     <IconButton
                         icon="delete-outline"
-                        size={18}
+                        size={24}
                         iconColor={colors.error}
                         onPress={handleDelete}
                         style={styles.actionButton}
@@ -99,15 +98,11 @@ export const CategoryItem = React.memo<CategoryItemProps>(({
                 <Switch
                     value={category.enabled}
                     onValueChange={handleToggle}
-                    thumbColor={category.enabled ? colors.primary : colors.outline}
-                    trackColor={{
-                        false: colors.surfaceVariant,
-                        true: colors.primary + '40'
-                    }}
+                    color={type === "income" ? colors.tertiary : colors.primary}
                 />
                 <IconButton
                     icon="square-edit-outline"
-                    size={18}
+                    size={24}
                     iconColor={colors.onSurfaceVariant}
                     onPress={handleEdit}
                     style={styles.actionButton}

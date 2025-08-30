@@ -13,14 +13,21 @@ export const MaterialTopTabs = withLayoutContext<
 
 export default function Layout() {
     return (
-        <MaterialTopTabs>
+        <MaterialTopTabs
+            backBehavior="none" // Prevent going back to previous tab on back action
+        >
             <MaterialTopTabs.Screen
                 name="expense-categories"
-                options={{ title: "Expense Categories" }}
+                options={{
+                    title: "Expense Categories",
+                }}
+
             />
             <MaterialTopTabs.Screen
                 name="income-sources"
-                options={{ title: "Income Sources" }}
+                options={{
+                    title: "Income Sources",
+                }}
             />
         </MaterialTopTabs>
     )
