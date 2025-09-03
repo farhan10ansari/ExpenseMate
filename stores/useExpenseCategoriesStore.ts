@@ -1,6 +1,6 @@
 // stores/expenseCategoriesStore.ts
 import { create } from 'zustand';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Storage from 'expo-sqlite/kv-store';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { useMemo } from 'react';
 import { Category, CreateCategoryData, UpdateCategoryData } from '@/lib/types';
@@ -101,7 +101,7 @@ export const useExpenseCategoriesStore = create<ExpenseCategoriesStore>()(
     }),
     {
       name: 'expense-categories-storage',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => Storage),
     }
   )
 );

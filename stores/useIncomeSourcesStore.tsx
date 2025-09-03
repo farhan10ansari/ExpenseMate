@@ -1,10 +1,9 @@
 import { create } from 'zustand';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Storage from 'expo-sqlite/kv-store';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { useMemo } from 'react';
 import { Category, CreateCategoryData, UpdateCategoryData } from '@/lib/types';
 import { DefaultIncomeSources } from '@/lib/constants';
-
 
 interface IncomeSourcesStore {
     sources: Category[];
@@ -99,7 +98,7 @@ export const useIncomeSourcesStore = create<IncomeSourcesStore>()(
         }),
         {
             name: 'income-sources-storage',
-            storage: createJSONStorage(() => AsyncStorage),
+            storage: createJSONStorage(() => Storage),
         }
     )
 );

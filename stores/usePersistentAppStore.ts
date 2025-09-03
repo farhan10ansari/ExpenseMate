@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Storage from 'expo-sqlite/kv-store';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -72,7 +72,7 @@ const usePersistentAppStore = create<PersistentAppStore>()(persist(
         isDataSeeded: (key) => get().seededKeys.includes(key),
     }), {
     name: "app-storage", // unique name
-    storage: createJSONStorage(() => AsyncStorage),
+    storage: createJSONStorage(() => Storage),
 }))
 
 export default usePersistentAppStore;
