@@ -162,16 +162,10 @@ export default function ExpensesList({
 
     // Auto-load more data for "All" view if needed
     useEffect(() => {
-        // if (selectedOffsetMonth === null && data?.pages) {
-        //     const lastPage = data.pages[data.pages.length - 1];
-        //     if (lastPage?.hasMore === true && totalExpenses <= 20) {
-        //         fetchNextPage();
-        //     }
-        // }
         if (data?.pages && hasNextPage && totalExpenses < 20) {
             fetchNextPage();
         }
-    }, [data, selectedOffsetMonth, totalExpenses, fetchNextPage]);
+    }, [data, totalExpenses, fetchNextPage, hasNextPage]);
 
     // ✅ Loading and error states
     if (isLoading) return null;
@@ -220,7 +214,7 @@ export default function ExpensesList({
                     <ThemedText type="subtitle">No expenses records found...</ThemedText>
                     <Button
                         onPress={() => router.push("/transaction/new")}
-                        textColor={colors.tertiary}
+                        textColor={colors.primary}
                     >
                         Add Expense
                     </Button>
