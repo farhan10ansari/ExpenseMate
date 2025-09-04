@@ -1,4 +1,9 @@
+import lodash from 'lodash';
+import { useExpenseCategoriesStore } from "@/stores/useExpenseCategoriesStore";
 import { Category, PeriodExpenseStats, PeriodIncomeStats } from "./types";
+import { getCategoriesWithCountsKV } from '@/repositories/ExpenseRepo';
+import { useIncomeSourcesStore } from '@/stores/useIncomeSourcesStore';
+import { getIncomeSourcesWithCountsKV } from '@/repositories/IncomeRepo';
 
 export interface FinancialSummary {
     netIncome: number;
@@ -42,3 +47,64 @@ export const getCategoryRows = (categories: Category[]): { rows: Category[][], n
     return { rows, noOfRows: 2 }
 };
 
+
+export const sortExpenseCategoriesByUsage = async (): Promise<void> => {
+    const { categories, setCategories } = useExpenseCategoriesStore.getState();
+
+    // Keep a deep copy of original categories using lodash
+    const originalCategories = lodash.cloneDeep(categories);
+
+    try {
+        // Get the category occurrence counts as key-value object
+        const categoryCounts = await getCategoriesWithCountsKV();
+
+        // Sort categories by their usage counts (descending order)
+        const sortedCategories = [...categories].sort((a, b) => {
+            const countA = categoryCounts[a.name] ?? 0;
+            const countB = categoryCounts[b.name] ?? 0;
+            return countB - countA;
+        });
+
+        // Update the store with sorted categories
+        setCategories(sortedCategories);
+    } catch (error) {
+        console.error('Error sorting categories by usage:', error);
+
+        // Reset to original categories on any error
+        setCategories(originalCategories);
+
+        // Re-throw the error so calling code can handle it
+        throw error;
+    }
+};
+
+
+export const sortIncomeSourcesByUsage = async (): Promise<void> => {
+  const { sources, setSources } = useIncomeSourcesStore.getState();
+  
+  // Keep a deep copy of original sources using lodash
+  const originalSources = lodash.cloneDeep(sources);
+
+  try {
+    // Get the income source occurrence counts as key-value object
+    const sourceCounts = await getIncomeSourcesWithCountsKV();
+
+    // Sort sources by their usage counts (descending order)
+    const sortedSources = [...sources].sort((a, b) => {
+      const countA = sourceCounts[a.name] ?? 0;
+      const countB = sourceCounts[b.name] ?? 0;
+      return countB - countA;
+    });
+
+    // Update the store with sorted sources
+    setSources(sortedSources);
+  } catch (error) {
+    console.error('Error sorting income sources by usage:', error);
+    
+    // Reset to original sources on any error
+    setSources(originalSources);
+    
+    // Re-throw the error so calling code can handle it
+    throw error;
+  }
+};

@@ -305,3 +305,24 @@ export const getExpenseStatsByPeriod = async (
     topCategory,
   };
 };
+
+// Get all categories with their occurrence counts as a key-value object for sorting the categories based on usage
+export const getCategoriesWithCountsKV = async (): Promise<Record<string, number>> => {
+  const categories = await db
+    .select({
+      category: expensesSchema.category,
+      count: sql<number>`COUNT(*)`
+    })
+    .from(expensesSchema)
+    .where(eq(expensesSchema.isTrashed, false))
+    .groupBy(expensesSchema.category)
+    .orderBy(desc(sql<number>`COUNT(*)`)); // Most used categories first
+
+  // Convert array to key-value object
+  const result: Record<string, number> = {};
+  categories.forEach(row => {
+    result[row.category] = row.count;
+  });
+
+  return result;
+};

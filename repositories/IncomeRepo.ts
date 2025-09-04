@@ -242,3 +242,25 @@ export const getIncomeStatsByPeriod = async (
     topSource,
   };
 };
+
+
+// Get all income sources with their occurrence counts as key-value object for sorting the sources based on usage
+export const getIncomeSourcesWithCountsKV = async (): Promise<Record<string, number>> => {
+  const sources = await db
+    .select({
+      source: incomesSchema.source,
+      count: sql<number>`COUNT(*)`
+    })
+    .from(incomesSchema)
+    .where(eq(incomesSchema.isTrashed, false))
+    .groupBy(incomesSchema.source)
+    .orderBy(desc(sql<number>`COUNT(*)`)); // Most used sources first
+
+  // Convert array to key-value object
+  const result: Record<string, number> = {};
+  sources.forEach(row => {
+    result[row.source] = row.count;
+  });
+
+  return result;
+};

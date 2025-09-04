@@ -12,6 +12,7 @@ import { addIncome } from "@/repositories/IncomeRepo";
 import { ExpenseData } from "@/features/Expense/ExpenseStoreProvider";
 import { IncomeData } from "@/features/Income/IncomeStoreProvider";
 import { useHaptics } from "@/contexts/HapticsProvider";
+import { sortExpenseCategoriesByUsage, sortIncomeSourcesByUsage } from "@/lib/helpers";
 
 export function useTransactionForm() {
     const navigation = useNavigation();
@@ -67,6 +68,7 @@ export function useTransactionForm() {
         }
         hapticNotify('success');
         showSuccessAndNavigate('Expense added successfully', ['expenses']);
+        sortExpenseCategoriesByUsage()
     };
 
     const handleAddIncome = async (income: IncomeData) => {
@@ -109,6 +111,7 @@ export function useTransactionForm() {
         }
         hapticNotify('success');
         showSuccessAndNavigate('Income added successfully', ['incomes']);
+        sortIncomeSourcesByUsage()
     };
 
     const showSuccessAndNavigate = (message: string, queryKeys: string[]) => {
