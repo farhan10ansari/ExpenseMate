@@ -1,7 +1,6 @@
 import React from 'react';
 import { ThemedText } from '@/components/base/ThemedText';
 import { useIncomeSources, useIncomeSourcesStore } from '@/stores/useIncomeSourcesStore';
-import { getName, getLabel } from '@/lib/functions';
 import { CategoryManagerScreen } from '@/components/New/CategoryManagerScreen';
 import { View } from 'react-native';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
@@ -36,8 +35,6 @@ export default function IncomeSourcesScreen() {
             onAdd={addSource}
             onUpdate={updateSource}
             onDelete={deleteSourceWithCorrespondingIncomes}
-            getName={getName}
-            getLabel={getLabel}
             labels={{
                 createTitle: 'Create Income Source',
                 editTitle: 'Edit Income Source',

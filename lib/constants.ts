@@ -1,6 +1,6 @@
 import { Category, IconWithColor, PaymentMethod } from "./types";
 
-type CategoryData = Omit<Category, "enabled" | "deletable">;
+type CategoryData = Omit<Category, "enabled" | "type">;
 
 export const DefaultExpenseCategories: CategoryData[] = [
     {
@@ -16,16 +16,16 @@ export const DefaultExpenseCategories: CategoryData[] = [
         color: "#F76C6C"
     },
     {
-        name: "shopping",
-        label: "Shopping",
-        icon: "shopping",
-        color: "#F8E9A1"
-    },
-    {
         name: "entertainment",
         label: "Entertainment",
         icon: "movie",
         color: "#8BC6A3"
+    },
+    {
+        name: "shopping",
+        label: "Shopping",
+        icon: "shopping",
+        color: "#F8E9A1"
     },
     {
         name: "health",
@@ -74,16 +74,16 @@ export const DefaultIncomeSources: CategoryData[] = [
         color: "#FFB300"
     },
     {
-        name: "investment",
-        label: "Investment",
-        icon: "chart-line",
-        color: "#9575CD"
-    },
-    {
         name: "rental",
         label: "Rental",
         icon: "home-city",
         color: "#FFD54F"
+    },
+    {
+        name: "investment",
+        label: "Investment",
+        icon: "chart-line",
+        color: "#9575CD"
     },
     {
         name: "gift",

@@ -12,6 +12,7 @@ import { ScreenWrapper } from '@/components/main/ScreenWrapper';
 import { useHaptics } from '@/contexts/HapticsProvider';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import useAppStore from '@/stores/useAppStore';
+import { getCategoryLabel, getCategoryName } from '@/lib/functions';
 
 type DialogMode = 'create' | 'edit' | null;
 
@@ -29,10 +30,6 @@ interface CategoryManagerProps {
   onAdd: (data: CreateCategoryData) => void;
   onUpdate: (name: string, updates: UpdateCategoryData) => void;
   onDelete: (name: string) => void;
-
-  // Utility functions
-  getName: (title: string) => string;
-  getLabel: (title: string) => string;
 
   // Labels
   labels: {
@@ -52,8 +49,6 @@ export function CategoryManagerScreen({
   onAdd,
   onUpdate,
   onDelete,
-  getName,
-  getLabel,
   labels,
   type = 'expense',
 }: CategoryManagerProps) {
@@ -125,8 +120,8 @@ export function CategoryManagerScreen({
       return;
     }
 
-    const name = getName(data.title.trim());
-    const label = getLabel(data.title.trim());
+    const name = getCategoryName(data.title.trim());
+    const label = getCategoryLabel(data.title.trim());
 
     if (!name || !label) {
       showAlert('Please enter a valid category name.');
@@ -172,13 +167,14 @@ export function CategoryManagerScreen({
     } catch (error) {
       showAlert('An error occurred. Please try again.');
     }
-  }, [dialogState, categories, getName, getLabel, onAdd, onUpdate, showAlert, closeDialog]);
+  }, [dialogState, categories, getCategoryName, getCategoryLabel, onAdd, onUpdate, showAlert, closeDialog]);
 
   // Dialog initial data
   const dialogInitialData = dialogState.category ? {
     title: dialogState.category.label,
     icon: dialogState.category.icon,
     color: dialogState.category.color,
+    type: dialogState.category.type
   } : undefined;
 
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import { ThemedText } from '@/components/base/ThemedText';
 import { useExpenseCategories, useExpenseCategoriesStore } from '@/stores/useExpenseCategoriesStore';
-import { getName, getLabel } from '@/lib/functions';
 import { CategoryManagerScreen } from '@/components/New/CategoryManagerScreen';
 import { View } from 'react-native';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
@@ -34,8 +33,6 @@ export default function ExpenseCategoriesScreen() {
             onAdd={addCategory}
             onUpdate={updateCategory}
             onDelete={deleteCategoryWithCorrespondingExpenses}
-            getName={getName}
-            getLabel={getLabel}
             labels={{
                 createTitle: 'Create Expense Category',
                 editTitle: 'Edit Expense Category',

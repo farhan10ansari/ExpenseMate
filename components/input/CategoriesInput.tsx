@@ -4,6 +4,8 @@ import ThemedButton from '@/components/ui/ThemedButton';
 import { useHaptics } from '@/contexts/HapticsProvider';
 import { useRouter } from 'expo-router';
 import { getCategoryRows } from '@/lib/helpers';
+import { useMemo } from 'react';
+import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 
 type CategoryInputProps = {
     categories: Category[];
@@ -14,6 +16,7 @@ type CategoryInputProps = {
 };
 
 export default function CategoriesInput({ categories, category, setCategory, colorType = "primary", type }: CategoryInputProps) {
+    const { colors } = useAppTheme()
     const { hapticImpact } = useHaptics()
     const router = useRouter();
 
@@ -21,8 +24,8 @@ export default function CategoriesInput({ categories, category, setCategory, col
         categoriesMain: {
             flexDirection: 'column',
             gap: 10,
-            paddingVertical: 3, // to correctly show elevation shadow for the elevated button
-            paddingRight: 5, //to correctly show elevation shadow for the elevated button
+            paddingVertical: 3,
+            paddingRight: 5,
         },
         categoryRow: {
             flexDirection: 'row',
@@ -37,13 +40,13 @@ export default function CategoriesInput({ categories, category, setCategory, col
         }
     });
 
-    const categoryRows = getCategoryRows(categories);
+    const { rows: categoryRows, noOfRows } = useMemo(() => getCategoryRows(categories), [categories])
 
     const handleNavigateToManage = () => {
         router.back()
         setTimeout(() => {
             router.push(type === 'expense' ? '/menu/(manage-categories)/expense-categories' : '/menu/(manage-categories)/income-sources');
-        }, 100);
+        }, 300);
     }
 
     return (
@@ -51,7 +54,7 @@ export default function CategoriesInput({ categories, category, setCategory, col
             <View style={styles.categoriesMain}>
                 {categoryRows.map((row, rowIndex) => (
                     <View key={rowIndex} style={styles.categoryRow}>
-                        {row.map((c) => (
+                        {row.length > 0 && row.map((c) => (
                             <ThemedButton
                                 compact
                                 key={c.name}
@@ -69,22 +72,36 @@ export default function CategoriesInput({ categories, category, setCategory, col
                                 {c.label}
                             </ThemedButton>
                         ))}
-                        {rowIndex === categoryRows.length - 1 && (
-                            <ThemedButton
-                                compact
-                                icon="cog-outline"
-                                mode='elevated'
-                                style={[styles.categoryButtonStyle, {
-                                    // borderColor: colors.muted
-                                }]}
-                                colorType={type === "expense" ? "primary" : "tertiary"}
-                                labelStyle={styles.categoryButtonLabelStyle}
-                                onPress={handleNavigateToManage}
-                            // textColor={colors.muted}
 
-                            >{type === 'expense' ? "Manage Category" : "Manage Source"}
-                            </ThemedButton>)
-                        }
+                        {/* Show manage button in the first row, after all categories */}
+                        {((noOfRows === 1 && rowIndex === 0) || (noOfRows === 2 && rowIndex === 1)) && (
+                            <>
+                                {
+                                    row.length === 0 && (
+                                        <ThemedButton
+                                            compact
+                                            mode={"text"}
+                                            style={styles.categoryButtonStyle}
+                                            labelStyle={[styles.categoryButtonLabelStyle, { color: colors.muted }]}
+                                            themedBorder
+                                        >
+                                            No {type === 'expense' ? "Categories" : "Sources"} Available
+                                        </ThemedButton>
+                                    )
+                                }
+                                <ThemedButton
+                                    compact
+                                    icon="cog-outline"
+                                    mode='elevated'
+                                    style={styles.categoryButtonStyle}
+                                    colorType={type === "expense" ? "primary" : "tertiary"}
+                                    labelStyle={styles.categoryButtonLabelStyle}
+                                    onPress={handleNavigateToManage}
+                                >
+                                    {type === 'expense' ? "Manage Category" : "Manage Source"}
+                                </ThemedButton>
+                            </>
+                        )}
                     </View>
                 ))}
             </View>

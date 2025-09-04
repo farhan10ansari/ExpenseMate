@@ -70,7 +70,7 @@ export const CategoryItem = React.memo<CategoryItemProps>(({
                 <Text variant="bodyLarge" style={labelStyle}>
                     {category.label}
                 </Text>
-                {category.deletable && (
+                {category.type === "custom" && (
                     <Surface
                         style={[styles.customBadge, { backgroundColor: colors.primaryContainer }]}
                         elevation={0}
@@ -86,7 +86,7 @@ export const CategoryItem = React.memo<CategoryItemProps>(({
             </View>
 
             <View style={styles.actions}>
-                {category.deletable && (
+                {category.type === "custom" && (
                     <IconButton
                         icon="delete-outline"
                         size={24}

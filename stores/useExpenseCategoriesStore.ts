@@ -1,4 +1,3 @@
-// stores/expenseCategoriesStore.ts
 import { create } from 'zustand';
 import Storage from 'expo-sqlite/kv-store';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -29,7 +28,7 @@ export const useExpenseCategoriesStore = create<ExpenseCategoriesStore>()(
   persist(
     (set, get) => ({
       categories: DefaultExpenseCategories.map(cat => ({
-        ...cat, enabled: true, deletable: false
+        ...cat, enabled: true, type: "default"
       })),
 
       setCategories: (categories) => set({ categories }),
@@ -45,7 +44,7 @@ export const useExpenseCategoriesStore = create<ExpenseCategoriesStore>()(
         const newCategory: Category = {
           ...categoryData,
           enabled: true,
-          deletable: true,
+          type: "custom",
         };
 
         set({ categories: [...categories, newCategory] });
@@ -76,7 +75,7 @@ export const useExpenseCategoriesStore = create<ExpenseCategoriesStore>()(
           throw new Error(`Category with name '${name}' not found`);
         }
 
-        if (!category.deletable) {
+        if (category.type === "default") {
           throw new Error(`Category '${name}' cannot be deleted`);
         }
 

@@ -6,22 +6,23 @@ export type Category = {
   icon: IconSource;
   color: string;
   enabled: boolean;
-  deletable: boolean;
+  type: "default" | "custom"
 };
 
 export type CategoryFormData = {
   title: string;
   icon?: IconSource | null;
   color?: string | null;
+  type: Category["type"]
 }
 
-export type CreateCategoryData = Omit<Category, 'enabled' | 'deletable'>;
-export type UpdateCategoryData = Partial<Omit<Category, 'name' | 'deletable'>>;
+export type CreateCategoryData = Omit<Category, "enabled" | "type">;
+export type UpdateCategoryData = Partial<Omit<Category, "name" | "type">>;
 
 
 export type IconWithColor = {
-    icon: IconSource;
-    color: string;
+  icon: IconSource;
+  color: string;
 }
 
 export type PaymentMethod = {

@@ -23,7 +23,7 @@ interface CategoryFormDialogProps {
 
 const VALIDATION = {
   MIN_LENGTH: 2,
-  MAX_LENGTH: 32,
+  MAX_LENGTH: 24,
 };
 
 export const CategoryFormDialog = React.memo<CategoryFormDialogProps>(({
@@ -45,6 +45,7 @@ export const CategoryFormDialog = React.memo<CategoryFormDialogProps>(({
     title: '',
     icon: null,
     color: null,
+    type: "custom"
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,11 +54,21 @@ export const CategoryFormDialog = React.memo<CategoryFormDialogProps>(({
   // Reset form ONLY when dialog opens/closes or when switching between create/edit modes
   useEffect(() => {
     if (visible && !isInitialized) {
-      setFormData({
-        title: initialData?.title || '',
-        icon: initialData?.icon || null,
-        color: initialData?.color || null,
-      });
+      if (initialData) {
+        setFormData({
+          title: initialData.title,
+          icon: initialData.icon,
+          color: initialData.color,
+          type: initialData.type
+        });
+      } else {
+        setFormData({
+          title: '',
+          icon: null,
+          color: null,
+          type: "custom"
+        })
+      }
       setIsInitialized(true);
     } else if (!visible) {
       setIsInitialized(false);
@@ -103,6 +114,7 @@ export const CategoryFormDialog = React.memo<CategoryFormDialogProps>(({
         title: formData.title.trim(),
         icon: formData.icon,
         color: formData.color,
+        type: formData.type
       };
       onSubmit(submitData);
     } finally {

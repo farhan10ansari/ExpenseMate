@@ -1,3 +1,5 @@
+import slugify from 'slugify';
+
 //Get a label for the date: "Today", "Yesterday", or a formatted date string
 export function extractDateLabel(date: Date): string {
     const now = new Date();
@@ -34,30 +36,22 @@ export function extractTimeString(date: Date, is24HourClock: boolean): string {
     }).format(date);
 }
 
-export function getName(inputString: string) {
-    // Trim the string to remove leading and trailing spaces
-    const trimmedString = inputString.trim();
+export function getCategoryName(inputString: string) {
+    // Generate base slug using slugify library
+    const baseSlug = slugify(inputString, {
+        lower: true,
+        strict: true,  // removes special characters
+        replacement: '-'
+    });
 
-    // Replace multiple spaces with a single space
-    const singleSpacedString = trimmedString.replace(/\s+/g, ' ');
+    // Generate 5-character random suffix
+    const randomSuffix = Math.random().toString(36).substring(2, 7);
 
-    // Convert to lowercase and replace spaces with hyphens
-    const name = singleSpacedString.toLowerCase().replace(/\s/g, '-');
-
-    return name;
+    // Combine with hyphen if baseSlug exists
+    return baseSlug ? `${baseSlug}-${randomSuffix}` : randomSuffix;
 }
 
-export function getLabel(inputString: string) {
-    // Trim the string to remove leading and trailing spaces
-    const trimmedString = inputString.trim();
-
-    // Replace multiple spaces with a single space
-    const singleSpacedString = trimmedString.replace(/\s+/g, ' ');
-
-    // Capitalize the first letter
-    const label = singleSpacedString.length > 0
-        ? singleSpacedString.charAt(0).toUpperCase() + singleSpacedString.slice(1)
-        : '';
-
-    return label;
+export function getCategoryLabel(inputString: string) {
+    // Just remove extra spaces
+    return inputString.trim().replace(/\s+/g, ' ');
 }

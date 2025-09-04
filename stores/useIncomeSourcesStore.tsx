@@ -27,7 +27,7 @@ export const useIncomeSourcesStore = create<IncomeSourcesStore>()(
     persist(
         (set, get) => ({
             sources: DefaultIncomeSources.map(src => ({
-                ...src, enabled: true, deletable: false
+                ...src, enabled: true, type: "default"
             })),
             setSources: (sources) => set({ sources }),
 
@@ -42,7 +42,7 @@ export const useIncomeSourcesStore = create<IncomeSourcesStore>()(
                 const newSource: Category = {
                     ...sourceData,
                     enabled: true,
-                    deletable: true,
+                    type: "custom",
                 };
 
                 set({ sources: [...sources, newSource] });
@@ -73,7 +73,7 @@ export const useIncomeSourcesStore = create<IncomeSourcesStore>()(
                     throw new Error(`Income source with name '${name}' not found`);
                 }
 
-                if (!source.deletable) {
+                if (source.type === "default") {
                     throw new Error(`Income source '${name}' cannot be deleted`);
                 }
 

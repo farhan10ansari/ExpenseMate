@@ -25,12 +25,20 @@ export const getFinancialSummary = (
     };
 };
 
-export const getCategoryRows = (categories: Category[]) => {
-  const rows = [];
-  const numberOfRows = 2; // Number of categories per row
-  const rowSize = Math.ceil(categories.length / numberOfRows);
-  for (let i = 0; i < categories.length; i += rowSize) {
-    rows.push(categories.slice(i, i + rowSize));
-  }
-  return rows;
-}
+export const getCategoryRows = (categories: Category[]): { rows: Category[][], noOfRows: number } => {
+    const rows: Category[][] = [[], []];
+
+    if (categories.length < 5) {
+        categories.forEach((category) => {
+            rows[0].push(category);
+        });
+        return { rows, noOfRows: 1 }
+    }
+
+    categories.forEach((category, index) => {
+        rows[index % 2].push(category);
+    });
+
+    return { rows, noOfRows: 2 }
+};
+
