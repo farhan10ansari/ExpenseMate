@@ -17,6 +17,7 @@ import { HapticsProvider } from '@/contexts/HapticsProvider';
 import MainLayout from '@/components/main/MainLayout';
 import { ConfirmationProvider } from '@/components/main/ConfirmationDialog';
 import { ThemedView } from '@/components/base/ThemedView';
+import { GlobalSnackbarProvider } from '@/contexts/GlobalSnackbarProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -64,7 +65,7 @@ export default function RootLayout() {
     return (
       <AppThemeProvider>
         <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-          <ThemedText>Migration/Seed error: {error?.message}</ThemedText>
+          <ThemedText>Migration error: {error?.message}</ThemedText>
         </ThemedView>
       </AppThemeProvider>
     );
@@ -85,11 +86,13 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <AppThemeProvider>
           <HapticsProvider>
-            <ConfirmationProvider>
-              <MainLayout />
-              <GlobalLevelComponents />
-              <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
-            </ConfirmationProvider>
+              <GlobalSnackbarProvider>
+                <ConfirmationProvider>
+                  <MainLayout />
+                  <GlobalLevelComponents />
+                  <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
+                </ConfirmationProvider>
+              </GlobalSnackbarProvider>
           </HapticsProvider>
         </AppThemeProvider>
       </QueryClientProvider>

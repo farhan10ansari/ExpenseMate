@@ -1,18 +1,16 @@
-// hooks/useTransactionForm.ts
 import { useState } from "react";
 import { useNavigation } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
-import useAppStore from "@/stores/useAppStore";
 import { tryCatch } from "@/lib/try-catch";
-import { Screens } from "@/lib/types";
 import { addExpense } from "@/repositories/ExpenseRepo";
 import { addIncome } from "@/repositories/IncomeRepo";
 import { ExpenseData } from "@/features/Expense/ExpenseStoreProvider";
 import { IncomeData } from "@/features/Income/IncomeStoreProvider";
 import { useHaptics } from "@/contexts/HapticsProvider";
 import { sortExpenseCategoriesByUsage, sortIncomeSourcesByUsage } from "@/lib/helpers";
+import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
 
 export function useTransactionForm() {
     const navigation = useNavigation();
@@ -26,7 +24,7 @@ export function useTransactionForm() {
     const [errorText, setErrorText] = useState('');
 
     // Global Snackbar
-    const setGlobalSnackbar = useAppStore((state) => state.setGlobalSnackbar);
+    const { showSnackbar } = useSnackbar()
 
     const onDismissSnackBar = () => setSnackbarVisibility(false);
 
@@ -115,19 +113,19 @@ export function useTransactionForm() {
     };
 
     const showSuccessAndNavigate = (message: string, queryKeys: string[]) => {
-        setGlobalSnackbar({
+        setKeyboardHeight(0);
+        navigation.goBack();
+        showSnackbar({
             message,
             duration: 2000,
             actionLabel: 'Dismiss',
             actionIcon: 'close',
             type: 'success',
             position: 'bottom',
-            offset: 80,
-            screens: [Screens.Home, Screens.AllExpenses, Screens.AllIncomes, Screens.Settings],
-        });
+            offset: 70,
+        }, 300);
 
-        setKeyboardHeight(0);
-        navigation.goBack();
+
 
         // Invalidate related queries
         queryKeys.forEach(key => {

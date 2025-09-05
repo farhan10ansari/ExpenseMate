@@ -4,13 +4,15 @@ import { tryCatch } from "@/lib/try-catch";
 import { seedDummyExpenses, seedDummyIncome } from "@/repositories/dev";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Button, TextInput, Snackbar } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import { useRouter } from "expo-router";
 import { useHaptics } from "@/contexts/HapticsProvider";
+import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
+
 
 export default function DevOptionsScreen() {
   const queryClient = useQueryClient();
@@ -20,96 +22,7 @@ export default function DevOptionsScreen() {
   const [numberOfIncomes, setNumberOfIncomes] = useState(0);
   const updateUIFlag = usePersistentAppStore((state) => state.updateUIFlag);
   const { hapticNotify } = useHaptics();
-
-  // Snackbar state
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarType, setSnackbarType] = useState<"success" | "error">("success");
-
-  const styles = StyleSheet.create({
-    keyboardAvoidingView: {
-      flex: 1,
-    },
-    container: {
-      flex: 1,
-      padding: 18,
-    },
-    scrollContentContainer: {
-      paddingBottom: 120,
-      flexGrow: 1,
-    },
-    sectionContainer: {
-      backgroundColor: colors.surface,
-      borderRadius: 12,
-      padding: 16,
-      marginBottom: 20,
-      elevation: 2,
-      shadowColor: colors.shadow,
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.1,
-      shadowRadius: 2,
-    },
-    sectionHeader: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginBottom: 16,
-    },
-    sectionIcon: {
-      marginRight: 12,
-    },
-    sectionTitle: {
-      fontSize: 18,
-      fontWeight: "600",
-      color: colors.primary,
-    },
-    inputContainer: {
-      marginBottom: 16,
-    },
-    textInput: {
-      backgroundColor: colors.surface,
-    },
-    button: {
-      marginTop: 8,
-    },
-    warningContainer: {
-      backgroundColor: colors.errorContainer,
-      borderRadius: 8,
-      padding: 12,
-      marginBottom: 20,
-      flexDirection: "row",
-      alignItems: "flex-start",
-    },
-    warningIcon: {
-      marginRight: 8,
-      marginTop: 2,
-    },
-    warningText: {
-      flex: 1,
-      color: colors.onErrorContainer,
-      fontSize: 14,
-      lineHeight: 20,
-    },
-    helperText: {
-      color: colors.muted,
-      fontSize: 12,
-      marginTop: 4,
-    },
-    disableSection: {
-      borderColor: colors.error,
-      borderWidth: 1,
-    },
-    snackbar: {
-      marginBottom: 16,
-    },
-  });
-
-  // Helper function to show snackbar
-  const showSnackbar = (message: string, type: "success" | "error" = "success") => {
-    setSnackbarMessage(message);
-    setSnackbarType(type);
-    setSnackbarVisible(true);
-  };
-
+  const { showSnackbar } = useSnackbar();
   // Helper function to validate and clamp input values
   const validateInput = (value: string): number => {
     const num = Number(value) || 0;
@@ -141,11 +54,19 @@ export default function DevOptionsScreen() {
       queryClient.invalidateQueries({ queryKey: ['stats'] });
       queryClient.invalidateQueries({ queryKey: ['incomes'] });
 
-      showSnackbar(`Successfully added ${numberOfExpenses} dummy expenses!`);
+      showSnackbar({
+        message: `Successfully added ${numberOfExpenses} dummy expenses!`,
+        duration: 3000,
+        type: "success",
+      });
       setNumberOfExpenses(0);
     } else {
       hapticNotify("error");
-      showSnackbar("Failed to add dummy expenses. Please try again.", "error");
+      showSnackbar({
+        message: "Failed to add dummy expenses. Please try again.",
+        duration: 3000,
+        type: "error"
+      });
     }
     Keyboard.dismiss();
   };
@@ -159,20 +80,33 @@ export default function DevOptionsScreen() {
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
       queryClient.invalidateQueries({ queryKey: ['stats'] });
       queryClient.invalidateQueries({ queryKey: ['incomes'] });
-
-      showSnackbar(`Successfully added ${numberOfIncomes} dummy incomes!`);
+      showSnackbar({
+        message: `Successfully added ${numberOfIncomes} dummy incomes!`,
+        duration: 3000,
+        type: "success"
+      });
       setNumberOfIncomes(0);
       Keyboard.dismiss();
     } else {
       hapticNotify("error");
-      showSnackbar("Failed to add dummy incomes. Please try again.", "error");
+      showSnackbar({
+        message: "Failed to add dummy incomes. Please try again.",
+        duration: 3000,
+        type: "error"
+      });
     }
     Keyboard.dismiss();
   };
 
   const handleDisableDevOptions = () => {
     updateUIFlag("showDevOptions", false);
-    showSnackbar("Developer options disabled successfully!");
+    showSnackbar({
+      message: "Developer options disabled successfully!",
+      duration: 3000,
+      type: "success",
+      position: "bottom",
+      offset: 1,
+    });
     // Delay navigation to allow snackbar to show
     setTimeout(() => {
       router.back();
@@ -197,20 +131,20 @@ export default function DevOptionsScreen() {
               keyboardShouldPersistTaps="handled"
             >
               {/* Warning Section */}
-              <View style={styles.warningContainer}>
+              <View style={[styles.warningContainer, { backgroundColor: colors.errorContainer }]}>
                 <MaterialCommunityIcons
                   name="alert-circle"
                   size={20}
                   color={colors.onErrorContainer}
                   style={styles.warningIcon}
                 />
-                <ThemedText style={styles.warningText}>
+                <ThemedText style={[styles.warningText, { color: colors.onErrorContainer }]}>
                   This section is for development purposes only. Use dummy data to test the app functionality.
                 </ThemedText>
               </View>
 
               {/* Dummy Expenses Section */}
-              <View style={styles.sectionContainer}>
+              <View style={[styles.sectionContainer, { backgroundColor: colors.surface, shadowColor: colors.shadow }]}>
                 <View style={styles.sectionHeader}>
                   <MaterialCommunityIcons
                     name="receipt"
@@ -218,7 +152,7 @@ export default function DevOptionsScreen() {
                     color={colors.primary}
                     style={styles.sectionIcon}
                   />
-                  <ThemedText style={styles.sectionTitle}>
+                  <ThemedText style={[styles.sectionTitle, { color: colors.primary }]}>
                     Add Dummy Expenses
                   </ThemedText>
                 </View>
@@ -227,14 +161,14 @@ export default function DevOptionsScreen() {
                   <TextInput
                     label="Number of Expenses"
                     keyboardType="numeric"
-                    style={styles.textInput}
+                    style={{ backgroundColor: colors.surface }}
                     onChangeText={handleExpenseInputChange}
                     value={numberOfExpenses.toString()}
                     mode="outlined"
                     right={<TextInput.Icon icon="counter" />}
                     error={numberOfExpenses > 0 && !isValidInput(numberOfExpenses)}
                   />
-                  <ThemedText style={styles.helperText}>
+                  <ThemedText style={[styles.helperText, { color: colors.muted }]}>
                     Enter a number between 1 and 1000
                   </ThemedText>
                 </View>
@@ -251,7 +185,7 @@ export default function DevOptionsScreen() {
               </View>
 
               {/* Dummy Incomes Section */}
-              <View style={styles.sectionContainer}>
+              <View style={[styles.sectionContainer, { backgroundColor: colors.surface, shadowColor: colors.shadow }]}>
                 <View style={styles.sectionHeader}>
                   <MaterialCommunityIcons
                     name="cash-plus"
@@ -259,7 +193,7 @@ export default function DevOptionsScreen() {
                     color={colors.primary}
                     style={styles.sectionIcon}
                   />
-                  <ThemedText style={styles.sectionTitle}>
+                  <ThemedText style={[styles.sectionTitle, { color: colors.primary }]}>
                     Add Dummy Incomes
                   </ThemedText>
                 </View>
@@ -268,14 +202,14 @@ export default function DevOptionsScreen() {
                   <TextInput
                     label="Number of Incomes"
                     keyboardType="numeric"
-                    style={styles.textInput}
+                    style={{ backgroundColor: colors.surface }}
                     onChangeText={handleIncomeInputChange}
                     value={numberOfIncomes.toString()}
                     mode="outlined"
                     right={<TextInput.Icon icon="counter" />}
                     error={numberOfIncomes > 0 && !isValidInput(numberOfIncomes)}
                   />
-                  <ThemedText style={styles.helperText}>
+                  <ThemedText style={[styles.helperText, { color: colors.muted }]}>
                     Enter a number between 1 and 1000
                   </ThemedText>
                 </View>
@@ -292,7 +226,7 @@ export default function DevOptionsScreen() {
               </View>
 
               {/* Disable Dev Options Section */}
-              <View style={[styles.sectionContainer, styles.disableSection]}>
+              <View style={[styles.sectionContainer, styles.disableSection, { backgroundColor: colors.surface, shadowColor: colors.shadow, borderColor: colors.error }]}>
                 <View style={styles.sectionHeader}>
                   <MaterialCommunityIcons
                     name="close-circle"
@@ -324,30 +258,71 @@ export default function DevOptionsScreen() {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-
-      {/* Snackbar for feedback */}
-      <Snackbar
-        visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
-        duration={3000}
-        style={[
-          styles.snackbar,
-          {
-            backgroundColor: snackbarType === "success" ? colors.primary : colors.error,
-          },
-        ]}
-        action={{
-          label: 'Dismiss',
-          onPress: () => setSnackbarVisible(false),
-          textColor: snackbarType === "success" ? colors.onPrimary : colors.onError,
-        }}
-      >
-        <ThemedText style={{
-          color: snackbarType === "success" ? colors.onPrimary : colors.onError
-        }}>
-          {snackbarMessage}
-        </ThemedText>
-      </Snackbar>
     </ScreenWrapper>
   );
 }
+
+
+const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    padding: 18,
+  },
+  scrollContentContainer: {
+    paddingBottom: 120,
+    flexGrow: 1,
+  },
+  sectionContainer: {
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    elevation: 2,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  sectionIcon: {
+    marginRight: 12,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  inputContainer: {
+    marginBottom: 16,
+  },
+  button: {
+    marginTop: 8,
+  },
+  warningContainer: {
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 20,
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  warningIcon: {
+    marginRight: 8,
+    marginTop: 2,
+  },
+  warningText: {
+    flex: 1,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  helperText: {
+    fontSize: 12,
+    marginTop: 4,
+  },
+  disableSection: {
+    borderWidth: 1,
+  },
+});

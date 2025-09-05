@@ -1,19 +1,17 @@
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 import CustomSnackbar from "@/components/ui/CustomSnackbar";
+import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
 import { useHaptics } from "@/contexts/HapticsProvider";
 import ExpenseForm from "@/features/Expense/ExpenseForm";
 import { ExpenseData, ExpenseStoreProvider } from "@/features/Expense/ExpenseStoreProvider";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
 import { tryCatch } from "@/lib/try-catch";
-import { Screens } from "@/lib/types";
 import { getExpenseById, updateExpenseById } from "@/repositories/ExpenseRepo";
-import useAppStore from "@/stores/useAppStore";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useState } from "react";
 import { StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function EditExpenseScreen() {
     const navigation = useNavigation();
@@ -21,7 +19,6 @@ export default function EditExpenseScreen() {
     const { colors } = useAppTheme();
     const { keyboardHeight, setKeyboardHeight } = useKeyboardHeight();
     const { id } = useLocalSearchParams<{ id: string }>();
-    const insets = useSafeAreaInsets()
     const { hapticNotify } = useHaptics()
 
     const { data: expense, isLoading, isError, error } = useQuery({
@@ -37,7 +34,7 @@ export default function EditExpenseScreen() {
     const [errorText, setErrorText] = useState('');
 
     // Global Snackbar
-    const setGlobalSnackbar = useAppStore((state) => state.setGlobalSnackbar);
+    const { showSnackbar } = useSnackbar()
 
     const handleUpdateExpense = async (updated: ExpenseData) => {
         if (!expense) return;
@@ -94,19 +91,19 @@ export default function EditExpenseScreen() {
             return;
         }
         hapticNotify("success");
-        setGlobalSnackbar({
+
+        navigation.goBack();
+        showSnackbar({
             message: 'Expense updated successfully',
             duration: 2000,
             actionLabel: 'Dismiss',
             actionIcon: 'close',
             type: 'success',
             position: 'top',
-            offset: insets.top + 10,
-            screens: [Screens.AllExpenses, Screens.ExpenseInfo]
-        });
+            offset: 10,
+        }, 300);
 
         setKeyboardHeight(0);
-        navigation.goBack();
         queryCLient.invalidateQueries({
             queryKey: ['expenses'],
         });

@@ -16,7 +16,7 @@ export default function ConfirmButton({ onPress, keyboardHeight = 0, type }: Con
         // Add a timeout to delay the showing of the FAB
         timeout.current = setTimeout(() => {
             setShow(true);
-        }, 500);
+        }, 200);
 
         return () => {
             if (timeout.current) {

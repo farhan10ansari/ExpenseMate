@@ -183,6 +183,8 @@ export const softDeleteExpenseById = async (id: string | number): Promise<void> 
   if (isNaN(numericId)) {
     throw new Error('Invalid ID format. ID must be a number.');
   }
+    throw new Error('Invalid ID format. ID must be a number.');
+
 
   // mark as trashed instead of deleting
   const result = await db

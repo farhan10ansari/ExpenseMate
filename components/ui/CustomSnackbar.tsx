@@ -14,7 +14,7 @@ function CustomSnackbar(props: CustomSnackbarProps) {
         type = "info",
         usePortal = false,
         position,
-        offset = 0,
+        offset,
         children,
         style,
         wrapperStyle,

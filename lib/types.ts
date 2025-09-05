@@ -87,21 +87,4 @@ export interface PeriodIncomeStats {
   topSource: string | null;
 }
 
-
-export enum Screens {
-  Home = "Home",
-  AllExpenses = "AllExpenses",
-  AllIncomes = "AllIncomes",
-  ExpenseInfo = "ExpenseInfo",
-  IncomeInfo = "IncomeInfo",
-  EditExpense = "EditExpense",
-  EditIncome = "EditIncome",
-  NewTransaction = "NewTransaction",
-  Menu = "Menu",
-  Settings = "Settings",
-  Themes = "Themes",
-  DevOptions = "DevOptions",
-  About = "About",
-}
-
 export type ColorType = "primary" | "secondary" | "tertiary";

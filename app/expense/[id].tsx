@@ -14,11 +14,11 @@ import { StyleSheet, View } from "react-native";
 import { Button, Dialog, Portal } from "react-native-paper";
 import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
 import { tryCatch } from "@/lib/try-catch";
-import useAppStore from "@/stores/useAppStore";
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 import { useHaptics } from "@/contexts/HapticsProvider";
 import { useExpenseCategoryMapping } from "@/stores/useExpenseCategoriesStore";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
 
 export default function ExpenseInfoScreen() {
     const { colors } = useAppTheme();
@@ -26,7 +26,7 @@ export default function ExpenseInfoScreen() {
     const navigation = useNavigation();
     const queryClient = useQueryClient();
     const { id } = useLocalSearchParams<{ id: string }>();
-    const setGlobalSnackbar = useAppStore((state) => state.setGlobalSnackbar);
+    const { showSnackbar } = useSnackbar()
 
     const [showDeleteConfirmationDialog, setShowDeleteConfirmationDialog] = useState(false);
     const categoryMapping = useExpenseCategoryMapping()
@@ -88,30 +88,32 @@ export default function ExpenseInfoScreen() {
         const { error } = await tryCatch(softDeleteExpenseById(id))
         if (error) {
             hapticNotify("error");
-            setGlobalSnackbar({
+            showSnackbar({
                 message: 'Error in deleting expense',
                 duration: 2000,
                 actionLabel: 'Dismiss',
                 actionIcon: 'close',
                 type: 'error',
-                position: 'bottom',
-                offset: 80,
+                position: 'top',
+                offset: 30,
             });
+            setShowDeleteConfirmationDialog(false);
         }
         else {
             hapticNotify("success");
             queryClient.invalidateQueries({ queryKey: ['expenses'] });
             queryClient.invalidateQueries({ queryKey: ['stats', 'expense'] });
             navigation.goBack()
-            setGlobalSnackbar({
+            showSnackbar({
                 message: 'Successfully deleted expense',
                 duration: 2000,
                 actionLabel: 'Dismiss',
                 actionIcon: 'close',
                 type: 'success',
                 position: 'bottom',
-                offset: 80,
-            });
+                offset: 70,
+            }, 300);
+
         }
     }
 

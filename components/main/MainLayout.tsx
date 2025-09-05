@@ -1,4 +1,3 @@
-import useCurrentScreenTracker from "@/hooks/useCurrentScreenTracker";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { Stack, useRouter } from "expo-router";
 import CustomBackButton from "../ui/CustomBackButton";
@@ -7,9 +6,6 @@ import { useCallback, useMemo } from "react";
 export default function MainLayout() {
   const { colors } = useAppTheme();
   const router = useRouter();
-
-  // Track the current screen using the custom hook
-  useCurrentScreenTracker();
 
   const handleGoBack = useCallback(() => {
     router.back();

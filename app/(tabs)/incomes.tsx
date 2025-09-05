@@ -13,10 +13,10 @@ import { Income } from "@/db/schema";
 import { getIncomeById, getIncomesByMonthPaginated } from "@/repositories/IncomeRepo";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useHaptics } from "@/contexts/HapticsProvider";
-import useAppStore from "@/stores/useAppStore";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import ErrorState from "@/components/main/ErrorState";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
+import { useSnackbarState } from "@/contexts/GlobalSnackbarProvider";
 
 type HeaderItem = {
   type: 'header';
@@ -39,7 +39,7 @@ export default function IncomesScreen() {
   const { hapticImpact } = useHaptics();
   const flashListRef = useRef<FlashListRef<ListItem>>(null);
   const { handleScroll, scrollToTop, showScrollToTop } = useScrollToTop(flashListRef);
-  const globalSnackbar = useAppStore((state) => state.globalSnackbar);
+  const globalSnackbar = useSnackbarState()
   const insets = useSafeAreaInsets();
 
   const [isRefreshing, setIsRefreshing] = useState(false);

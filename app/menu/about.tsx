@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
@@ -6,8 +6,8 @@ import * as Linking from "expo-linking";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
-import CustomSnackbar from "@/components/ui/CustomSnackbar";
 import { useHaptics } from "@/contexts/HapticsProvider";
+import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
 
 const APP_NAME = process.env.EXPO_PUBLIC_APP_NAME;
 const APP_VERSION = process.env.EXPO_PUBLIC_APP_VERSION;
@@ -21,10 +21,7 @@ export default function AboutScreen() {
     const showDevOptions = usePersistentAppStore((state) => state.uiFlags.showDevOptions);
     const updateUiFlag = usePersistentAppStore((state) => state.updateUIFlag);
     const { hapticNotify } = useHaptics();
-
-    // Snackbar state
-    const [isSnackbarVisible, setSnackbarVisibility] = useState(false);
-    const [snackbarText, setSnackbarText] = useState("");
+    const { showSnackbar } = useSnackbar();
 
     const tapCountRef = useRef(0);
     const lastTapTimeRef = useRef(0);
@@ -52,18 +49,26 @@ export default function AboutScreen() {
         lastTapTimeRef.current = now;
 
         if (showDevOptions) {
-            setSnackbarText("Dev options already enabled");
+            showSnackbar({
+                message: "Dev options already enabled",
+                duration: 2000,
+                type: "success",
+            });
             hapticNotify("warning");
-            setSnackbarVisibility(true);
             tapCountRef.current = 0;
             return;
         }
 
         if (tapCountRef.current >= 5) {
             updateUiFlag("showDevOptions", true);
-            setSnackbarText("Dev options enabled");
-            hapticNotify("success")
-            setSnackbarVisibility(true);
+            showSnackbar({
+                message: "Dev options enabled",
+                duration: 2000,
+                actionLabel: 'Dismiss',
+                actionIcon: 'close',
+                type: "success",
+            });
+            hapticNotify("success");
             tapCountRef.current = 0;
         }
     };
@@ -270,23 +275,6 @@ export default function AboutScreen() {
                     )}
                 </View>
             </View>
-
-            <CustomSnackbar
-                usePortal
-                visible={isSnackbarVisible}
-                onDismiss={() => setSnackbarVisibility(false)}
-                duration={2000}
-                style={{ backgroundColor: colors.primary }}
-                action={{
-                    label: 'Dismiss',
-                    icon: 'close',
-                }}
-                type="success"
-                position="bottom"
-                offset={0}
-            >
-                {snackbarText}
-            </CustomSnackbar>
         </ScreenWrapper>
     );
 }

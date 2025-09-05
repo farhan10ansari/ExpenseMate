@@ -3,12 +3,12 @@ import { FAB, Portal } from "react-native-paper";
 import { useRef, useState } from "react";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { useIsFocused } from "@react-navigation/native";
-import useAppStore from "@/stores/useAppStore";
 import MonthTabsContainer from "@/features/Expense/components/MonthTabsContainer";
 import ExpensesList, { ExpenseListItem } from "@/features/Expense/components/ExpenseList";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FlashListRef } from "@shopify/flash-list";
+import { useSnackbarState } from "@/contexts/GlobalSnackbarProvider";
 
 
 export default function ExpensesScreen() {
@@ -16,7 +16,7 @@ export default function ExpensesScreen() {
     const scrollElementRef = useRef<FlashListRef<ExpenseListItem>>(null);
     const { handleScroll, scrollToTop, showScrollToTop } = useScrollToTop(scrollElementRef);
     const isFocused = useIsFocused();
-    const globalSnackbar = useAppStore((state) => state.globalSnackbar);
+    const globalSnackbar = useSnackbarState()
     const insets = useSafeAreaInsets();
 
     const handleMonthSelect = (offsetMonth: number | null) => {
