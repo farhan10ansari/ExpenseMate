@@ -196,10 +196,11 @@ export default function ExpensesList({
             scrollEventThrottle={16}
             refreshControl={
                 <RefreshControl
-                    refreshing={isRefreshing}
+                    refreshing={!!isRefreshing}
                     onRefresh={handleRefresh}
                     colors={[colors.primary]}
                     tintColor={colors.primary}
+                    progressBackgroundColor={colors.card}
                 />
             }
             ListFooterComponent={

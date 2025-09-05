@@ -172,10 +172,11 @@ export default function IncomesScreen() {
         scrollEventThrottle={16}
         refreshControl={
           <RefreshControl
-            refreshing={isRefreshing}
+            refreshing={!!isRefreshing}
             onRefresh={handleRefresh}
-            colors={[colors.primary]}
+            colors={[colors.tertiary]}
             tintColor={colors.primary}
+            progressBackgroundColor={colors.card}
           />
         }
         ListFooterComponent={
