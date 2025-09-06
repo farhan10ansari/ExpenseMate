@@ -13,58 +13,25 @@ import TimeInput from '@/components/input/TimeInput';
 import { ExpenseData, useExpenseStore } from './ExpenseStoreProvider';
 import { useEnabledExpenseCategories } from '@/stores/useExpenseCategoriesStore';
 import { useIsFocused } from '@react-navigation/native';
+import { useSnackbarState } from '@/contexts/GlobalSnackbarProvider';
 
 type ExpenseFormProps = {
-  showSubmitButton?: boolean;
   onSubmit?: (expense: ExpenseData) => void;
   type?: 'create' | 'edit';
 }
 
-export default function ExpenseForm({ showSubmitButton, onSubmit, type = "create" }: ExpenseFormProps) {
+export default function ExpenseForm({ onSubmit, type = "create" }: ExpenseFormProps) {
   const { colors } = useAppTheme();
   const { keyboardHeight } = useKeyboardHeight();
   const isFocused = useIsFocused()
-
+  const globalSnackbar = useSnackbarState()
 
   const expense = useExpenseStore((state) => state.expense);
   const updateExpense = useExpenseStore((state) => state.updateExpense);
   const categories = useEnabledExpenseCategories()
 
 
-  const styles = StyleSheet.create({
-    container: {
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      flex: 1,
-    },
-    sectionTitle: {
-      color: colors.muted,
-      width: '100%',
-      textAlign: 'center',
-      marginBottom: 10
-    },
-    amountContainer: {
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    categoriesContainer: {
-      marginTop: 20,
-      gap: 2,
-    },
-    notesContainer: {
-      marginTop: 20,
-    },
-    datetimeContainer: {
-      marginTop: 20,
-    },
-    datetimeMain: {
-      flexDirection: 'row',
-      gap: 10,
-    },
-    datetimeInputContainer: {
-      flex: 1,
-    }
-  });
+
 
   // Set default date and time
   useEffect(() => {
@@ -80,7 +47,7 @@ export default function ExpenseForm({ showSubmitButton, onSubmit, type = "create
       <View style={{ flex: 1 }} onTouchStart={() => Keyboard.dismiss()}>
         {/* Amount */}
         <View style={styles.amountContainer}>
-          <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+          <ThemedText type='defaultSemiBold' style={[styles.sectionTitle, { color: colors.muted }]}>
             Amount
           </ThemedText>
           <AmountInput
@@ -90,7 +57,7 @@ export default function ExpenseForm({ showSubmitButton, onSubmit, type = "create
         </View>
         {/* Categories */}
         <View style={styles.categoriesContainer}>
-          <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
+          <ThemedText type="defaultSemiBold" style={[styles.sectionTitle, { color: colors.muted }]}>
             Categories
           </ThemedText>
           <CategoriesInput
@@ -102,7 +69,7 @@ export default function ExpenseForm({ showSubmitButton, onSubmit, type = "create
         </View>
         {/* Notes */}
         <View style={styles.notesContainer}>
-          <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+          <ThemedText type='defaultSemiBold' style={[styles.sectionTitle, { color: colors.muted }]}>
             Notes
           </ThemedText>
           <NotesInput
@@ -112,14 +79,14 @@ export default function ExpenseForm({ showSubmitButton, onSubmit, type = "create
         </View>
         {/* Payment Method */}
         <View style={styles.notesContainer}>
-          <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+          <ThemedText type='defaultSemiBold' style={[styles.sectionTitle, { color: colors.muted }]}>
             Payment Method
           </ThemedText>
           <PaymentMethodInput paymentMethod={expense.paymentMethod} setPaymentMethod={(paymentMethod => updateExpense({ paymentMethod }))} />
         </View>
         {/* Date & Time */}
         <View style={styles.datetimeContainer}>
-          <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+          <ThemedText type='defaultSemiBold' style={[styles.sectionTitle, { color: colors.muted }]}>
             Date & Time
           </ThemedText>
           <View style={styles.datetimeMain}>
@@ -131,8 +98,42 @@ export default function ExpenseForm({ showSubmitButton, onSubmit, type = "create
 
 
       {/* Confirm Button */}
-      {isFocused && showSubmitButton && <ConfirmButton onPress={handleSubmit} keyboardHeight={keyboardHeight} type={type} />}
+      {isFocused && !globalSnackbar && <ConfirmButton onPress={handleSubmit} keyboardHeight={keyboardHeight} type={type} />}
 
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    flex: 1,
+  },
+  sectionTitle: {
+    width: '100%',
+    textAlign: 'center',
+    marginBottom: 10
+  },
+  amountContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  categoriesContainer: {
+    marginTop: 20,
+    gap: 2,
+  },
+  notesContainer: {
+    marginTop: 20,
+  },
+  datetimeContainer: {
+    marginTop: 20,
+  },
+  datetimeMain: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  datetimeInputContainer: {
+    flex: 1,
+  }
+});

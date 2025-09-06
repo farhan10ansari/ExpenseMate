@@ -1,17 +1,11 @@
 import { useState } from "react";
-import { StyleSheet } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
-
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 import FormSheetTabs from "@/components/main/FormSheetTabs";
-import CustomSnackbar from "@/components/ui/CustomSnackbar";
-
 import ExpenseForm from "@/features/Expense/ExpenseForm";
 import { ExpenseStoreProvider } from "@/features/Expense/ExpenseStoreProvider";
-
 import IncomeForm from "@/features/Income/IncomeForm";
 import { IncomeStoreProvider } from "@/features/Income/IncomeStoreProvider";
-
 import { useTransactionForm } from "@/hooks/useTransactionForm";
 
 type TransactionType = 'expense' | 'income';
@@ -26,20 +20,9 @@ export default function NewTransactionScreen() {
     const [activeTab, setActiveTab] = useState<TransactionType>(defaultTab ?? 'expense');
 
     const {
-        isSnackbarVisible,
-        errorText,
-        keyboardHeight,
-        colors,
-        onDismissSnackBar,
         handleAddExpense,
         handleAddIncome,
     } = useTransactionForm();
-
-    const styles = StyleSheet.create({
-        snackbar: {
-            backgroundColor: colors.error,
-        },
-    });
 
     const handleTabChange = (tabKey: string) => {
         setActiveTab(tabKey as TransactionType);
@@ -60,7 +43,6 @@ export default function NewTransactionScreen() {
             return (
                 <ExpenseStoreProvider>
                     <ExpenseForm
-                        showSubmitButton={!isSnackbarVisible}
                         onSubmit={handleAddExpense}
                     />
                 </ExpenseStoreProvider>
@@ -70,7 +52,6 @@ export default function NewTransactionScreen() {
         return (
             <IncomeStoreProvider>
                 <IncomeForm
-                    showSubmitButton={!isSnackbarVisible}
                     onSubmit={handleAddIncome}
                 />
             </IncomeStoreProvider>
@@ -88,23 +69,6 @@ export default function NewTransactionScreen() {
                 }}
             />
             {renderForm()}
-
-            <CustomSnackbar
-                usePortal
-                visible={isSnackbarVisible}
-                onDismiss={onDismissSnackBar}
-                duration={2000}
-                style={styles.snackbar}
-                action={{
-                    label: 'Dismiss',
-                    icon: 'close',
-                }}
-                type='error'
-                position='bottom'
-                offset={keyboardHeight}
-            >
-                {errorText}
-            </CustomSnackbar>
         </>
     );
 }

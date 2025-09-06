@@ -1,16 +1,17 @@
-import { useState } from "react";
 import { useNavigation } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import useKeyboardHeight from "@/hooks/useKeyboardHeight";
 import { tryCatch } from "@/lib/try-catch";
-import { addExpense } from "@/repositories/ExpenseRepo";
-import { addIncome } from "@/repositories/IncomeRepo";
+import { addExpense, updateExpenseById } from "@/repositories/ExpenseRepo";
+import { addIncome, updateIncomeById } from "@/repositories/IncomeRepo";
 import { ExpenseData } from "@/features/Expense/ExpenseStoreProvider";
 import { IncomeData } from "@/features/Income/IncomeStoreProvider";
 import { useHaptics } from "@/contexts/HapticsProvider";
 import { sortExpenseCategoriesByUsage, sortIncomeSourcesByUsage } from "@/lib/helpers";
 import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
+import { validateExpenseData, validateIncomeData } from "@/lib/validations";
+import { Expense, Income } from "@/db/schema";
 
 export function useTransactionForm() {
     const navigation = useNavigation();
@@ -18,101 +19,20 @@ export function useTransactionForm() {
     const { colors } = useAppTheme();
     const { hapticNotify } = useHaptics();
     const { keyboardHeight, setKeyboardHeight } = useKeyboardHeight();
+    const { showSnackbar } = useSnackbar();
 
-    // Snackbar state
-    const [isSnackbarVisible, setSnackbarVisibility] = useState(false);
-    const [errorText, setErrorText] = useState('');
-
-    // Global Snackbar
-    const { showSnackbar } = useSnackbar()
-
-    const onDismissSnackBar = () => setSnackbarVisibility(false);
-
-    const handleAddExpense = async (expense: ExpenseData) => {
-        const { amount, category, description, datetime, paymentMethod } = expense;
-        const missingFields = [];
-
-        if (!amount) missingFields.push('amount');
-        const actualAmount = parseFloat(amount ? amount : '0');
-        if (actualAmount < 1) {
-            hapticNotify('warning');
-            setErrorText('Minimum amount should be ₹1');
-            setSnackbarVisibility(true);
-            return;
-        }
-
-        if (!category) missingFields.push('category');
-        if (!datetime) missingFields.push('datetime');
-        if (!amount || !category || !datetime) {
-            hapticNotify('warning');
-            setErrorText(`Please fill the missing fields i.e. ${missingFields.join(', ')}`);
-            setSnackbarVisibility(true);
-            return;
-        }
-
-        const { data, error } = await tryCatch(addExpense({
-            amount: actualAmount,
-            dateTime: datetime,
-            description: description,
-            paymentMethod: paymentMethod,
-            category: category,
-        }));
-
-        if (error) {
-            hapticNotify('error');
-            setErrorText('Failed to add expense. Please try again.');
-            setSnackbarVisibility(true);
-            return;
-        }
-        hapticNotify('success');
-        showSuccessAndNavigate('Expense added', ['expenses']);
-        sortExpenseCategoriesByUsage()
+    const showErrorSnackbar = (message: string) => {
+        showSnackbar({
+            message,
+            duration: 3000,
+            type: 'error',
+            position: 'bottom',
+            offset: keyboardHeight,
+        });
     };
 
-    const handleAddIncome = async (income: IncomeData) => {
-        const { amount, source, description, dateTime, recurring, receipt, currency } = income;
-        const missingFields = [];
-
-        if (!amount) missingFields.push('amount');
-        const actualAmount = parseFloat(amount ? amount : '0');
-        if (actualAmount < 1) {
-            hapticNotify('warning');
-            setErrorText('Minimum amount should be ₹1');
-            setSnackbarVisibility(true);
-            return;
-        }
-
-        if (!source) missingFields.push('source');
-        if (!dateTime) missingFields.push('date');
-        if (!amount || !source || !dateTime) {
-            hapticNotify('warning');
-            setErrorText(`Please fill the missing fields i.e. ${missingFields.join(', ')}`);
-            setSnackbarVisibility(true);
-            return;
-        }
-
-        const { data, error } = await tryCatch(addIncome({
-            amount: actualAmount,
-            dateTime: dateTime,
-            source: source,
-            description: description ?? "",
-            recurring: !!recurring,
-            receipt: receipt ?? null,
-            currency: currency ?? 'INR',
-        }));
-
-        if (error) {
-            hapticNotify('error');
-            setErrorText('Failed to add income. Please try again.');
-            setSnackbarVisibility(true);
-            return;
-        }
+    const showSuccessAndNavigate = (message: string, queryKeys: string[], delay = 300) => {
         hapticNotify('success');
-        showSuccessAndNavigate('Income added', ['incomes']);
-        sortIncomeSourcesByUsage()
-    };
-
-    const showSuccessAndNavigate = (message: string, queryKeys: string[]) => {
         setKeyboardHeight(0);
         navigation.goBack();
         showSnackbar({
@@ -123,9 +43,7 @@ export function useTransactionForm() {
             type: 'success',
             position: 'bottom',
             offset: 70,
-        }, 300);
-
-
+        }, delay);
 
         // Invalidate related queries
         queryKeys.forEach(key => {
@@ -134,13 +52,168 @@ export function useTransactionForm() {
         queryClient.invalidateQueries({ queryKey: ['stats'] });
     };
 
+    // Check if expense data has changed
+    const hasExpenseChanged = (existing: Expense, updated: ExpenseData): boolean => {
+        const actualAmount = parseFloat(updated.amount || '0');
+        return (
+            existing.amount !== actualAmount ||
+            existing.category !== updated.category ||
+            existing.description !== updated.description ||
+            new Date(existing.dateTime).getTime() !== new Date(updated.datetime!).getTime() ||
+            existing.paymentMethod !== updated.paymentMethod
+        );
+    };
+
+    // Check if income data has changed
+    const hasIncomeChanged = (existing: Income, updated: IncomeData): boolean => {
+        const actualAmount = parseFloat(updated.amount || '0');
+        return (
+            existing.amount !== actualAmount ||
+            existing.source !== updated.source ||
+            existing.description !== updated.description ||
+            new Date(existing.dateTime).getTime() !== new Date(updated.dateTime!).getTime() ||
+            (existing.recurring ?? false) !== (updated.recurring ?? false) ||
+            (existing.receipt ?? null) !== (updated.receipt ?? null) ||
+            (existing.currency ?? "INR") !== (updated.currency ?? "INR")
+        );
+    };
+
+    const handleAddExpense = async (expense: ExpenseData) => {
+        const validation = validateExpenseData(expense);
+        if (!validation.isValid) {
+            hapticNotify('warning');
+            showErrorSnackbar(validation.errorMessage!);
+            return;
+        }
+
+        const { amount, category, description, datetime, paymentMethod } = expense;
+        const actualAmount = parseFloat(amount!);
+
+        const { data, error } = await tryCatch(addExpense({
+            amount: actualAmount,
+            dateTime: datetime!,
+            description: description,
+            paymentMethod: paymentMethod,
+            category: category!,
+        }));
+
+        if (error) {
+            hapticNotify('error');
+            showErrorSnackbar('Failed to add expense. Please try again.');
+            return;
+        }
+
+        showSuccessAndNavigate('Expense added', ['expenses']);
+        sortExpenseCategoriesByUsage();
+    };
+
+    const handleAddIncome = async (income: IncomeData) => {
+        const validation = validateIncomeData(income);
+        if (!validation.isValid) {
+            hapticNotify('warning');
+            showErrorSnackbar(validation.errorMessage!);
+            return;
+        }
+
+        const { amount, source, description, dateTime, recurring, receipt, currency } = income;
+        const actualAmount = parseFloat(amount!);
+
+        const { data, error } = await tryCatch(addIncome({
+            amount: actualAmount,
+            dateTime: dateTime!,
+            source: source!,
+            description: description ?? "",
+            recurring: !!recurring,
+            receipt: receipt ?? null,
+            currency: currency ?? 'INR',
+        }));
+
+        if (error) {
+            hapticNotify('error');
+            showErrorSnackbar('Failed to add income. Please try again.');
+            return;
+        }
+
+        showSuccessAndNavigate('Income added', ['incomes']);
+        sortIncomeSourcesByUsage();
+    };
+
+    const handleUpdateExpense = async (id: string, existingExpense: Expense, updatedExpense: ExpenseData) => {
+        const validation = validateExpenseData(updatedExpense);
+        if (!validation.isValid) {
+            hapticNotify('warning');
+            showErrorSnackbar(validation.errorMessage!);
+            return;
+        }
+
+        if (!hasExpenseChanged(existingExpense, updatedExpense)) {
+            hapticNotify('warning');
+            showErrorSnackbar('No changes detected.');
+            return;
+        }
+
+        const { amount, category, description, datetime, paymentMethod } = updatedExpense;
+        const actualAmount = parseFloat(amount!);
+
+        const { error } = await tryCatch(updateExpenseById(id, {
+            amount: actualAmount,
+            dateTime: datetime!,
+            description,
+            paymentMethod,
+            category: category!,
+        }));
+
+        if (error) {
+            hapticNotify('error');
+            showErrorSnackbar('Failed to update expense. Please try again.');
+            return;
+        }
+
+        showSuccessAndNavigate('Expense updated', ['expenses', `expense-${id}`, 'stats']);
+    };
+
+    const handleUpdateIncome = async (id: string, existingIncome: Income, updatedIncome: IncomeData) => {
+        const validation = validateIncomeData(updatedIncome);
+        if (!validation.isValid) {
+            hapticNotify('warning');
+            showErrorSnackbar(validation.errorMessage!);
+            return;
+        }
+
+        if (!hasIncomeChanged(existingIncome, updatedIncome)) {
+            hapticNotify('warning');
+            showErrorSnackbar('No changes detected.');
+            return;
+        }
+
+        const { amount, source, description, dateTime, recurring, receipt, currency } = updatedIncome;
+        const actualAmount = parseFloat(amount!);
+
+        const { error } = await tryCatch(updateIncomeById(id, {
+            amount: actualAmount,
+            dateTime: dateTime!,
+            source: source!,
+            description: description ?? null,
+            recurring: !!recurring,
+            receipt: receipt ?? null,
+            currency: currency ?? "INR",
+        }));
+
+        if (error) {
+            hapticNotify('error');
+            showErrorSnackbar('Failed to update income. Please try again.');
+            return;
+        }
+
+        showSuccessAndNavigate('Income updated', ['incomes', `income-${id}`, 'stats']);
+    };
+
     return {
-        isSnackbarVisible,
-        errorText,
         keyboardHeight,
         colors,
-        onDismissSnackBar,
         handleAddExpense,
         handleAddIncome,
+        handleUpdateExpense,
+        handleUpdateIncome,
     };
 }

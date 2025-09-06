@@ -12,49 +12,22 @@ import NotesInput from '@/components/input/NotesInput';
 import TimeInput from '@/components/input/TimeInput';
 import { useEnabledIncomeSources } from '@/stores/useIncomeSourcesStore';
 import { useIsFocused } from '@react-navigation/native';
+import { useSnackbarState } from '@/contexts/GlobalSnackbarProvider';
 // import RecurringInput from '@/components/input/RecurringInput';
 type IncomeFormProps = {
-    showSubmitButton?: boolean;
     onSubmit?: (income: IncomeData) => void;
     type?: 'create' | 'edit';
 }
 
-export default function IncomeForm({ showSubmitButton, onSubmit, type = "create" }: IncomeFormProps) {
+export default function IncomeForm({ onSubmit, type = "create" }: IncomeFormProps) {
     const { colors } = useAppTheme();
     const { keyboardHeight } = useKeyboardHeight();
     const isFocused = useIsFocused()
+    const globalSnackbar = useSnackbarState()
 
     const income = useIncomeStore((state) => state.income);
     const updateIncome = useIncomeStore((state) => state.updateIncome);
     const sources = useEnabledIncomeSources()
-
-    const styles = StyleSheet.create({
-        container: {
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            flex: 1,
-        },
-        sectionTitle: {
-            color: colors.muted,
-            width: '100%',
-            textAlign: 'center',
-            marginBottom: 10
-        },
-        amountContainer: {
-            justifyContent: 'center',
-            alignItems: 'center',
-        },
-        inputSection: {
-            marginTop: 20,
-        },
-        datetimeMain: {
-            flexDirection: 'row',
-            gap: 10,
-        },
-        datetimeInputContainer: {
-            flex: 1,
-        }
-    });
 
     // Set default date and time
     useEffect(() => {
@@ -70,7 +43,7 @@ export default function IncomeForm({ showSubmitButton, onSubmit, type = "create"
             <View style={{ flex: 1 }} onTouchStart={() => Keyboard.dismiss()}>
                 {/* Amount */}
                 <View style={styles.amountContainer}>
-                    <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+                    <ThemedText type='defaultSemiBold' style={[styles.sectionTitle, { color: colors.muted }]}>
                         Amount
                     </ThemedText>
                     <AmountInput
@@ -81,7 +54,7 @@ export default function IncomeForm({ showSubmitButton, onSubmit, type = "create"
                 </View>
                 {/* Source */}
                 <View style={styles.inputSection}>
-                    <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
+                    <ThemedText type="defaultSemiBold" style={[styles.sectionTitle, { color: colors.muted }]}>
                         Source
                     </ThemedText>
                     <CategoriesInput
@@ -94,7 +67,7 @@ export default function IncomeForm({ showSubmitButton, onSubmit, type = "create"
                 </View>
                 {/* Description (Notes) */}
                 <View style={styles.inputSection}>
-                    <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+                    <ThemedText type='defaultSemiBold' style={[styles.sectionTitle, { color: colors.muted }]}>
                         Description
                     </ThemedText>
                     <NotesInput
@@ -114,7 +87,7 @@ export default function IncomeForm({ showSubmitButton, onSubmit, type = "create"
 
                 {/* Date & Time */}
                 <View style={styles.inputSection}>
-                    <ThemedText type='defaultSemiBold' style={styles.sectionTitle}>
+                    <ThemedText type='defaultSemiBold' style={[styles.sectionTitle, { color: colors.muted }]}>
                         Date & Time
                     </ThemedText>
                     <View style={styles.datetimeMain}>
@@ -132,7 +105,7 @@ export default function IncomeForm({ showSubmitButton, onSubmit, type = "create"
                 </View>
             </View>
             {/* Confirm Button */}
-            {isFocused && showSubmitButton && (
+            {isFocused && !globalSnackbar && (
                 <ConfirmButton
                     onPress={handleSubmit}
                     keyboardHeight={keyboardHeight}
@@ -142,3 +115,31 @@ export default function IncomeForm({ showSubmitButton, onSubmit, type = "create"
         </View>
     );
 }
+
+
+const styles = StyleSheet.create({
+    container: {
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        flex: 1,
+    },
+    sectionTitle: {
+        width: '100%',
+        textAlign: 'center',
+        marginBottom: 10
+    },
+    amountContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    inputSection: {
+        marginTop: 20,
+    },
+    datetimeMain: {
+        flexDirection: 'row',
+        gap: 10,
+    },
+    datetimeInputContainer: {
+        flex: 1,
+    }
+});

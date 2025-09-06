@@ -1,25 +1,15 @@
 import FormSheetHeader from "@/components/main/FormSheetHeader";
-import CustomSnackbar from "@/components/ui/CustomSnackbar";
-import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
-import { useHaptics } from "@/contexts/HapticsProvider";
 import IncomeForm from "@/features/Income/IncomeForm";
 import { IncomeData, IncomeStoreProvider } from "@/features/Income/IncomeStoreProvider";
-import useKeyboardHeight from "@/hooks/useKeyboardHeight";
-import { tryCatch } from "@/lib/try-catch";
-import { getIncomeById, updateIncomeById } from "@/repositories/IncomeRepo";
-import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getIncomeById } from "@/repositories/IncomeRepo";
+import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { useState } from "react";
-import { StyleSheet } from "react-native";
+import { useTransactionForm } from "@/hooks/useTransactionForm";
 
 export default function EditIncomeScreen() {
     const navigation = useNavigation();
-    const queryClient = useQueryClient();
-    const { colors } = useAppTheme();
-    const { keyboardHeight, setKeyboardHeight } = useKeyboardHeight();
     const { id } = useLocalSearchParams<{ id: string }>();
-    const { hapticNotify } = useHaptics();
+    const { handleUpdateIncome } = useTransactionForm();
 
     const { data: income, isLoading, isError, error } = useQuery({
         queryKey: ['income', id],
@@ -28,101 +18,10 @@ export default function EditIncomeScreen() {
         staleTime: Infinity,
     });
 
-    // Snackbar
-    const [isSnackbarVisible, setSnackbarVisibility] = useState(false);
-    const onDismissSnackBar = () => setSnackbarVisibility(false);
-    const [errorText, setErrorText] = useState('');
-
-    // Global Snackbar
-    const { showSnackbar } = useSnackbar()
-
-    const handleUpdateIncome = async (updated: IncomeData) => {
+    const onSubmit = async (updated: IncomeData) => {
         if (!income) return;
-
-        const { amount, source, description, dateTime, recurring, receipt, currency } = updated;
-        const missingFields = [];
-        if (!amount) missingFields.push('amount');
-        const actualAmount = parseFloat(amount ? amount : '0');
-        if (actualAmount < 1) {
-            hapticNotify("warning");
-            setErrorText('Minimum amount should be ₹1');
-            setSnackbarVisibility(true);
-            return;
-        }
-
-        if (!source) missingFields.push('source');
-        if (!dateTime) missingFields.push('date');
-        if (!amount || !source || !dateTime) {
-            hapticNotify("warning");
-            setErrorText(`Please fill the missing fields: ${missingFields.join(', ')}`);
-            setSnackbarVisibility(true);
-            return;
-        }
-
-        // Check if anything has changed
-        const hasChanged =
-            income.amount !== actualAmount ||
-            income.source !== source ||
-            income.description !== description ||
-            new Date(income.dateTime).getTime() !== new Date(dateTime).getTime() ||
-            (income.recurring ?? false) !== (recurring ?? false) ||
-            (income.receipt ?? null) !== (receipt ?? null) ||
-            (income.currency ?? "INR") !== (currency ?? "INR");
-
-        if (!hasChanged) {
-            hapticNotify("warning");
-            setErrorText("No changes detected.");
-            setSnackbarVisibility(true);
-            return;
-        }
-
-        const { error } = await tryCatch(
-            updateIncomeById(id, {
-                amount: actualAmount,
-                dateTime: dateTime,
-                source: source,
-                description: description ?? null,
-                recurring: !!recurring,
-                receipt: receipt ?? null,
-                currency: currency ?? "INR",
-            })
-        );
-
-        if (error) {
-            hapticNotify("error");
-            setErrorText('Failed to update income. Please try again.');
-            setSnackbarVisibility(true);
-            return;
-        }
-        hapticNotify("success");
-        navigation.goBack();
-        showSnackbar({
-            message: 'Income updated',
-            duration: 2000,
-            actionLabel: 'Dismiss',
-            actionIcon: 'close',
-            type: 'success',
-            position: 'top',
-            offset: 10,
-        }, 300)
-
-        setKeyboardHeight(0);
-        queryClient.invalidateQueries({
-            queryKey: ['incomes'],
-        });
-        queryClient.invalidateQueries({
-            queryKey: ['income', id],
-        });
-        queryClient.invalidateQueries({
-            queryKey: ['stats', 'income'],
-        });
+        await handleUpdateIncome(id!, income, updated);
     };
-
-    const styles = StyleSheet.create({
-        snackbar: {
-            backgroundColor: colors.error,
-        },
-    });
 
     return (
         <IncomeStoreProvider initialIncome={income}>
@@ -131,27 +30,9 @@ export default function EditIncomeScreen() {
                 onClose={() => navigation.goBack()}
             />
             <IncomeForm
-                showSubmitButton={!isSnackbarVisible}
-                onSubmit={handleUpdateIncome}
+                onSubmit={onSubmit}
                 type="edit"
             />
-            {/* Error Snackbar */}
-            <CustomSnackbar
-                usePortal
-                visible={isSnackbarVisible}
-                onDismiss={onDismissSnackBar}
-                duration={2000}
-                style={styles.snackbar}
-                action={{
-                    label: 'Dismiss',
-                    icon: 'close',
-                }}
-                type='error'
-                position='bottom'
-                offset={keyboardHeight}
-            >
-                {errorText}
-            </CustomSnackbar>
         </IncomeStoreProvider>
     );
 }
