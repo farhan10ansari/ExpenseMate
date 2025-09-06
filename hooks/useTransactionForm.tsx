@@ -65,7 +65,7 @@ export function useTransactionForm() {
             return;
         }
         hapticNotify('success');
-        showSuccessAndNavigate('Expense added successfully', ['expenses']);
+        showSuccessAndNavigate('Expense added', ['expenses']);
         sortExpenseCategoriesByUsage()
     };
 
@@ -108,7 +108,7 @@ export function useTransactionForm() {
             return;
         }
         hapticNotify('success');
-        showSuccessAndNavigate('Income added successfully', ['incomes']);
+        showSuccessAndNavigate('Income added', ['incomes']);
         sortIncomeSourcesByUsage()
     };
 

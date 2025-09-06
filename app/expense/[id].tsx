@@ -91,7 +91,7 @@ export default function ExpenseInfoScreen() {
         if (error) {
             hapticNotify("error");
             showSnackbar({
-                message: 'Error in deleting expense',
+                message: 'Failed to delete expense',
                 duration: 2000,
                 actionLabel: 'Dismiss',
                 actionIcon: 'close',
@@ -106,7 +106,7 @@ export default function ExpenseInfoScreen() {
             queryClient.invalidateQueries({ queryKey: ['stats', 'expense'] });
             navigation.goBack()
             showSnackbar({
-                message: 'Expense deleted!',
+                message: 'Expense deleted',
                 duration: 2000,
                 actionLabel: 'Dismiss',
                 actionIcon: 'close',

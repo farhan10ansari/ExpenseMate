@@ -88,7 +88,7 @@ export default function IncomeInfoScreen() {
         if (error) {
             hapticNotify("error");
             showSnackbar({
-                message: 'Error in deleting income',
+                message: "Failed to delete income",
                 duration: 2000,
                 actionLabel: 'Dismiss',
                 actionIcon: 'close',
@@ -103,7 +103,7 @@ export default function IncomeInfoScreen() {
             navigation.goBack();
 
             showSnackbar({
-                message: 'Income Deleted!',
+                message: 'Income deleted',
                 duration: 2000,
                 actionLabel: 'Dismiss',
                 actionIcon: 'close',

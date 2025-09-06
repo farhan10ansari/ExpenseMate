@@ -94,7 +94,7 @@ export default function EditExpenseScreen() {
 
         navigation.goBack();
         showSnackbar({
-            message: 'Expense updated successfully',
+            message: 'Expense updated',
             duration: 2000,
             actionLabel: 'Dismiss',
             actionIcon: 'close',

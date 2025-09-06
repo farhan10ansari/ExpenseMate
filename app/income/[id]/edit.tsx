@@ -97,7 +97,7 @@ export default function EditIncomeScreen() {
         hapticNotify("success");
         navigation.goBack();
         showSnackbar({
-            message: 'Income updated successfully',
+            message: 'Income updated',
             duration: 2000,
             actionLabel: 'Dismiss',
             actionIcon: 'close',

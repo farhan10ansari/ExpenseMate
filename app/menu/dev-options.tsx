@@ -55,7 +55,7 @@ export default function DevOptionsScreen() {
       queryClient.invalidateQueries({ queryKey: ['incomes'] });
 
       showSnackbar({
-        message: `Successfully added ${numberOfExpenses} dummy expenses!`,
+        message: `Added ${numberOfExpenses} dummy expenses!`,
         duration: 3000,
         type: "success",
       });
@@ -81,7 +81,7 @@ export default function DevOptionsScreen() {
       queryClient.invalidateQueries({ queryKey: ['stats'] });
       queryClient.invalidateQueries({ queryKey: ['incomes'] });
       showSnackbar({
-        message: `Successfully added ${numberOfIncomes} dummy incomes!`,
+        message: `Added ${numberOfIncomes} dummy incomes!`,
         duration: 3000,
         type: "success"
       });
@@ -101,7 +101,7 @@ export default function DevOptionsScreen() {
   const handleDisableDevOptions = () => {
     updateUIFlag("showDevOptions", false);
     showSnackbar({
-      message: "Developer options disabled successfully!",
+      message: "Developer options disabled",
       duration: 3000,
       type: "success",
       position: "bottom",

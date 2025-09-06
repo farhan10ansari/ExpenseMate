@@ -45,7 +45,6 @@ export const GlobalSnackbarProvider: React.FC<GlobalSnackbarProviderProps> = ({ 
 
     const showSnackbar = useCallback((snackbarConfig: GlobalSnackbarProps, delay?: number) => {
         if (!delay) {
-            console.log('Showing snackbar immediately:', snackbarConfig);
             setGlobalSnackbar(snackbarConfig);
             return;
         }
