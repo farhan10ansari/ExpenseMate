@@ -122,7 +122,7 @@ export default function DevOptionsScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
           <View style={{ flex: 1 }}>
             <ScrollView
               style={styles.container}
@@ -256,7 +256,7 @@ export default function DevOptionsScreen() {
               </View>
             </ScrollView>
           </View>
-        </TouchableWithoutFeedback>
+        {/* </TouchableWithoutFeedback> */}
       </KeyboardAvoidingView>
     </ScreenWrapper>
   );
