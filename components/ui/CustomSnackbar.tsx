@@ -1,6 +1,7 @@
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { memo } from "react";
 import { Portal, Snackbar, SnackbarProps } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export interface CustomSnackbarProps extends SnackbarProps {
     type?: "error" | "success" | "info" | "warning";
@@ -14,7 +15,7 @@ function CustomSnackbar(props: CustomSnackbarProps) {
         type = "info",
         usePortal = false,
         position,
-        offset,
+        offset = 0,
         children,
         style,
         wrapperStyle,
@@ -22,40 +23,72 @@ function CustomSnackbar(props: CustomSnackbarProps) {
     } = props;
 
     const { colors } = useAppTheme();
+    const insets = useSafeAreaInsets();
+    
+    // Get theme colors based on snackbar type
+    const getThemeColors = () => {
+        switch (type) {
+            case "error":
+                return {
+                    inverseSurface: colors.error,
+                    inverseOnSurface: colors.onError,
+                };
+            case "success":
+                return {
+                    inverseSurface: colors.secondary,
+                    inverseOnSurface: colors.onSecondary,
+                };
+            case "info":
+                return {
+                    inverseSurface: colors.primary,
+                    inverseOnSurface: colors.onPrimary,
+                };
+            case "warning":
+                return {
+                    inverseSurface: colors.tertiary,
+                    inverseOnSurface: colors.onTertiary,
+                };
+            default:
+                return {
+                    inverseSurface: colors.inverseSurface,
+                    inverseOnSurface: colors.inverseOnSurface,
+                };
+        }
+    };
 
     const Component = () => {
         return (
             <Snackbar
                 {...rest}
-                style={[
-                    type === "error" && { backgroundColor: colors.error },
-                    type === "success" && { backgroundColor: colors.primary },
-                    type === "info" && { backgroundColor: colors.primary },
-                    type === "warning" && { backgroundColor: "orange" },
-                    style
-                ]}
+                style={[style]}
                 wrapperStyle={[
-                    position === "top" && { top: offset },
+                    position === "top" && { top: offset + insets.top },
                     position === "bottom" && { bottom: offset },
-                    wrapperStyle
+                    wrapperStyle,
                 ]}
+                theme={{
+                    colors: {
+                        ...getThemeColors(),
+                    },
+                }}
             >
                 {children}
             </Snackbar>
-        )
-    }
+        );
+    };
 
-    return (
-        usePortal ? (
-            <Portal>
-                <Component />
-            </Portal>
-        ) : (<Component />)
-    )
+    return usePortal ? (
+        <Portal>
+            <Component />
+        </Portal>
+    ) : (
+        <Component />
+    );
 }
 
 export default memo(CustomSnackbar, (prevProps, nextProps) => {
     return (
-        prevProps.visible === nextProps.visible // Only re-render if visibility changes
-    )
+        prevProps.visible === nextProps.visible &&
+        prevProps.type === nextProps.type // Also compare type to handle color changes
+    );
 });

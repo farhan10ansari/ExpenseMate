@@ -18,6 +18,7 @@ import { useHaptics } from "@/contexts/HapticsProvider";
 import { useIncomeSourceMapping } from "@/stores/useIncomeSourcesStore";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
+import { useConfirmation } from "@/components/main/ConfirmationDialog";
 
 
 export default function IncomeInfoScreen() {
@@ -27,8 +28,8 @@ export default function IncomeInfoScreen() {
     const queryClient = useQueryClient();
     const { id } = useLocalSearchParams<{ id: string }>();
     const { showSnackbar } = useSnackbar()
+    const { showConfirmationDialog } = useConfirmation()
 
-    const [showDeleteConfirmationDialog, setShowDeleteConfirmationDialog] = useState(false);
     const sourceMapping = useIncomeSourceMapping()
     const router = useRouter();
     const insets = useSafeAreaInsets();
@@ -93,7 +94,7 @@ export default function IncomeInfoScreen() {
                 actionIcon: 'close',
                 type: 'error',
                 position: 'top',
-                offset: 30,
+                offset: 10,
             });
         } else {
             hapticNotify("success");
@@ -102,7 +103,7 @@ export default function IncomeInfoScreen() {
             navigation.goBack();
 
             showSnackbar({
-                message: 'Successfully deleted income',
+                message: 'Income Deleted!',
                 duration: 2000,
                 actionLabel: 'Dismiss',
                 actionIcon: 'close',
@@ -112,6 +113,20 @@ export default function IncomeInfoScreen() {
             }, 300);
 
         }
+    }
+
+    const handleShowDeleteConfirmation = () => {
+        hapticImpact()
+        showConfirmationDialog({
+            title: "Delete Income?",
+            message: <ThemedText>Are you sure you want to delete this income? This action cannot be undone.</ThemedText>,
+            type: 'error',
+            confirmText: 'Delete',
+            cancelText: 'Cancel',
+            onConfirm: handleDelete,
+            onCancel: () => { },
+            showCancel: true,
+        })
     }
 
     const handleEdit = () => {
@@ -206,27 +221,12 @@ export default function IncomeInfoScreen() {
                                     mode="elevated"
                                     style={[styles.button, styles.deleteButton]}
                                     labelStyle={styles.deleteButtonText}
-                                    onPress={() => {
-                                        hapticImpact("light");
-                                        setShowDeleteConfirmationDialog(true);
-                                    }}
+                                    onPress={handleShowDeleteConfirmation}
                                 >
                                     Delete
                                 </Button>
                             </View>
                         </View>
-                        <Portal>
-                            <Dialog visible={showDeleteConfirmationDialog} onDismiss={() => setShowDeleteConfirmationDialog(false)}>
-                                <Dialog.Title>Delete Income?</Dialog.Title>
-                                <Dialog.Content>
-                                    <ThemedText>Are you sure you want to delete this income? This action cannot be undone.</ThemedText>
-                                </Dialog.Content>
-                                <Dialog.Actions>
-                                    <Button onPress={() => setShowDeleteConfirmationDialog(false)}>Cancel</Button>
-                                    <Button onPress={handleDelete} textColor={colors.error}>Delete</Button>
-                                </Dialog.Actions>
-                            </Dialog>
-                        </Portal>
                     </View>
                 ) : (
                     <ThemedView style={[styles.mainContainer, { minHeight: 200, paddingTop: 40 }]}>

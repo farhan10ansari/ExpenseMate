@@ -1,4 +1,3 @@
-// contexts/ConfirmationContext.tsx
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { Portal, Dialog, Button } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
@@ -116,14 +115,14 @@ export const ConfirmationProvider: React.FC<ConfirmationProviderProps> = ({ chil
           style={styles.dialog}
         >
           {confirmationState.config?.title && (
-            <Dialog.Title style={styles.title}>
+            <Dialog.Title>
               {confirmationState.config.title}
             </Dialog.Title>
           )}
           
-          <Dialog.Content style={styles.content}>
+          <Dialog.Content>
             {typeof confirmationState.config?.message === 'string' ? (
-              <ThemedText style={styles.message}>
+              <ThemedText>
                 {confirmationState.config.message}
               </ThemedText>
             ) : (
@@ -131,21 +130,17 @@ export const ConfirmationProvider: React.FC<ConfirmationProviderProps> = ({ chil
             )}
           </Dialog.Content>
           
-          <Dialog.Actions style={styles.actions}>
+          <Dialog.Actions>
             {confirmationState.config?.showCancel && (
               <Button 
                 onPress={handleCancel}
-                style={styles.cancelButton}
               >
                 {confirmationState.config.cancelText}
               </Button>
             )}
             <Button 
-              mode="contained"
               onPress={handleConfirm}
-              textColor={colors.onPrimary}
-              buttonColor={getConfirmButtonColor(confirmationState.config?.type)}
-              style={styles.confirmButton}
+              textColor={getConfirmButtonColor(confirmationState.config?.type)}
             >
               {confirmationState.config?.confirmText}
             </Button>
@@ -166,30 +161,10 @@ export const useConfirmation = (): ConfirmationContextType => {
 
 const styles = StyleSheet.create({
   dialog: {
-    marginHorizontal: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '600',
-    paddingBottom: 8,
-  },
-  content: {
-    paddingVertical: 16,
+    // marginHorizontal: 20,
   },
   message: {
     fontSize: 16,
     lineHeight: 24,
-  },
-  actions: {
-    paddingHorizontal: 24,
-    paddingBottom: 24,
-    paddingTop: 8,
-    gap: 8,
-  },
-  cancelButton: {
-    marginRight: 8,
-  },
-  confirmButton: {
-    minWidth: 80,
   },
 });

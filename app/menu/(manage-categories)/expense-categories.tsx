@@ -40,7 +40,7 @@ export default function ExpenseCategoriesScreen() {
                 updateButton: 'Update',
                 deleteTitle: 'Delete Expense Category?',
                 deleteMessage: (label) => (
-                    <View style={{ gap: 8 }}>
+                    <View style={{ gap: 8, marginTop: 12 }}>
                         <ThemedText>
                             Are you sure you want to delete the expense category{' '}
                             <ThemedText style={{ fontWeight: 'bold' }}>{label}</ThemedText>?

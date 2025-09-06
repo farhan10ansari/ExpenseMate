@@ -183,8 +183,6 @@ export const softDeleteExpenseById = async (id: string | number): Promise<void> 
   if (isNaN(numericId)) {
     throw new Error('Invalid ID format. ID must be a number.');
   }
-    throw new Error('Invalid ID format. ID must be a number.');
-
 
   // mark as trashed instead of deleting
   const result = await db
@@ -244,7 +242,7 @@ export const getExpenseStatsByPeriod = async (
   // 1. Get period start & end dates, calculate days in period
   const { start: startDate, end: endDate } = getPeriodStartEnd(period);
   const msPerDay = 1000 * 60 * 60 * 24;
-  
+
   // Calculate the total days in the period (inclusive)
   const days = Math.floor((endDate.getTime() - startDate.getTime()) / msPerDay) + 1;
 

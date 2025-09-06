@@ -19,6 +19,7 @@ import { useHaptics } from "@/contexts/HapticsProvider";
 import { useExpenseCategoryMapping } from "@/stores/useExpenseCategoriesStore";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
+import { useConfirmation } from "@/components/main/ConfirmationDialog";
 
 export default function ExpenseInfoScreen() {
     const { colors } = useAppTheme();
@@ -27,8 +28,9 @@ export default function ExpenseInfoScreen() {
     const queryClient = useQueryClient();
     const { id } = useLocalSearchParams<{ id: string }>();
     const { showSnackbar } = useSnackbar()
+    const { showConfirmationDialog } = useConfirmation()
 
-    const [showDeleteConfirmationDialog, setShowDeleteConfirmationDialog] = useState(false);
+
     const categoryMapping = useExpenseCategoryMapping()
     const router = useRouter();
     const insets = useSafeAreaInsets();
@@ -95,9 +97,8 @@ export default function ExpenseInfoScreen() {
                 actionIcon: 'close',
                 type: 'error',
                 position: 'top',
-                offset: 30,
+                offset: 10,
             });
-            setShowDeleteConfirmationDialog(false);
         }
         else {
             hapticNotify("success");
@@ -105,7 +106,7 @@ export default function ExpenseInfoScreen() {
             queryClient.invalidateQueries({ queryKey: ['stats', 'expense'] });
             navigation.goBack()
             showSnackbar({
-                message: 'Successfully deleted expense',
+                message: 'Expense deleted!',
                 duration: 2000,
                 actionLabel: 'Dismiss',
                 actionIcon: 'close',
@@ -115,6 +116,20 @@ export default function ExpenseInfoScreen() {
             }, 300);
 
         }
+    }
+
+    const handleShowDeleteConfirmation = () => {
+        hapticImpact()
+        showConfirmationDialog({
+            title: "Delete Expense?",
+            message: <ThemedText>Are you sure you want to delete this expense? This action cannot be undone.</ThemedText>,
+            type: 'error',
+            confirmText: 'Delete',
+            cancelText: 'Cancel',
+            onConfirm: handleDelete,
+            onCancel: () => { },
+            showCancel: true,
+        })
     }
 
     const handleEdit = () => {
@@ -207,27 +222,12 @@ export default function ExpenseInfoScreen() {
                                     mode="elevated"
                                     style={[styles.button, styles.deleteButton]}
                                     labelStyle={styles.deleteButtonText}
-                                    onPress={() => {
-                                        hapticImpact("light");
-                                        setShowDeleteConfirmationDialog(true)
-                                    }}
+                                    onPress={handleShowDeleteConfirmation}
                                 >
                                     Delete
                                 </Button>
                             </View>
                         </View>
-                        <Portal>
-                            <Dialog visible={showDeleteConfirmationDialog} onDismiss={() => setShowDeleteConfirmationDialog(false)}>
-                                <Dialog.Title>Delete Expense?</Dialog.Title>
-                                <Dialog.Content>
-                                    <ThemedText>Are you sure you want to delete this expense? This action cannot be undone.</ThemedText>
-                                </Dialog.Content>
-                                <Dialog.Actions>
-                                    <Button onPress={() => setShowDeleteConfirmationDialog(false)}>Cancel</Button>
-                                    <Button onPress={handleDelete} textColor={colors.error}>Delete</Button>
-                                </Dialog.Actions>
-                            </Dialog>
-                        </Portal>
                     </View>
                 ) : (
                     <ThemedView style={[styles.mainContainer, { minHeight: 200, paddingTop: 40 }]}>

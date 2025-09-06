@@ -35,14 +35,11 @@ export const GlobalSnackbarProvider: React.FC<GlobalSnackbarProviderProps> = ({ 
     const [globalSnackbar, setGlobalSnackbar] = useState<GlobalSnackbarProps | null>(null);
     const segments = useSegments();
 
-    // console.log('GlobalSnackbar:', globalSnackbar);
-
     const onDismiss = useCallback(() => {
         setGlobalSnackbar(null);
     }, []);
 
     useEffect(() => {
-        console.log("segments changed", segments);
         onDismiss();
     }, [segments, onDismiss]);
 
@@ -65,9 +62,6 @@ export const GlobalSnackbarProvider: React.FC<GlobalSnackbarProviderProps> = ({ 
         dismissSnackbar: onDismiss,
     }), [showSnackbar, onDismiss]);
 
-    // State context value (changes when snackbar state changes)
-
-
     return (
         <GlobalSnackbarStateContext.Provider value={globalSnackbar}>
             <GlobalSnackbarActionsContext.Provider value={actionsValue}>
@@ -83,7 +77,7 @@ export const GlobalSnackbarProvider: React.FC<GlobalSnackbarProviderProps> = ({ 
                     }}
                     type={globalSnackbar?.type}
                     position={globalSnackbar?.position ?? "bottom"}
-                    offset={globalSnackbar?.offset ?? 0}
+                    offset={globalSnackbar?.offset}
                 >
                     {globalSnackbar?.message}
                 </CustomSnackbar>
