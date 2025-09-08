@@ -39,7 +39,7 @@ export default function SelectStatsPeriodScreen() {
 
   function SectionHeader({ title }: { title: string }) {
     return (
-      <ThemedText type="subtitle" style={{ color: colors.onSurface, fontSize: 12, marginBottom: 4 }}>
+      <ThemedText type="subtitle" style={{ color: colors.onSurface, fontSize: 12, marginBottom: 4, position: "absolute", top: 5, left: 5, zIndex: 999 }}>
         {title}
       </ThemedText>
     );
@@ -47,54 +47,53 @@ export default function SelectStatsPeriodScreen() {
 
 
   return (
-    <ThemedView style={{ backgroundColor: colors.card, paddingHorizontal: 12, paddingBottom: 40, paddingTop: 6, gap: 14 }}>
-      <View style={{ marginBottom: 8 }}>
-        <FormSheetHeader title="Select Period" onClose={() => router.back()} />
-      </View>
-
-      <View style={{ marginBottom: 8, gap: 8 }}>
-        <SectionHeader title="Quick Access" />
-        <PeriodList
-          periods={quickPeriodOptions}
-          selectedPeriod={period}
-          onSelect={handleSelectPeriod}
-          variant="tertiary"
-        />
-      </View>
-
-      <Divider />
-
-      {periodsData?.months && periodsData.months.length > 0 && (
-        <View style={{ marginBottom: 8, gap: 8 }}>
-          <SectionHeader title="Months" />
+    <ThemedView style={{ backgroundColor: colors.card, paddingBottom: 40 }}>
+      <FormSheetHeader title="Select Period" onClose={() => router.back()} />
+      <View style={{ paddingHorizontal: 12, gap: 4, marginTop: 14 }}>
+        <View style={{ marginBottom: 8, gap: 8, position: "relative" }}>
+          <SectionHeader title="Quick Access" />
           <PeriodList
-            periods={periodsData.months}
-            selectedPeriod={period}
-            onSelect={handleSelectPeriod}
-            variant="primary"
-            useFlatList={true}
-          />
-        </View>
-      )}
-
-      <Divider />
-
-      {periodsData?.years && periodsData.years.length > 0 && (
-        <View style={{ marginBottom: 8, gap: 8 }}>
-          <SectionHeader title="Years" />
-          <PeriodList
-            periods={periodsData.years}
+            periods={quickPeriodOptions}
             selectedPeriod={period}
             onSelect={handleSelectPeriod}
             variant="tertiary"
           />
         </View>
-      )}
 
-      {periodsData &&
-        periodsData.months?.length === 0 &&
-        periodsData.years?.length === 0 &&
-        <EmptyState />}
+        <Divider />
+
+        {periodsData?.months && periodsData.months.length > 0 && (
+          <View style={{ marginBottom: 8, gap: 8, position: "relative" }}>
+            <SectionHeader title="Months" />
+            <PeriodList
+              periods={periodsData.months}
+              selectedPeriod={period}
+              onSelect={handleSelectPeriod}
+              variant="primary"
+              useFlatList={true}
+            />
+          </View>
+        )}
+
+        <Divider />
+
+        {periodsData?.years && periodsData.years.length > 0 && (
+          <View style={{ marginBottom: 8, gap: 8, position: "relative" }}>
+            <SectionHeader title="Years" />
+            <PeriodList
+              periods={periodsData.years}
+              selectedPeriod={period}
+              onSelect={handleSelectPeriod}
+              variant="tertiary"
+            />
+          </View>
+        )}
+
+        {periodsData &&
+          periodsData.months?.length === 0 &&
+          periodsData.years?.length === 0 &&
+          <EmptyState />}
+      </View>
     </ThemedView>
   );
 }
@@ -134,14 +133,14 @@ function PeriodList({
         keyExtractor={(item, index) => `${item.type}-${item.offset}-${index}`}
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ gap: 6 }}
+        contentContainerStyle={{ gap: 6, paddingTop: 32, paddingBottom: 10 }}
         renderItem={({ item }) => renderCard(item)}
       />
     );
   }
 
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6, paddingTop: 32, paddingBottom: 10 }}>
       {periods.map((item, index) => renderCard(item, index))}
     </ScrollView>
   );
