@@ -1,26 +1,26 @@
 import { StatsPeriod } from "@/lib/types";
-import { 
-  startOfDay, 
-  endOfDay, 
-  startOfWeek, 
-  endOfWeek, 
-  startOfMonth, 
-  endOfMonth, 
-  startOfYear, 
-  endOfYear,
-  subWeeks,
-  subMonths,
-  subYears
+import {
+    startOfDay,
+    endOfDay,
+    startOfWeek,
+    endOfWeek,
+    startOfMonth,
+    endOfMonth,
+    startOfYear,
+    endOfYear,
+    subWeeks,
+    subMonths,
+    subYears
 } from 'date-fns';
 
 /**
  * Get the starting and ending dates for a given period with offset support.
  * Returns both start and end dates for the specified period.
  */
-export function getPeriodStartEnd(period: StatsPeriod): { start: Date; end: Date } {
+export function getPeriodStartEnd(period: StatsPeriod): { start: Date | null; end: Date | null } {
     const now = new Date();
     const offset = period.offset || 0;
-    
+
     switch (period.type) {
         case "today": {
             // Today ignores offset - always current day
@@ -28,7 +28,7 @@ export function getPeriodStartEnd(period: StatsPeriod): { start: Date; end: Date
             const end = endOfDay(now);
             return { start, end };
         }
-        
+
         case "week": {
             // Calculate the target week by subtracting offset weeks
             const targetDate = subWeeks(now, offset);
@@ -36,7 +36,7 @@ export function getPeriodStartEnd(period: StatsPeriod): { start: Date; end: Date
             const end = endOfWeek(targetDate, { weekStartsOn: 1 });
             return { start, end };
         }
-        
+
         case "month": {
             // Calculate the target month by subtracting offset months
             const targetDate = subMonths(now, offset);
@@ -44,7 +44,7 @@ export function getPeriodStartEnd(period: StatsPeriod): { start: Date; end: Date
             const end = endOfMonth(targetDate);
             return { start, end };
         }
-        
+
         case "year": {
             // Calculate the target year by subtracting offset years
             const targetDate = subYears(now, offset);
@@ -52,7 +52,12 @@ export function getPeriodStartEnd(period: StatsPeriod): { start: Date; end: Date
             const end = endOfYear(targetDate);
             return { start, end };
         }
-        
+
+        case "all-time": {
+            // Return null dates to indicate no date filtering needed
+            return { start: null, end: null };
+        }
+
         default:
             throw new Error(`Unsupported period type: ${period.type}`);
     }

@@ -39,7 +39,7 @@ export type RootStackParamList = {
 /**
  * Supported period keys for filtering stats.
  */
-export type PeriodType = "today" | "week" | "month" | "year";
+export type PeriodType = "today" | "week" | "month" | "year" | "all-time";
 
 export type StatsPeriod = {
   type: PeriodType;

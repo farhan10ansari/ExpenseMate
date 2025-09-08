@@ -1,6 +1,6 @@
 import db from '@/db/client';              // Or your correct import style
 import { Income, incomesSchema } from '@/db/schema';
-import { and, desc, eq, gte, lt, lte, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, lt, lte, sql } from 'drizzle-orm';
 import { subMonths, startOfMonth, endOfMonth, format } from 'date-fns';
 import { StatsPeriod, PeriodIncomeStats } from '@/lib/types';
 import { getPeriodStartEnd } from './lib/helpers';
@@ -177,11 +177,52 @@ export const getIncomeStatsByPeriod = async (
   period: StatsPeriod
 ): Promise<PeriodIncomeStats> => {
   // 1. Get period start & end dates, calculate days in period
-  const { start: startDate, end: endDate } = getPeriodStartEnd(period);
+  const { start, end } = getPeriodStartEnd(period);
   const msPerDay = 1000 * 60 * 60 * 24;
 
+  let startDate = start
+  let endDate = end
+
+  if (!startDate) {
+    const [earliest] = await db
+      .select({
+        dateTime: incomesSchema.dateTime
+      })
+      .from(incomesSchema)
+      .where(eq(incomesSchema.isTrashed, false))
+      .orderBy(asc(incomesSchema.dateTime))
+      .limit(1);
+
+    //earliest can be undefined if no income exist
+    startDate = earliest?.dateTime
+  }
+
+  if (!endDate) {
+    const [latest] = await db
+      .select({
+        dateTime: incomesSchema.dateTime
+      })
+      .from(incomesSchema)
+      .where(eq(incomesSchema.isTrashed, false))
+      .orderBy(desc(incomesSchema.dateTime))
+      .limit(1);
+
+    //latest can be undefined if no income exist
+    endDate = latest?.dateTime
+  }
+
+  // 2. Build the where condition conditionally
+  const whereConditions = [eq(incomesSchema.isTrashed, false)];
+  if (startDate) whereConditions.push(gte(incomesSchema.dateTime, startDate));
+  if (endDate) whereConditions.push(lte(incomesSchema.dateTime, endDate));
+
   // Calculate the total days in the period (inclusive)
-  const days = Math.floor((endDate.getTime() - startDate.getTime()) / msPerDay) + 1;
+  let days: number;
+  if (startDate && endDate) {
+    days = Math.floor((endDate.getTime() - startDate.getTime()) / msPerDay) + 1;
+  } else {
+    days = 0
+  }
 
   // 2. Fetch total, count, max, min in one query using both start and end dates
   const [row] = await db
@@ -192,13 +233,7 @@ export const getIncomeStatsByPeriod = async (
       min: sql<number>`MIN(${incomesSchema.amount})`,
     })
     .from(incomesSchema)
-    .where(
-      and(
-        eq(incomesSchema.isTrashed, false),
-        gte(incomesSchema.dateTime, startDate),
-        lte(incomesSchema.dateTime, endDate)
-      )
-    )
+    .where(and(...whereConditions))
     .limit(1);
 
   const total = row?.total ?? 0;
@@ -214,13 +249,7 @@ export const getIncomeStatsByPeriod = async (
       count: sql<number>`COUNT(*)`
     })
     .from(incomesSchema)
-    .where(
-      and(
-        eq(incomesSchema.isTrashed, false),
-        gte(incomesSchema.dateTime, startDate),
-        lte(incomesSchema.dateTime, endDate)
-      )
-    )
+    .where(and(...whereConditions))
     .groupBy(incomesSchema.source)
     .orderBy(desc(sql<number>`SUM(${incomesSchema.amount})`)); // sort by total descending
 

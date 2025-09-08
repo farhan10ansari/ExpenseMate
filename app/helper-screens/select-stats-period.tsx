@@ -29,6 +29,7 @@ export default function SelectStatsPeriodScreen() {
     { primaryLabel: "Today", type: "today" },
     { primaryLabel: "This", secondaryLabel: "Week", type: "week", offset: 0 },
     { primaryLabel: "Last", secondaryLabel: "Week", type: "week", offset: 1 },
+    { primaryLabel: "All Time", type: "all-time" },
   ];
 
   const handleSelectPeriod = (selectedPeriod: StatsPeriodOption) => {
