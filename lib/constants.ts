@@ -7,7 +7,7 @@ export const DefaultExpenseCategories: CategoryData[] = [
         name: "food",
         label: "Food",
         icon: "food",
-        color: "#A8D0E6"
+        color: "#69bfedff"
     },
     {
         name: "transport",
@@ -19,37 +19,37 @@ export const DefaultExpenseCategories: CategoryData[] = [
         name: "entertainment",
         label: "Entertainment",
         icon: "movie",
-        color: "#8BC6A3"
+        color: "#68c0a3ff"
     },
     {
         name: "shopping",
         label: "Shopping",
         icon: "shopping",
-        color: "#F8E9A1"
+        color: "#eecf35ff"
     },
     {
         name: "health",
         label: "Health",
         icon: "heart",
-        color: "#CBAACB"
+        color: "#daa3daff"
     },
     {
         name: "travel",
         label: "Travel",
         icon: "walk",
-        color: "#FFBCB3"
+        color: "#ef877aff"
     },
     {
         name: "bills",
         label: "Bills",
         icon: "file-document",
-        color: "#D3D3D3"
+        color: "#9a78b7ff"
     },
     {
         name: "other",
         label: "Other",
         icon: "dots-horizontal-circle-outline",
-        color: "#B0BEC5"
+        color: "#b38745ff"
     }
 ]
 
@@ -76,7 +76,7 @@ export const DefaultIncomeSources: CategoryData[] = [
     {
         name: "rental",
         label: "Rental",
-        icon: "home-city",
+        icon: "home",
         color: "#FFD54F"
     },
     {
@@ -113,7 +113,7 @@ export const DefaultIncomeSources: CategoryData[] = [
         name: "other",
         label: "Other",
         icon: "dots-horizontal-circle-outline",
-        color: "#B0BEC5"
+        color: "#b38745ff"
     }
 ];
 
@@ -154,40 +154,47 @@ export const paymentMethodsMapping = paymentMethods.reduce((acc, paymentMethod) 
 
 
 export const ICON_COLORS: IconWithColor[] = [
-    // Existing colors from your categories
-    { icon: 'food', color: '#A8D0E6' },
+    // Existing icons/colors from your categories
+    { icon: 'food', color: '#69bfedff' },
     { icon: 'train-car', color: '#F76C6C' },
-    { icon: 'shopping', color: '#F8E9A1' },
-    { icon: 'movie', color: '#8BC6A3' },
-    { icon: 'heart', color: '#CBAACB' },
-    { icon: 'walk', color: '#FFBCB3' },
-    { icon: 'file-document', color: '#B8E6B8' }, // Changed from gray to soft green
+    { icon: 'movie', color: '#68c0a3ff' },
+    { icon: 'shopping', color: '#eecf35ff' },
+    { icon: 'heart', color: '#daa3daff' },
+    { icon: 'walk', color: '#ef877aff' },
+    { icon: 'file-document', color: '#9a78b7ff' },
+
+    // Existing icons/colors from your sources
     { icon: 'cash', color: '#8BC34A' },
     { icon: 'briefcase', color: '#4FC3F7' },
     { icon: 'laptop', color: '#FFB300' },
+    { icon: 'home', color: '#FFD54F' },
+    { icon: "chart-line", color: "#9575CD" },
     { icon: 'gift', color: '#E57373' },
     { icon: 'star', color: '#F06292' },
-    { icon: 'dots-horizontal-circle-outline', color: '#C8A2C8' }, // Changed from gray to soft purple
+    { icon: "undo", color: "#A1887F" },
+    { icon: "account-tie", color: "#90A4AE" },
+    { icon: 'dots-horizontal-circle-outline', color: '#b38745ff' },
 
-    // New colors for remaining icons
-    { icon: 'credit-card', color: '#87CEEB' },
-    { icon: 'bank', color: '#98D8C8' },
+
+    // New colors & icons
+    { icon: 'credit-card', color: '#4caed4ff' },
+    { icon: 'bank', color: '#739dd3ff' },
     { icon: 'wallet', color: '#F7DC6F' },
     { icon: 'piggy-bank', color: '#F1948A' },
     { icon: 'currency-usd', color: '#85C1E9' },
-    { icon: 'currency-eur', color: '#A9DFBF' },
-    { icon: 'currency-gbp', color: '#F8C471' },
-    { icon: 'currency-inr', color: '#D7BDE2' },
-    { icon: 'hand-coin', color: '#82E0AA' },
+    { icon: 'currency-eur', color: '#88e6aeff' },
+    { icon: 'currency-gbp', color: '#f87a71ff' },
+    { icon: 'currency-inr', color: '#bf7fdbff' },
+    { icon: 'hand-coin', color: '#eb925eff' },
     { icon: 'safe', color: '#AED6F1' },
 
-    { icon: 'store', color: '#FAD7A0' },
-    { icon: 'cart', color: '#A3E4D7' },
+    { icon: 'store', color: '#edba66ff' },
+    { icon: 'cart', color: '#63b8a7ff' },
     { icon: 'receipt', color: '#D5A6BD' },
-    { icon: 'sale', color: '#F9E79F' },
+    { icon: 'sale', color: '#fcdd65ff' },
     { icon: 'card-account-details', color: '#85C1E9' },
 
-    { icon: 'coffee', color: '#D2B48C' },
+    { icon: 'coffee', color: '#d2a88cff' },
     { icon: 'pizza', color: '#FF9999' },
     { icon: 'hamburger', color: '#DEB887' },
     { icon: 'silverware', color: '#B0C4DE' },
@@ -195,20 +202,19 @@ export const ICON_COLORS: IconWithColor[] = [
     { icon: 'tea', color: '#90EE90' },
 
     { icon: 'car', color: '#87CEFA' },
-    { icon: 'gas-station', color: '#F0E68C' },
+    { icon: 'gas-station', color: '#9e9759ff' },
     { icon: 'bus', color: '#FFA07A' },
-    { icon: 'train', color: '#98FB98' },
-    { icon: 'airplane', color: '#ADD8E6' },
-    { icon: 'taxi', color: '#FFFF99' },
-    { icon: 'bicycle', color: '#90EE90' },
+    { icon: 'train', color: '#de6449ff' },
+    { icon: 'airplane', color: '#71c3dfff' },
+    { icon: 'taxi', color: '#5f81cdff' },
+    { icon: 'bicycle', color: '#6bbf6bff' },
     { icon: 'parking', color: '#D8BFD8' },
 
-    { icon: 'home', color: '#FFD54F' }, // Similar to home-city
-    { icon: 'lightbulb', color: '#FFEB9C' },
+    { icon: 'lightbulb', color: '#ebd064ff' },
     { icon: 'water', color: '#7FB3D3' },
     { icon: 'fire', color: '#F1948A' },
-    { icon: 'power-plug', color: '#F7DC6F' },
-    { icon: 'phone', color: '#AED6F1' },
+    { icon: 'power-plug', color: '#73cf41ff' },
+    { icon: 'phone', color: '#80bde5ff' },
     { icon: 'wifi', color: '#82E0AA' },
     { icon: 'fuel', color: '#FAD7A0' },
 
@@ -216,30 +222,30 @@ export const ICON_COLORS: IconWithColor[] = [
     { icon: 'pill', color: '#4ECDC4' },
     { icon: 'hospital', color: '#45B7D1' },
     { icon: 'tooth', color: '#96CEB4' },
-    { icon: 'eye', color: '#FFEAA7' },
+    { icon: 'eye', color: '#c9b269ff' },
     { icon: 'stethoscope', color: '#DDA0DD' },
 
-    { icon: 'music', color: '#A8E6CF' },
-    { icon: 'gamepad-variant', color: '#FFB3BA' },
+    { icon: 'music', color: '#7fdcbaff' },
+    { icon: 'gamepad-variant', color: '#f79ca5ff' },
     { icon: 'television', color: '#BFBFFF' },
-    { icon: 'camera', color: '#FFDFBA' },
-    { icon: 'book-open', color: '#FFFFBA' },
-    { icon: 'football', color: '#BAE1FF' },
+    { icon: 'camera', color: '#f8cc99ff' },
+    { icon: 'book-open', color: '#a5a527ff' },
+    { icon: 'football', color: '#80c7fdff' },
     { icon: 'theater', color: '#F0B3FF' },
 
-    { icon: 'school', color: '#C7CEEA' },
-    { icon: 'book', color: '#FFEAA7' },
-    { icon: 'printer', color: '#A8D5BA' },
+    { icon: 'school', color: '#a5b4f0ff' },
+    { icon: 'book', color: '#87a456ff' },
+    { icon: 'printer', color: '#9ed096ff' },
 
-    { icon: 'face-man', color: '#FFCCCB' },
-    { icon: 'spa', color: '#E6E6FA' },
-    { icon: 'glasses', color: '#B0E0E6' },
-    { icon: 'watch', color: '#F0E68C' },
-    { icon: 'tshirt-crew', color: '#FFB6C1' },
+    { icon: 'face-man', color: '#d47372ff' },
+    { icon: 'spa', color: '#6c6ce2ff' },
+    { icon: 'glasses', color: '#4a97a1ff' },
+    { icon: 'watch', color: '#aca249ff' },
+    { icon: 'tshirt-crew', color: '#c86776ff' },
 
     { icon: 'heart-outline', color: '#F8BBD9' },
     { icon: 'gift-outline', color: '#F5B7B1' },
     { icon: 'bell', color: '#F7DC6F' },
-    { icon: 'flag', color: '#AED6F1' },
-    { icon: 'shield', color: '#A9DFBF' }
+    { icon: 'flag', color: '#61a9daff' },
+    { icon: 'shield', color: '#7dddb0ff' }
 ] as const;

@@ -1,10 +1,10 @@
-// components/ui/CategoryItem.tsx
 import React, { useCallback, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Surface, Text, Switch, IconButton, Avatar } from 'react-native-paper';
+import { Surface, Text, Switch, IconButton } from 'react-native-paper';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { useHaptics } from '@/contexts/HapticsProvider';
 import { Category } from '@/lib/types';
+import { CategoryIcon } from '../ui/CategoryIcon';
 
 interface CategoryItemProps {
     category: Category;
@@ -44,11 +44,6 @@ export const CategoryItem = React.memo<CategoryItemProps>(({
         }
     ], [colors.surface, category.enabled]);
 
-    const avatarStyle = useMemo(() => [
-        styles.avatar,
-        { backgroundColor: category.color + '20' }
-    ], [category.color]);
-
     const labelStyle = useMemo(() => [
         styles.label,
         {
@@ -59,13 +54,11 @@ export const CategoryItem = React.memo<CategoryItemProps>(({
 
     return (
         <Surface style={itemStyle} elevation={1}>
-            <Avatar.Icon
-                size={44}
+            <CategoryIcon
+                size={40}
                 icon={category.icon}
-                style={avatarStyle}
                 color={category.color}
             />
-
             <View style={styles.labelContainer}>
                 <Text variant="bodyLarge" style={labelStyle}>
                     {category.label}
@@ -123,9 +116,6 @@ const styles = StyleSheet.create({
         padding: 16,
         gap: 16,
         minHeight: 76,
-    },
-    avatar: {
-        borderRadius: 12,
     },
     labelContainer: {
         flex: 1,

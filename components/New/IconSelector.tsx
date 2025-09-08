@@ -1,62 +1,16 @@
 import React, { useCallback, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Avatar } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { ICON_COLORS } from '@/lib/constants';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { FlashList } from '@shopify/flash-list';
 import { IconWithColor } from '@/lib/types';
-import Color from 'color';
-
-
-
-interface IconItemProps {
-  iconData: IconWithColor;
-  isSelected: boolean;
-  onSelect: (iconData: IconWithColor) => void;
-  disabled?: boolean;
-}
-
-const IconItem = React.memo<IconItemProps>(({
-  iconData,
-  isSelected,
-  onSelect,
-  disabled = false
-}) => {
-  const { colors, dark } = useAppTheme();
-
-  const handlePress = useCallback(() => {
-    if (!disabled) {
-      onSelect(iconData); // Pass the full object
-    }
-  }, [iconData, onSelect, disabled]);
-
-  const avatarStyle = useMemo(() => [
-    styles.avatar,
-    {
-      backgroundColor: dark ? Color(iconData.color).alpha(0.1).string() : Color(iconData.color).lighten(0.15).alpha(0.2).string(),
-      borderWidth: isSelected ? 2 : 1,
-      borderColor: isSelected ? colors.primary : dark ? "transparent" : colors.border,
-    }
-  ], [iconData.color, isSelected, colors.primary]);
-
-  return (
-    <Avatar.Icon
-      size={48}
-      icon={iconData.icon}
-      style={avatarStyle}
-      color={iconData.color}
-      onTouchEnd={handlePress}
-    />
-  );
-});
-
-IconItem.displayName = 'IconItem';
+import { CategoryIcon } from '../ui/CategoryIcon';
 
 interface IconSelectorProps {
   selectedIcon?: IconSource | null;
   onIconSelect: (iconData: IconWithColor) => void; // Updated to accept full object
-  disabled?: boolean;
 }
 
 const ItemSeparator = () => <View style={styles.separator} />;
@@ -64,7 +18,6 @@ const ItemSeparator = () => <View style={styles.separator} />;
 export const IconSelector = React.memo<IconSelectorProps>(({
   selectedIcon,
   onIconSelect,
-  disabled = false,
 }) => {
   const { colors } = useAppTheme();
 
@@ -84,16 +37,17 @@ export const IconSelector = React.memo<IconSelectorProps>(({
   const renderColumn = useCallback(({ item: column }: { item: typeof ICON_COLORS[number][] }) => (
     <View style={styles.column}>
       {column.map((iconData) => (
-        <IconItem
+        <CategoryIcon
+          size={48}
           key={iconData.icon as string}
-          iconData={iconData} // Pass full object
+          icon={iconData.icon}
+          color={iconData.color}
           isSelected={selectedIcon === iconData.icon}
-          onSelect={onIconSelect} // Pass the callback directly
-          disabled={disabled}
+          onPress={() => { onIconSelect(iconData) }}
         />
       ))}
     </View>
-  ), [selectedIcon, onIconSelect, disabled]);
+  ), [selectedIcon, onIconSelect]);
 
   const titleStyle = useMemo(() => [
     styles.title,
