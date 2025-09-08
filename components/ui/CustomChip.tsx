@@ -1,5 +1,6 @@
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import React from 'react';
+import Color from 'color';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Icon } from "react-native-paper";
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
@@ -34,23 +35,20 @@ const SIZES = {
     },
 };
 
-
-
 export interface CustomChipProps {
     /**
      * The text label to display inside the chip.
      */
-    label: string; // Label is now mandatory
+    label: string;
     /**
      * Icon source for the chip. Uses react-native-paper's IconSource type.
-     * Example: 'information', 'check-circle', { uri: '...' }
      */
     icon?: IconSource;
     /**
-     * The color variant of the chip.
+     * The color variant of the chip or a custom color hash.
      * @default 'primary'
      */
-    variant?: 'primary' | 'secondary' | 'tertiary' | string; // Allow custom string for potential future variants
+    variant?: 'primary' | 'secondary' | 'tertiary' | string;
     /**
      * The size of the chip.
      * @default 'default'
@@ -58,20 +56,20 @@ export interface CustomChipProps {
     size?: 'default' | 'small';
 }
 
-// --- The Component ---
 const CustomChip: React.FC<CustomChipProps> = ({
     label,
     icon,
     variant = 'primary',
     size = 'default',
 }) => {
-    const { colors } = useAppTheme();
-    // Determine styles based on size
-    const currentSizeConfig = SIZES[size] || SIZES.default;
-    const currentPaddingConfig = PADDING[size] || PADDING.default;
+    const { colors, dark } = useAppTheme();
 
-    // Define base colors for variants
-    const VARIANT_COLORS = {
+    // Memoize size and padding configurations
+    const currentSizeConfig = useMemo(() => SIZES[size] || SIZES.default, [size]);
+    const currentPaddingConfig = useMemo(() => PADDING[size] || PADDING.default, [size]);
+
+    // Memoize VARIANT_COLORS to avoid recreation on every render
+    const VARIANT_COLORS = useMemo(() => ({
         primary: {
             backgroundColor: colors.onPrimary,
             textColor: colors.text,
@@ -90,51 +88,64 @@ const CustomChip: React.FC<CustomChipProps> = ({
             iconColor: colors.tertiary,
             borderColor: colors.tertiary
         },
-        // You can add more variants here if needed
-    };
+    }), [colors]);
 
-    // Determine colors based on variant
-    // Fallback to primary if an unknown variant string is provided
-    const baseVariantColors = VARIANT_COLORS[variant as keyof typeof VARIANT_COLORS] || VARIANT_COLORS.primary;
+    // Memoize color calculations
+    const chipColors = useMemo(() => {
+        const isCustomColor = !(variant in VARIANT_COLORS);
 
-    const chipBackgroundColor = baseVariantColors.backgroundColor;
-    const chipTextColor = baseVariantColors.textColor;
-    const chipIconColor = baseVariantColors.iconColor;
-    const chipBorderColor = baseVariantColors.borderColor;
-    // Border width is 1 if a border color is set (and not transparent), otherwise 0
-    const chipBorderWidth = (chipBorderColor && chipBorderColor !== 'transparent') ? 1 : 0;
+        if (isCustomColor) {
+            return {
+                backgroundColor: dark
+                    ? Color(variant).alpha(0.1).string()
+                    : Color(variant).alpha(0.05).string(),
+                textColor: variant,
+                iconColor: variant,
+                borderColor: variant,
+                borderWidth: dark ? 0 : 1,
+            };
+        } else {
+            const baseVariantColors = VARIANT_COLORS[variant as keyof typeof VARIANT_COLORS];
+            return {
+                backgroundColor: baseVariantColors.backgroundColor,
+                textColor: baseVariantColors.textColor,
+                iconColor: baseVariantColors.iconColor,
+                borderColor: baseVariantColors.borderColor,
+                borderWidth: (baseVariantColors.borderColor && baseVariantColors.borderColor !== 'transparent') ? 1 : 0,
+            };
+        }
+    }, [variant, dark, VARIANT_COLORS]);
 
-
-    // Dynamic styles for the chip container
-    const chipStyle = [
+    // Memoize chip style
+    const chipStyle = useMemo(() => [
         styles.chipBase,
         {
-            backgroundColor: chipBackgroundColor,
-            borderColor: chipBorderColor,
-            borderWidth: chipBorderWidth,
+            backgroundColor: chipColors.backgroundColor,
+            borderColor: chipColors.borderColor,
+            borderWidth: chipColors.borderWidth,
             height: currentSizeConfig.height,
             borderRadius: currentSizeConfig.borderRadius,
             paddingVertical: currentPaddingConfig.vertical,
             paddingHorizontal: icon ? currentPaddingConfig.horizontal : currentPaddingConfig.textOnlyHorizontal,
         },
-    ];
+    ], [chipColors, currentSizeConfig, currentPaddingConfig, icon]);
 
-    // Dynamic styles for the label
-    const labelStyle = [
+    // Memoize label style
+    const labelStyle = useMemo(() => [
         styles.labelBase,
         {
-            color: chipTextColor,
+            color: chipColors.textColor,
             fontSize: currentSizeConfig.fontSize,
             marginLeft: icon ? currentPaddingConfig.iconMarginRight : 0,
         },
-    ];
+    ], [chipColors.textColor, currentSizeConfig.fontSize, currentPaddingConfig.iconMarginRight, icon]);
 
     return (
         <View style={chipStyle}>
             {icon && (
-                <Icon // Using react-native-paper Icon component
+                <Icon
                     source={icon}
-                    color={chipIconColor}
+                    color={chipColors.iconColor}
                     size={currentSizeConfig.iconSize}
                 />
             )}
@@ -143,8 +154,10 @@ const CustomChip: React.FC<CustomChipProps> = ({
             </Text>
         </View>
     );
-};
+}
 
+// Add display name for better debugging
+CustomChip.displayName = 'CustomChip';
 
 const styles = StyleSheet.create({
     chipBase: {

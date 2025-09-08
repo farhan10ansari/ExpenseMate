@@ -101,7 +101,7 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
                     <View style={styles.chipsContainer}>
                         <CustomChip
                             size="small"
-                            variant="primary"
+                            variant={categoryDef.color}
                             icon={categoryDef?.icon}
                             label={categoryDef?.label}
                         />

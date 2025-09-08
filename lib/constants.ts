@@ -25,7 +25,7 @@ export const DefaultExpenseCategories: CategoryData[] = [
         name: "shopping",
         label: "Shopping",
         icon: "shopping",
-        color: "#eecf35ff"
+        color: "#edab1dff"
     },
     {
         name: "health",
@@ -71,13 +71,13 @@ export const DefaultIncomeSources: CategoryData[] = [
         name: "freelance",
         label: "Freelance",
         icon: "laptop",
-        color: "#FFB300"
+        color: "#7141f5ff"
     },
     {
         name: "rental",
         label: "Rental",
         icon: "home",
-        color: "#FFD54F"
+        color: "#E57373"
     },
     {
         name: "investment",
@@ -89,7 +89,7 @@ export const DefaultIncomeSources: CategoryData[] = [
         name: "gift",
         label: "Gift",
         icon: "gift",
-        color: "#E57373"
+        color: "#ff9021ff"
     },
     {
         name: "bonus",
@@ -158,7 +158,7 @@ export const ICON_COLORS: IconWithColor[] = [
     { icon: 'food', color: '#69bfedff' },
     { icon: 'train-car', color: '#F76C6C' },
     { icon: 'movie', color: '#68c0a3ff' },
-    { icon: 'shopping', color: '#eecf35ff' },
+    { icon: 'shopping', color: '#edab1dff' },
     { icon: 'heart', color: '#daa3daff' },
     { icon: 'walk', color: '#ef877aff' },
     { icon: 'file-document', color: '#9a78b7ff' },
@@ -166,10 +166,10 @@ export const ICON_COLORS: IconWithColor[] = [
     // Existing icons/colors from your sources
     { icon: 'cash', color: '#8BC34A' },
     { icon: 'briefcase', color: '#4FC3F7' },
-    { icon: 'laptop', color: '#FFB300' },
-    { icon: 'home', color: '#FFD54F' },
+    { icon: 'laptop', color: '#7141f5ff' },
+    { icon: 'home', color: '#E57373' },
     { icon: "chart-line", color: "#9575CD" },
-    { icon: 'gift', color: '#E57373' },
+    { icon: 'gift', color: '#ff9021ff' },
     { icon: 'star', color: '#F06292' },
     { icon: "undo", color: "#A1887F" },
     { icon: "account-tie", color: "#90A4AE" },

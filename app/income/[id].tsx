@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedView } from "@/components/base/ThemedView";
 import CustomChip from "@/components/ui/CustomChip";
@@ -10,7 +10,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { Button, Dialog, Portal } from "react-native-paper";
+import { Button } from "react-native-paper";
 import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
 import { tryCatch } from "@/lib/try-catch";
 import FormSheetHeader from "@/components/main/FormSheetHeader";
@@ -176,7 +176,7 @@ export default function IncomeInfoScreen() {
                                 content={income?.source ?
                                     <CustomChip
                                         size="default"
-                                        variant="primary"
+                                        variant={sourceDef?.color}
                                         icon={sourceDef?.icon}
                                         label={sourceDef?.label ?? "Unknown Source"}
                                     /> : "Not Provided"}

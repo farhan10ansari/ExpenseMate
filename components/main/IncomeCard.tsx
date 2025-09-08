@@ -101,7 +101,7 @@ function IncomeCard({ income, onPress }: IncomeCardProps) {
                     <View style={styles.chipsContainer}>
                         <CustomChip
                             size="small"
-                            variant="tertiary"
+                            variant={sourceDef.color}
                             icon={sourceDef.icon}
                             label={sourceDef.label}
                         />
