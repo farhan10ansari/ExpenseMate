@@ -58,7 +58,7 @@ export default function ExpenseForm({ onSubmit, type = "create" }: ExpenseFormPr
         {/* Categories */}
         <View style={styles.categoriesContainer}>
           <ThemedText type="defaultSemiBold" style={[styles.sectionTitle, { color: colors.muted }]}>
-            Categories  <ThemedText color='red'>*</ThemedText>
+            Categories <ThemedText color='red'>*</ThemedText>
           </ThemedText>
           <CategoriesInput
             categories={categories}
