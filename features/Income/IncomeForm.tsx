@@ -44,7 +44,7 @@ export default function IncomeForm({ onSubmit, type = "create" }: IncomeFormProp
                 {/* Amount */}
                 <View style={styles.amountContainer}>
                     <ThemedText type='defaultSemiBold' style={[styles.sectionTitle, { color: colors.muted }]}>
-                        Amount
+                        Amount  <ThemedText color='red'>*</ThemedText>
                     </ThemedText>
                     <AmountInput
                         amount={income.amount}
@@ -55,7 +55,7 @@ export default function IncomeForm({ onSubmit, type = "create" }: IncomeFormProp
                 {/* Source */}
                 <View style={styles.inputSection}>
                     <ThemedText type="defaultSemiBold" style={[styles.sectionTitle, { color: colors.muted }]}>
-                        Source
+                        Source  <ThemedText color='red'>*</ThemedText>
                     </ThemedText>
                     <CategoriesInput
                         categories={sources}

@@ -2,7 +2,7 @@ import { ThemedText } from '@/components/base/ThemedText';
 import useKeyboardHeight from '@/hooks/useKeyboardHeight';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import React, { useEffect } from 'react';
-import { Keyboard, StyleSheet, View } from 'react-native';
+import { Keyboard, StyleSheet, Text, View } from 'react-native';
 import AmountInput from '@/components/input/AmountInput';
 import CategoriesInput from '@/components/input/CategoriesInput';
 import ConfirmButton from '@/components/input/ConfirmButton';
@@ -48,7 +48,7 @@ export default function ExpenseForm({ onSubmit, type = "create" }: ExpenseFormPr
         {/* Amount */}
         <View style={styles.amountContainer}>
           <ThemedText type='defaultSemiBold' style={[styles.sectionTitle, { color: colors.muted }]}>
-            Amount
+            Amount <ThemedText color='red'>*</ThemedText>
           </ThemedText>
           <AmountInput
             amount={expense.amount}
@@ -58,7 +58,7 @@ export default function ExpenseForm({ onSubmit, type = "create" }: ExpenseFormPr
         {/* Categories */}
         <View style={styles.categoriesContainer}>
           <ThemedText type="defaultSemiBold" style={[styles.sectionTitle, { color: colors.muted }]}>
-            Categories
+            Categories  <ThemedText color='red'>*</ThemedText>
           </ThemedText>
           <CategoriesInput
             categories={categories}
