@@ -28,7 +28,7 @@ export const useExpenseCategoriesStore = create<ExpenseCategoriesStore>()(
   persist(
     (set, get) => ({
       categories: DefaultExpenseCategories.map(cat => ({
-        ...cat, enabled: true, type: "default"
+        ...cat, enabled: true
       })),
 
       setCategories: (categories) => set({ categories }),
@@ -44,7 +44,7 @@ export const useExpenseCategoriesStore = create<ExpenseCategoriesStore>()(
         const newCategory: Category = {
           ...categoryData,
           enabled: true,
-          type: "custom",
+          isCustom: true,
         };
 
         set({ categories: [...categories, newCategory] });
@@ -75,7 +75,7 @@ export const useExpenseCategoriesStore = create<ExpenseCategoriesStore>()(
           throw new Error(`Category with name '${name}' not found`);
         }
 
-        if (category.type === "default") {
+        if (!category.isCustom) {
           throw new Error(`Category '${name}' cannot be deleted`);
         }
 

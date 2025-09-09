@@ -1,6 +1,6 @@
 import { Category, IconWithColor, PaymentMethod } from "./types";
 
-type CategoryData = Omit<Category, "enabled" | "type">;
+type CategoryData = Omit<Category, "enabled" | "isCustom">;
 
 export const DefaultExpenseCategories: CategoryData[] = [
     {

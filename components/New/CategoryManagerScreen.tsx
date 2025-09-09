@@ -174,7 +174,7 @@ export function CategoryManagerScreen({
     title: dialogState.category.label,
     icon: dialogState.category.icon,
     color: dialogState.category.color,
-    type: dialogState.category.type
+    isCustom: dialogState.category.isCustom
   } : undefined;
 
 

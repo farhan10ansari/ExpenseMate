@@ -45,7 +45,7 @@ export const CategoryFormDialog = React.memo<CategoryFormDialogProps>(({
     title: '',
     icon: null,
     color: null,
-    type: "custom"
+    isCustom: true
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,14 +59,14 @@ export const CategoryFormDialog = React.memo<CategoryFormDialogProps>(({
           title: initialData.title,
           icon: initialData.icon,
           color: initialData.color,
-          type: initialData.type
+          isCustom: initialData.isCustom
         });
       } else {
         setFormData({
           title: '',
           icon: null,
           color: null,
-          type: "custom"
+          isCustom: true
         })
       }
       setIsInitialized(true);
@@ -114,7 +114,7 @@ export const CategoryFormDialog = React.memo<CategoryFormDialogProps>(({
         title: formData.title.trim(),
         icon: formData.icon,
         color: formData.color,
-        type: formData.type
+        isCustom: formData.isCustom
       };
       onSubmit(submitData);
     } finally {

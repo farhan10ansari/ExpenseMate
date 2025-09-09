@@ -6,14 +6,14 @@ export type Category = {
   icon: IconSource;
   color: string;
   enabled: boolean;
-  type: "default" | "custom"
+  isCustom?: boolean;
 };
 
 export type CategoryFormData = {
   title: string;
   icon?: IconSource | null;
   color?: string | null;
-  type: Category["type"]
+  isCustom: Category["isCustom"]
 }
 
 export type CreateCategoryData = Omit<Category, "enabled" | "type">;
