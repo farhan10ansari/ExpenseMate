@@ -16,8 +16,8 @@ export type CategoryFormData = {
   isCustom: Category["isCustom"]
 }
 
-export type CreateCategoryData = Omit<Category, "enabled" | "type">;
-export type UpdateCategoryData = Partial<Omit<Category, "name" | "type">>;
+export type CreateCategoryData = Omit<Category, "enabled" | "isCustom">;
+export type UpdateCategoryData = Partial<Omit<Category, "name" | "isCustom">>;
 
 
 export type IconWithColor = {

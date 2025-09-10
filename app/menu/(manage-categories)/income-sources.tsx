@@ -1,39 +1,86 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ThemedText } from '@/components/base/ThemedText';
-import { useIncomeSources, useIncomeSourcesStore } from '@/stores/useIncomeSourcesStore';
 import { CategoryManagerScreen } from '@/components/New/CategoryManagerScreen';
 import { View } from 'react-native';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { softDeleteIncomesBySource } from '@/repositories/IncomeRepo';
 import { useQueryClient } from '@tanstack/react-query';
+import { Category, CreateCategoryData, UpdateCategoryData } from '@/lib/types';
+import { createNewCategory, deleteCategory, getAllCategories, updateCategory } from '@/repositories/CategoryRepo';
+import { tryCatch } from '@/lib/try-catch';
 
 export default function IncomeSourcesScreen() {
     const { colors } = useAppTheme();
     const queryClient = useQueryClient();
-    const categories = useIncomeSources();
-    const addSource = useIncomeSourcesStore(state => state.addSource);
-    const updateSource = useIncomeSourcesStore(state => state.updateSource);
-    const deleteSource = useIncomeSourcesStore(state => state.deleteSource);
+    const [sources, setSources] = React.useState<Category[]>([]);
 
-    const deleteSourceWithCorrespondingIncomes = (source: string) => {
+    const handleGetSources = React.useCallback(async () => {
+        const data = await getAllCategories('income', true);
+        setSources(data as Category[]);
+    }, []);
+
+    React.useEffect(() => {
+        handleGetSources();
+        return () => {
+            queryClient.invalidateQueries({ queryKey: ['incomeSources'] });
+        };
+    }, [handleGetSources]);
+
+    const deleteSourceWithCorrespondingIncomes = useCallback((source: string) => {
         // First, soft-delete all incomes with this source
-        softDeleteIncomesBySource(source).then(() => {
+        softDeleteIncomesBySource(source).then(async () => {
             // Then, delete the source from the store
             queryClient.invalidateQueries({ queryKey: ['incomes'] });
             queryClient.invalidateQueries({ queryKey: ['income'] });
             queryClient.invalidateQueries({ queryKey: ['stats', 'income'] });
-            deleteSource(source);
+            const { error } = await tryCatch(deleteCategory("income", source));
+            if (error) {
+                console.error("Error deleting income source:", error);
+                return;
+            }
+            // Finally, refresh the sources list
+            handleGetSources();
         }).catch((error) => {
             console.error('Error deleting incomes for source:', error);
             // Optionally, show an error message to the user
         });
-    }
+    }, []);
+
+    const handleAddCategory = useCallback(async (data: CreateCategoryData) => {
+        const { data: newCategory, error } = await tryCatch(createNewCategory("income", {
+            name: data.name,
+            label: data.label,
+            icon: data.icon as string,
+            color: data.color,
+        }))
+        if (error || !newCategory) {
+            console.error("Error creating income source:", error);
+            return;
+        }
+        setSources(prevCategories => [...prevCategories, newCategory]);
+        handleGetSources();
+    }, []);
+
+    const handleUpdateIncome = useCallback(async (name: string, updates: UpdateCategoryData) => {
+        const { data: updatedSource, error } = await tryCatch(updateCategory("income", name, {
+            label: updates.label,
+            icon: updates.icon as string,
+            color: updates.color,
+            enabled: updates.enabled,
+        }))
+        if (error || !updatedSource) {
+            console.error("Error updating income source:", error);
+            return;
+        }
+        setSources(prevCategories => prevCategories.map((category) => (category.name === name ? updatedSource : category)));
+        handleGetSources();
+    }, []);
 
     return (
         <CategoryManagerScreen
-            categories={categories}
-            onAdd={addSource}
-            onUpdate={updateSource}
+            categories={sources}
+            onAdd={handleAddCategory}
+            onUpdate={handleUpdateIncome}
             onDelete={deleteSourceWithCorrespondingIncomes}
             labels={{
                 createTitle: 'Create Income Source',

@@ -8,7 +8,7 @@ import { addIncome, updateIncomeById } from "@/repositories/IncomeRepo";
 import { ExpenseData } from "@/features/Expense/ExpenseStoreProvider";
 import { IncomeData } from "@/features/Income/IncomeStoreProvider";
 import { useHaptics } from "@/contexts/HapticsProvider";
-import { sortExpenseCategoriesByUsage, sortIncomeSourcesByUsage } from "@/lib/helpers";
+// import { sortExpenseCategoriesByUsage, sortIncomeSourcesByUsage } from "@/lib/helpers";
 import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
 import { validateExpenseData, validateIncomeData } from "@/lib/validations";
 import { Expense, Income } from "@/db/schema";
@@ -104,7 +104,7 @@ export function useTransactionForm() {
         }
 
         showSuccessAndNavigate('Expense added', ['expenses']);
-        sortExpenseCategoriesByUsage();
+        // sortExpenseCategoriesByUsage();
     };
 
     const handleAddIncome = async (income: IncomeData) => {
@@ -135,7 +135,7 @@ export function useTransactionForm() {
         }
 
         showSuccessAndNavigate('Income added', ['incomes']);
-        sortIncomeSourcesByUsage();
+        // sortIncomeSourcesByUsage();
     };
 
     const handleUpdateExpense = async (id: string, existingExpense: Expense, updatedExpense: ExpenseData) => {

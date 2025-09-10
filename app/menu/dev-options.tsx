@@ -1,4 +1,4 @@
-import { StyleSheet, View, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView, Platform, Keyboard, ScrollView } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { tryCatch } from "@/lib/try-catch";
 import { seedDummyExpenses, seedDummyIncome } from "@/repositories/dev";
@@ -12,6 +12,7 @@ import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import { useRouter } from "expo-router";
 import { useHaptics } from "@/contexts/HapticsProvider";
 import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
+import { useExpenseCategories, useIncomeSources } from "@/contexts/CategoryDataProvider";
 
 
 export default function DevOptionsScreen() {
@@ -23,6 +24,9 @@ export default function DevOptionsScreen() {
   const updateUIFlag = usePersistentAppStore((state) => state.updateUIFlag);
   const { hapticNotify } = useHaptics();
   const { showSnackbar } = useSnackbar();
+  const categories = useExpenseCategories()
+  const sources = useIncomeSources()
+
   // Helper function to validate and clamp input values
   const validateInput = (value: string): number => {
     const num = Number(value) || 0;
@@ -47,7 +51,7 @@ export default function DevOptionsScreen() {
   const handleInsertDummyExpenses = async () => {
     if (!isValidInput(numberOfExpenses)) return;
 
-    const { error } = await tryCatch(seedDummyExpenses(numberOfExpenses));
+    const { error } = await tryCatch(seedDummyExpenses(categories, numberOfExpenses));
     if (!error) {
       hapticNotify("success");
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
@@ -74,7 +78,7 @@ export default function DevOptionsScreen() {
   const handleInsertDummyIncomes = async () => {
     if (!isValidInput(numberOfIncomes)) return;
 
-    const { error } = await tryCatch(seedDummyIncome(numberOfIncomes));
+    const { error } = await tryCatch(seedDummyIncome(sources, numberOfIncomes));
     if (!error) {
       hapticNotify("success");
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
@@ -122,141 +126,139 @@ export default function DevOptionsScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
       >
-        {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
-          <View style={{ flex: 1 }}>
-            <ScrollView
-              style={styles.container}
-              contentContainerStyle={styles.scrollContentContainer}
-              showsVerticalScrollIndicator={false}
-              keyboardShouldPersistTaps="handled"
-            >
-              {/* Warning Section */}
-              <View style={[styles.warningContainer, { backgroundColor: colors.errorContainer }]}>
+        <View style={{ flex: 1 }}>
+          <ScrollView
+            style={styles.container}
+            contentContainerStyle={styles.scrollContentContainer}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
+            {/* Warning Section */}
+            <View style={[styles.warningContainer, { backgroundColor: colors.errorContainer }]}>
+              <MaterialCommunityIcons
+                name="alert-circle"
+                size={20}
+                color={colors.onErrorContainer}
+                style={styles.warningIcon}
+              />
+              <ThemedText style={[styles.warningText, { color: colors.onErrorContainer }]}>
+                This section is for development purposes only. Use dummy data to test the app functionality.
+              </ThemedText>
+            </View>
+
+            {/* Dummy Expenses Section */}
+            <View style={[styles.sectionContainer, { backgroundColor: colors.surface, shadowColor: colors.shadow }]}>
+              <View style={styles.sectionHeader}>
                 <MaterialCommunityIcons
-                  name="alert-circle"
-                  size={20}
-                  color={colors.onErrorContainer}
-                  style={styles.warningIcon}
+                  name="receipt"
+                  size={24}
+                  color={colors.primary}
+                  style={styles.sectionIcon}
                 />
-                <ThemedText style={[styles.warningText, { color: colors.onErrorContainer }]}>
-                  This section is for development purposes only. Use dummy data to test the app functionality.
+                <ThemedText style={[styles.sectionTitle, { color: colors.primary }]}>
+                  Add Dummy Expenses
                 </ThemedText>
               </View>
 
-              {/* Dummy Expenses Section */}
-              <View style={[styles.sectionContainer, { backgroundColor: colors.surface, shadowColor: colors.shadow }]}>
-                <View style={styles.sectionHeader}>
-                  <MaterialCommunityIcons
-                    name="receipt"
-                    size={24}
-                    color={colors.primary}
-                    style={styles.sectionIcon}
-                  />
-                  <ThemedText style={[styles.sectionTitle, { color: colors.primary }]}>
-                    Add Dummy Expenses
-                  </ThemedText>
-                </View>
-
-                <View style={styles.inputContainer}>
-                  <TextInput
-                    label="Number of Expenses"
-                    keyboardType="numeric"
-                    style={{ backgroundColor: colors.surface }}
-                    onChangeText={handleExpenseInputChange}
-                    value={numberOfExpenses.toString()}
-                    mode="outlined"
-                    right={<TextInput.Icon icon="counter" />}
-                    error={numberOfExpenses > 0 && !isValidInput(numberOfExpenses)}
-                  />
-                  <ThemedText style={[styles.helperText, { color: colors.muted }]}>
-                    Enter a number between 1 and 1000
-                  </ThemedText>
-                </View>
-
-                <Button
-                  mode="contained"
-                  style={styles.button}
-                  onPress={handleInsertDummyExpenses}
-                  disabled={!isValidInput(numberOfExpenses)}
-                  icon="plus-circle"
-                >
-                  Insert {numberOfExpenses} Dummy Expenses
-                </Button>
-              </View>
-
-              {/* Dummy Incomes Section */}
-              <View style={[styles.sectionContainer, { backgroundColor: colors.surface, shadowColor: colors.shadow }]}>
-                <View style={styles.sectionHeader}>
-                  <MaterialCommunityIcons
-                    name="cash-plus"
-                    size={24}
-                    color={colors.primary}
-                    style={styles.sectionIcon}
-                  />
-                  <ThemedText style={[styles.sectionTitle, { color: colors.primary }]}>
-                    Add Dummy Incomes
-                  </ThemedText>
-                </View>
-
-                <View style={styles.inputContainer}>
-                  <TextInput
-                    label="Number of Incomes"
-                    keyboardType="numeric"
-                    style={{ backgroundColor: colors.surface }}
-                    onChangeText={handleIncomeInputChange}
-                    value={numberOfIncomes.toString()}
-                    mode="outlined"
-                    right={<TextInput.Icon icon="counter" />}
-                    error={numberOfIncomes > 0 && !isValidInput(numberOfIncomes)}
-                  />
-                  <ThemedText style={[styles.helperText, { color: colors.muted }]}>
-                    Enter a number between 1 and 1000
-                  </ThemedText>
-                </View>
-
-                <Button
-                  mode="contained"
-                  style={styles.button}
-                  onPress={handleInsertDummyIncomes}
-                  disabled={!isValidInput(numberOfIncomes)}
-                  icon="plus-circle"
-                >
-                  Insert {numberOfIncomes} Dummy Incomes
-                </Button>
-              </View>
-
-              {/* Disable Dev Options Section */}
-              <View style={[styles.sectionContainer, styles.disableSection, { backgroundColor: colors.surface, shadowColor: colors.shadow, borderColor: colors.error }]}>
-                <View style={styles.sectionHeader}>
-                  <MaterialCommunityIcons
-                    name="close-circle"
-                    size={20}
-                    color={colors.error}
-                    style={styles.sectionIcon}
-                  />
-                  <ThemedText style={[styles.sectionTitle, { color: colors.error, fontSize: 16 }]}>
-                    Disable Dev Options
-                  </ThemedText>
-                </View>
-
-                <ThemedText style={{ color: colors.muted, marginBottom: 12, fontSize: 13 }}>
-                  Hide dev options from menu (re-enable by tapping version 5x from About screen)
-                </ThemedText>
-
-                <Button
+              <View style={styles.inputContainer}>
+                <TextInput
+                  label="Number of Expenses"
+                  keyboardType="numeric"
+                  style={{ backgroundColor: colors.surface }}
+                  onChangeText={handleExpenseInputChange}
+                  value={numberOfExpenses.toString()}
                   mode="outlined"
-                  style={styles.button}
-                  onPress={handleDisableDevOptions}
-                  icon="close"
-                  textColor={colors.error}
-                  buttonColor="transparent"
-                >
-                  Disable
-                </Button>
+                  right={<TextInput.Icon icon="counter" />}
+                  error={numberOfExpenses > 0 && !isValidInput(numberOfExpenses)}
+                />
+                <ThemedText style={[styles.helperText, { color: colors.muted }]}>
+                  Enter a number between 1 and 1000
+                </ThemedText>
               </View>
-            </ScrollView>
-          </View>
-        {/* </TouchableWithoutFeedback> */}
+
+              <Button
+                mode="contained"
+                style={styles.button}
+                onPress={handleInsertDummyExpenses}
+                disabled={!isValidInput(numberOfExpenses)}
+                icon="plus-circle"
+              >
+                Insert {numberOfExpenses} Dummy Expenses
+              </Button>
+            </View>
+
+            {/* Dummy Incomes Section */}
+            <View style={[styles.sectionContainer, { backgroundColor: colors.surface, shadowColor: colors.shadow }]}>
+              <View style={styles.sectionHeader}>
+                <MaterialCommunityIcons
+                  name="cash-plus"
+                  size={24}
+                  color={colors.primary}
+                  style={styles.sectionIcon}
+                />
+                <ThemedText style={[styles.sectionTitle, { color: colors.primary }]}>
+                  Add Dummy Incomes
+                </ThemedText>
+              </View>
+
+              <View style={styles.inputContainer}>
+                <TextInput
+                  label="Number of Incomes"
+                  keyboardType="numeric"
+                  style={{ backgroundColor: colors.surface }}
+                  onChangeText={handleIncomeInputChange}
+                  value={numberOfIncomes.toString()}
+                  mode="outlined"
+                  right={<TextInput.Icon icon="counter" />}
+                  error={numberOfIncomes > 0 && !isValidInput(numberOfIncomes)}
+                />
+                <ThemedText style={[styles.helperText, { color: colors.muted }]}>
+                  Enter a number between 1 and 1000
+                </ThemedText>
+              </View>
+
+              <Button
+                mode="contained"
+                style={styles.button}
+                onPress={handleInsertDummyIncomes}
+                disabled={!isValidInput(numberOfIncomes)}
+                icon="plus-circle"
+              >
+                Insert {numberOfIncomes} Dummy Incomes
+              </Button>
+            </View>
+
+            {/* Disable Dev Options Section */}
+            <View style={[styles.sectionContainer, styles.disableSection, { backgroundColor: colors.surface, shadowColor: colors.shadow, borderColor: colors.error }]}>
+              <View style={styles.sectionHeader}>
+                <MaterialCommunityIcons
+                  name="close-circle"
+                  size={20}
+                  color={colors.error}
+                  style={styles.sectionIcon}
+                />
+                <ThemedText style={[styles.sectionTitle, { color: colors.error, fontSize: 16 }]}>
+                  Disable Dev Options
+                </ThemedText>
+              </View>
+
+              <ThemedText style={{ color: colors.muted, marginBottom: 12, fontSize: 13 }}>
+                Hide dev options from menu (re-enable by tapping version 5x from About screen)
+              </ThemedText>
+
+              <Button
+                mode="outlined"
+                style={styles.button}
+                onPress={handleDisableDevOptions}
+                icon="close"
+                textColor={colors.error}
+                buttonColor="transparent"
+              >
+                Disable
+              </Button>
+            </View>
+          </ScrollView>
+        </View>
       </KeyboardAvoidingView>
     </ScreenWrapper>
   );

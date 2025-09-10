@@ -1,19 +1,17 @@
 import db from '@/db/client';
 import { expensesSchema, incomesSchema } from '@/db/schema';
 import { DefaultExpenseCategories, DefaultIncomeSources, paymentMethods } from '@/lib/constants';
-import { useExpenseCategories, useExpenseCategoriesStore } from '@/stores/useExpenseCategoriesStore';
-import { useIncomeSourcesStore } from '@/stores/useIncomeSourcesStore';
+import { Category } from '@/lib/types';
+// import { useExpenseCategories, useExpenseCategoriesStore } from '@/stores/useExpenseCategoriesStore';
 
 /**
  * Seeds the `expenses` table with random dummy data for testing.
  * @param count - Number of dummy expense records to insert
  */
-export const seedDummyExpenses = async (count: number): Promise<void> => {
+export const seedDummyExpenses = async (categories: Category[], count: number): Promise<void> => {
   const now = new Date();
   const startOfYear = new Date(now.getFullYear(), 0, 1);
 
-  // Extract exactly the `name` values (lowercase, no spaces) from your constants
-  const categories = useExpenseCategoriesStore.getState().categories;
   const categoryNames = categories.map(({ name }) => name);
   const paymentMethodNames = paymentMethods.map(({ name }) => name);
   const currencies = ['INR', 'USD', 'EUR'];
@@ -51,12 +49,10 @@ export const seedDummyExpenses = async (count: number): Promise<void> => {
  * Currency is always INR. Source and amount are random.
  * @param count Number of dummy income records to insert
  */
-export const seedDummyIncome = async (count: number): Promise<void> => {
+export const seedDummyIncome = async (sources: Category[], count: number): Promise<void> => {
   const now = new Date();
   const startOfYear = new Date(now.getFullYear(), 0, 1);
 
-  // Only source needed from your defaults
-  const sources = useIncomeSourcesStore.getState().sources;
   const sourceNames = sources.map(({ name }) => name);
 
   // Generate

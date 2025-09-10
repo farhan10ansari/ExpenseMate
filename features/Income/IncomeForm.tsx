@@ -10,7 +10,7 @@ import ConfirmButton from '@/components/input/ConfirmButton';
 import DateInput from '@/components/input/DateInput';
 import NotesInput from '@/components/input/NotesInput';
 import TimeInput from '@/components/input/TimeInput';
-import { useEnabledIncomeSources } from '@/stores/useIncomeSourcesStore';
+import { useEnabledIncomeSources } from '@/contexts/CategoryDataProvider';
 import { useIsFocused } from '@react-navigation/native';
 import { useSnackbarState } from '@/contexts/GlobalSnackbarProvider';
 // import RecurringInput from '@/components/input/RecurringInput';

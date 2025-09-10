@@ -9,7 +9,7 @@ import { extractDateLabel, extractTimeString } from "@/lib/functions";
 import { useLocalization } from "@/hooks/useLocalization";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Color from "color";
-import { useExpenseCategoryMapping } from "@/stores/useExpenseCategoriesStore";
+import { useExpenseCategoryMapping } from "@/contexts/CategoryDataProvider";
 import { Category } from "@/lib/types";
 
 type ExpenseCardProps = {

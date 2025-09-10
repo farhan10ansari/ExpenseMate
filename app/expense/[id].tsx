@@ -16,7 +16,7 @@ import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
 import { tryCatch } from "@/lib/try-catch";
 import FormSheetHeader from "@/components/main/FormSheetHeader";
 import { useHaptics } from "@/contexts/HapticsProvider";
-import { useExpenseCategoryMapping } from "@/stores/useExpenseCategoriesStore";
+import { useExpenseCategoryMapping } from "@/contexts/CategoryDataProvider";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
 import { useConfirmation } from "@/components/main/ConfirmationDialog";

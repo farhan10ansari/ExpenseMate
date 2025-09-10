@@ -29,6 +29,7 @@ export const CategoryList = React.memo<CategoryListProps>(({
 
   const renderItem = useCallback(({ item }: { item: Category }) => (
     <CategoryItem
+      key={item.name}
       category={item}
       onToggle={onToggleCategory}
       onEdit={onEditCategory}

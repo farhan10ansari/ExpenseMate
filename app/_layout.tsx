@@ -18,6 +18,8 @@ import MainLayout from '@/components/main/MainLayout';
 import { ConfirmationProvider } from '@/components/main/ConfirmationDialog';
 import { ThemedView } from '@/components/base/ThemedView';
 import { GlobalSnackbarProvider } from '@/contexts/GlobalSnackbarProvider';
+import useSeedData from '@/hooks/useSeedData';
+import { CategoryDataProvider } from '@/contexts/CategoryDataProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,6 +41,8 @@ export default function RootLayout() {
   // drizzle migrations for schema changes
   const { success, error } = useMigrations(db, migrations);
 
+  const { success: seedSuccess, error: seedError } = useSeedData(success)
+
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -52,7 +56,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     // hide splash on error for showing the error message
-    if (error) {
+    if (error && success && seedSuccess) {
       SplashScreen.hideAsync();
     }
   }, [error]);
@@ -61,11 +65,11 @@ export default function RootLayout() {
     return null;
   }
 
-  if (error) {
+  if (error || seedError) {
     return (
       <AppThemeProvider>
         <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-          <ThemedText>Migration error: {error?.message}</ThemedText>
+          <ThemedText>Migration/Seed data error: {error?.message}</ThemedText>
         </ThemedView>
       </AppThemeProvider>
     );
@@ -86,6 +90,7 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <AppThemeProvider>
           <HapticsProvider>
+            <CategoryDataProvider>
               <GlobalSnackbarProvider>
                 <ConfirmationProvider>
                   <MainLayout />
@@ -93,6 +98,7 @@ export default function RootLayout() {
                   <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
                 </ConfirmationProvider>
               </GlobalSnackbarProvider>
+            </CategoryDataProvider>
           </HapticsProvider>
         </AppThemeProvider>
       </QueryClientProvider>

@@ -2,7 +2,7 @@ import { ThemedText } from '@/components/base/ThemedText';
 import useKeyboardHeight from '@/hooks/useKeyboardHeight';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import React, { useEffect } from 'react';
-import { Keyboard, StyleSheet, Text, View } from 'react-native';
+import { Keyboard, StyleSheet, View } from 'react-native';
 import AmountInput from '@/components/input/AmountInput';
 import CategoriesInput from '@/components/input/CategoriesInput';
 import ConfirmButton from '@/components/input/ConfirmButton';
@@ -11,7 +11,7 @@ import NotesInput from '@/components/input/NotesInput';
 import PaymentMethodInput from '@/components/input/PaymentMethodInput';
 import TimeInput from '@/components/input/TimeInput';
 import { ExpenseData, useExpenseStore } from './ExpenseStoreProvider';
-import { useEnabledExpenseCategories } from '@/stores/useExpenseCategoriesStore';
+import { useEnabledExpenseCategories } from '@/contexts/CategoryDataProvider';
 import { useIsFocused } from '@react-navigation/native';
 import { useSnackbarState } from '@/contexts/GlobalSnackbarProvider';
 

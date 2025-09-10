@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Card } from 'react-native-paper';
 import { ThemedText } from '@/components/base/ThemedText';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import { useIncomeSourceMapping } from '@/stores/useIncomeSourcesStore';
+import { useIncomeSourceMapping } from "@/contexts/CategoryDataProvider";
 import { CategoryIcon } from '@/components/ui/CategoryIcon';
 
 interface IncomeSourceStat {
