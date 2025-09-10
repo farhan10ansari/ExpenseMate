@@ -1,4 +1,4 @@
-import { Income } from "@/db/schema";
+import { Income, Category } from "@/lib/types";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
@@ -9,7 +9,6 @@ import { useLocalization } from "@/hooks/useLocalization";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Color from 'color';
 import { useIncomeSourceMapping } from "@/contexts/CategoryDataProvider";
-import { Category } from "@/lib/types";
 
 type IncomeCardProps = {
     income: Income;

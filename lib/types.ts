@@ -1,12 +1,12 @@
 import { IconSource } from "react-native-paper/lib/typescript/components/Icon";
 
 export type Category = {
-    isCustom: boolean;
-    enabled: boolean;
-    name: string;
-    label: string;
-    icon: IconSource;
-    color: string;
+  isCustom: boolean;
+  enabled: boolean;
+  name: string;
+  label: string;
+  icon: IconSource;
+  color: string;
 }
 
 export type CategoryFormData = {
@@ -88,3 +88,30 @@ export interface PeriodIncomeStats {
 }
 
 export type ColorType = "primary" | "secondary" | "tertiary";
+
+
+//Expense
+export type Expense = {
+  id: number;
+  amount: number;
+  dateTime: Date;
+  description: string | null;
+  paymentMethod: string | null;
+  category: string;
+  recurring: boolean;
+  receipt: string | null;
+  currency: string;
+  isTrashed: boolean;
+}
+//Income
+export type Income = {
+  id: number;
+  amount: number;
+  dateTime: Date;
+  description: string | null;
+  recurring: boolean;
+  receipt: string | null;
+  currency: string;
+  isTrashed: boolean;
+  source: string;
+}

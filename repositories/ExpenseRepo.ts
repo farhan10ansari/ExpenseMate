@@ -1,23 +1,29 @@
 import db from '@/db/client';
-import { Expense, expensesSchema } from '@/db/schema';
+import { ExpenseDB, ExpenseRes, expensesSchema } from '@/db/schema';
 import { and, desc, eq, gte, sql, lte, lt, asc } from 'drizzle-orm';
 import { getPeriodStartEnd } from './lib/helpers';
 import { StatsPeriod, PeriodExpenseStats } from '@/lib/types';
 import { startOfMonth, endOfMonth, subMonths, format, differenceInMonths } from 'date-fns';
 
-export interface NewExpense {
-  amount: number;
-  dateTime: Date | string;      // accept Date or ms-timestamp
-  description?: string | null;
-  paymentMethod?: string | null;
-  category: string;
-  recurring?: boolean;
-  receipt?: string | null;
-  currency?: string;
-}
+// export interface NewExpense {
+//   amount: number;
+//   dateTime: Date | string;      // accept Date or ms-timestamp
+//   description?: string | null;
+//   paymentMethod?: string | null;
+//   category: string;
+//   recurring?: boolean;
+//   receipt?: string | null;
+//   currency?: string;
+// }
+
+// type CreateCategoryData = Omit<CategoryDB, 'type'>;
+// type UpdateCategoryData = Partial<Pick<CategoryDB, 'label' | 'icon' | 'color' | 'enabled'>>;
+
+type CreateExpenseData = Omit<ExpenseDB, 'id' | 'isTrashed'>;
+type UpdateExpenseData = Omit<ExpenseDB, 'id' | 'isTrashed'>;
 
 //Add a new expense to the database
-export const addExpense = async (expense: NewExpense) => {
+export const addExpense = async (expense: CreateExpenseData) => {
   // Drizzle expects a Date for timestamp columns
   const dt: Date = expense.dateTime instanceof Date
     ? expense.dateTime
@@ -45,7 +51,7 @@ export const getExpensesByMonthPaginated = async ({
 }: {
   offsetMonth: number;
 }): Promise<{
-  expenses: Expense[];
+  expenses: ExpenseRes[];
   hasMore: boolean;
   offsetMonth: number;
   month: string;
@@ -157,7 +163,7 @@ export const getAvailableExpenseMonths = async (): Promise<{
 
 
 // Get a single expense by ID
-export const getExpenseById = async (id: string | number): Promise<Expense | undefined> => {
+export const getExpenseById = async (id: string | number): Promise<ExpenseRes> => {
   const numericId = Number(id); // Convert string to number
   if (isNaN(numericId)) {
     throw new Error('Invalid ID format. ID must be a number.');
@@ -174,7 +180,7 @@ export const getExpenseById = async (id: string | number): Promise<Expense | und
     throw new Error(`Expense with ID ${id} not found.`);
   }
 
-  return result[0] as Expense;
+  return result[0] as ExpenseRes;
 }
 
 // Delete an expense by ID
@@ -205,7 +211,7 @@ export const softDeleteExpensesByCategory = async (category: string): Promise<vo
     .run();
 }
 
-export const updateExpenseById = async (id: string | number, expense: NewExpense): Promise<void> => {
+export const updateExpenseById = async (id: string | number, expense: UpdateExpenseData): Promise<void> => {
   const numericId = Number(id); // Convert string to number
   if (isNaN(numericId)) {
     throw new Error('Invalid ID format. ID must be a number.');

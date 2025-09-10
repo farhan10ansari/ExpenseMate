@@ -1,5 +1,4 @@
-import { PaymentMethod } from '@/lib/types';
-import { Expense } from '@/db/schema'
+import { PaymentMethod, Expense } from '@/lib/types';
 import { createContext, PropsWithChildren, useContext, useState } from 'react'
 import { createStore, StoreApi, useStore } from 'zustand'
 

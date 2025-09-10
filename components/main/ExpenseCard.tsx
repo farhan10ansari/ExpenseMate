@@ -1,4 +1,4 @@
-import { Expense } from "@/db/schema";
+
 import { paymentMethodsMapping } from "@/lib/constants";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -10,7 +10,7 @@ import { useLocalization } from "@/hooks/useLocalization";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Color from "color";
 import { useExpenseCategoryMapping } from "@/contexts/CategoryDataProvider";
-import { Category } from "@/lib/types";
+import { Category, Expense } from "@/lib/types";
 
 type ExpenseCardProps = {
     expense: Expense;

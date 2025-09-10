@@ -11,7 +11,7 @@ import { useHaptics } from "@/contexts/HapticsProvider";
 // import { sortExpenseCategoriesByUsage, sortIncomeSourcesByUsage } from "@/lib/helpers";
 import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
 import { validateExpenseData, validateIncomeData } from "@/lib/validations";
-import { Expense, Income } from "@/db/schema";
+import { Expense, Income } from "@/lib/types";
 
 export function useTransactionForm() {
     const navigation = useNavigation();

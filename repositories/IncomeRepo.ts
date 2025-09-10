@@ -1,5 +1,5 @@
 import db from '@/db/client';
-import { Income, incomesSchema } from '@/db/schema';
+import { IncomeDB, IncomeRes, incomesSchema } from '@/db/schema';
 import { and, asc, desc, eq, gte, lt, lte, sql } from 'drizzle-orm';
 import { subMonths, startOfMonth, endOfMonth, format } from 'date-fns';
 import { StatsPeriod, PeriodIncomeStats } from '@/lib/types';
@@ -44,7 +44,7 @@ export const getIncomesByMonthPaginated = async ({
 }: {
   offsetMonth: number;
 }): Promise<{
-  incomes: Income[];
+  incomes: IncomeRes[];
   hasMore: boolean;
   offsetMonth: number;
   month: string;
@@ -89,7 +89,7 @@ export const getIncomesByMonthPaginated = async ({
 
 
 // Get a single income by ID
-export const getIncomeById = async (id: string | number): Promise<Income | undefined> => {
+export const getIncomeById = async (id: string | number): Promise<IncomeRes | undefined> => {
   const numericId = Number(id); // Convert string to number
   if (isNaN(numericId)) {
     throw new Error('Invalid ID format. ID must be a number.');
@@ -106,7 +106,7 @@ export const getIncomeById = async (id: string | number): Promise<Income | undef
     throw new Error(`Income with ID ${id} not found.`);
   }
 
-  return result[0] as Income;
+  return result[0];
 };
 
 

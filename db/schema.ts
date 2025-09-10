@@ -38,7 +38,8 @@ export const expensesSchema = sqliteTable('expenses', {
   isTrashed: integer('is_trashed', { mode: 'boolean' }).notNull().default(false),
 });
 
-export type Expense = InferInsertModel<typeof expensesSchema>;
+export type ExpenseDB = InferInsertModel<typeof expensesSchema>;
+export type ExpenseRes = InferSelectModel<typeof expensesSchema>;
 
 
 /**
@@ -66,8 +67,8 @@ export const incomesSchema = sqliteTable('incomes', {
   isTrashed: integer('is_trashed', { mode: 'boolean' }).notNull().default(false),
 });
 
-export type Income = InferInsertModel<typeof incomesSchema>;
-
+export type IncomeDB = InferInsertModel<typeof incomesSchema>;
+export type IncomeRes = InferSelectModel<typeof incomesSchema>;
 
 
 /**

@@ -1,4 +1,4 @@
-import { Income } from '@/db/schema';
+import { Income } from '@/lib/types';
 import { createContext, PropsWithChildren, useContext, useState } from 'react';
 import { createStore, StoreApi, useStore } from 'zustand';
 

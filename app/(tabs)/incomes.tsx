@@ -9,7 +9,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ThemedText } from "@/components/base/ThemedText";
 import IncomeCard from "@/components/main/IncomeCard";
-import { Income } from "@/db/schema";
+import { Income } from "@/lib/types";
 import { getIncomeById, getIncomesByMonthPaginated } from "@/repositories/IncomeRepo";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useHaptics } from "@/contexts/HapticsProvider";

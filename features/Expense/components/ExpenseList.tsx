@@ -1,18 +1,17 @@
-import React, { useCallback, useMemo, useEffect, useRef, useState } from "react";
+import React, { useCallback, useMemo, useEffect, useState } from "react";
 import { View, StyleSheet, RefreshControl } from "react-native";
 import { FlashList, FlashListRef } from "@shopify/flash-list";
 import { useRouter } from "expo-router";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, ActivityIndicator, Portal, FAB } from "react-native-paper";
+import { Button, ActivityIndicator } from "react-native-paper";
 
 import { ThemedText } from "@/components/base/ThemedText";
 import ExpenseCard from "@/components/main/ExpenseCard";
-import { Expense } from "@/db/schema";
+import { Expense } from "@/lib/types";
 import { getExpenseById, getExpensesByMonthPaginated } from "@/repositories/ExpenseRepo";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useHaptics } from "@/contexts/HapticsProvider";
 import ErrorState from "@/components/main/ErrorState";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type HeaderItem = {
     type: 'header';
