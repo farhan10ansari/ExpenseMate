@@ -54,6 +54,11 @@ export interface CustomChipProps {
      * @default 'default'
      */
     size?: 'default' | 'small';
+    /**
+     * Whether to show a border around the chip.
+     * @default true
+     */
+    showBorder?: boolean;
 }
 
 const CustomChip: React.FC<CustomChipProps> = ({
@@ -61,6 +66,7 @@ const CustomChip: React.FC<CustomChipProps> = ({
     icon,
     variant = 'primary',
     size = 'default',
+    showBorder = true,
 }) => {
     const { colors, dark } = useAppTheme();
 
@@ -86,7 +92,7 @@ const CustomChip: React.FC<CustomChipProps> = ({
             backgroundColor: colors.onTertiary,
             textColor: colors.text,
             iconColor: colors.tertiary,
-            borderColor: colors.tertiary
+            borderColor: colors.tertiary // No border in dark mode for making it similar to expense categories in dark mode
         },
     }), [colors]);
 
@@ -102,7 +108,7 @@ const CustomChip: React.FC<CustomChipProps> = ({
                 textColor: variant,
                 iconColor: variant,
                 borderColor: variant,
-                borderWidth: dark ? 0 : 1,
+                borderWidth: showBorder ? 1 : 0,
             };
         } else {
             const baseVariantColors = VARIANT_COLORS[variant as keyof typeof VARIANT_COLORS];
@@ -111,7 +117,7 @@ const CustomChip: React.FC<CustomChipProps> = ({
                 textColor: baseVariantColors.textColor,
                 iconColor: baseVariantColors.iconColor,
                 borderColor: baseVariantColors.borderColor,
-                borderWidth: (baseVariantColors.borderColor && baseVariantColors.borderColor !== 'transparent') ? 1 : 0,
+                borderWidth: showBorder ? 1 : 0,
             };
         }
     }, [variant, dark, VARIANT_COLORS]);

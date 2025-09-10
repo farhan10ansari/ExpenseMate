@@ -18,7 +18,7 @@ type ExpenseCardProps = {
 };
 
 function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
-    const { colors } = useAppTheme();
+    const { dark, colors } = useAppTheme();
     const { uses24HourClock } = useLocalization()
 
     // Get the category mapping from the categories store
@@ -104,6 +104,7 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
                             variant={categoryDef.color}
                             icon={categoryDef?.icon}
                             label={categoryDef?.label}
+                            showBorder={!dark}
                         />
                         {expense.paymentMethod && (
                             <CustomChip
@@ -111,6 +112,7 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
                                 variant="tertiary"
                                 icon={paymentMethodsMapping?.[expense.paymentMethod]?.icon}
                                 label={paymentMethodsMapping?.[expense.paymentMethod]?.label}
+                                showBorder={!dark}
                             />
                         )}
                     </View>

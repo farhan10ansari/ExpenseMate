@@ -8,7 +8,7 @@ export const DefaultExpenseCategories: CategoryData[] = [
         name: "food",
         label: "Food",
         icon: "food",
-        color: "#69bfedff"
+        color: "#e6401bff"
     },
     {
         name: "transport",
@@ -44,13 +44,13 @@ export const DefaultExpenseCategories: CategoryData[] = [
         name: "bills",
         label: "Bills",
         icon: "file-document",
-        color: "#9a78b7ff"
+        color: "#823bc0ff"
     },
     {
         name: "other",
         label: "Other",
         icon: "dots-horizontal-circle-outline",
-        color: "#b38745ff"
+        color: "#17b4edff"
     }
 ]
 
@@ -114,7 +114,7 @@ export const DefaultIncomeSources: CategoryData[] = [
         name: "other",
         label: "Other",
         icon: "dots-horizontal-circle-outline",
-        color: "#b38745ff"
+        color: "#17b4edff"
     }
 ];
 
@@ -156,13 +156,13 @@ export const paymentMethodsMapping = paymentMethods.reduce((acc, paymentMethod) 
 
 export const ICON_COLORS: IconWithColor[] = [
     // Existing icons/colors from your categories
-    { icon: 'food', color: '#69bfedff' },
+    { icon: 'food', color: '#e6401bff' },
     { icon: 'train-car', color: '#F76C6C' },
     { icon: 'movie', color: '#68c0a3ff' },
     { icon: 'shopping', color: '#edab1dff' },
     { icon: 'heart', color: '#daa3daff' },
     { icon: 'walk', color: '#ef877aff' },
-    { icon: 'file-document', color: '#9a78b7ff' },
+    { icon: 'file-document', color: '#823bc0ff' },
 
     // Existing icons/colors from your sources
     { icon: 'cash', color: '#8BC34A' },
@@ -174,7 +174,7 @@ export const ICON_COLORS: IconWithColor[] = [
     { icon: 'star', color: '#F06292' },
     { icon: "undo", color: "#A1887F" },
     { icon: "account-tie", color: "#90A4AE" },
-    { icon: 'dots-horizontal-circle-outline', color: '#b38745ff' },
+    { icon: 'dots-horizontal-circle-outline', color: '#17b4edff' },
 
 
     // New colors & icons

@@ -10,14 +10,14 @@ export type SeedConfig = {
 
 export const SEED_CONFIG: SeedConfig[] = [
   {
-    key: 'categories',
+    key: 'expense-categories',
     seedFn: seedDefaultCategoriesData.bind(null, {
       type: 'expense-category',
       categories: DefaultExpenseCategories
     })
   },
   {
-    key: 'incomeSources',
+    key: 'income-sources',
     seedFn: seedDefaultCategoriesData.bind(null, {
       type: 'income-source',
       categories: DefaultIncomeSources

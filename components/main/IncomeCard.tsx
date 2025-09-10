@@ -17,7 +17,7 @@ type IncomeCardProps = {
 
 
 function IncomeCard({ income, onPress }: IncomeCardProps) {
-    const { colors } = useAppTheme();
+    const { dark, colors } = useAppTheme();
     const { uses24HourClock } = useLocalization();
 
     // Get the source mapping
@@ -103,6 +103,7 @@ function IncomeCard({ income, onPress }: IncomeCardProps) {
                             variant={sourceDef.color}
                             icon={sourceDef.icon}
                             label={sourceDef.label}
+                            showBorder={!dark}
                         />
                         {income.recurring && (
                             <CustomChip
