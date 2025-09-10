@@ -6,7 +6,7 @@ import { ICON_COLORS } from '@/lib/constants';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { FlashList } from '@shopify/flash-list';
 import { IconWithColor } from '@/lib/types';
-import { CategoryIcon } from '../ui/CategoryIcon';
+import { CategoryIcon } from '@/components/ui/CategoryIcon';
 
 interface IconSelectorProps {
   selectedIcon?: IconSource | null;

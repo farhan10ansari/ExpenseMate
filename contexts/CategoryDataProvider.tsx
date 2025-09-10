@@ -22,9 +22,6 @@ export const CategoryDataProvider = ({ children }: { children: ReactNode }) => {
         queryFn: () => getAllCategories('income', true),
     });
 
-    console.log("Expense Categories Query:");
-    console.log("Income Sources Query:");
-
     const expenseContextValue: ExpenseCategoriesContextType = useMemo(() => (expenseCategoriesQuery.data ?? []), [expenseCategoriesQuery]);
 
     const incomeContextValue: IncomeSourcesContextType = useMemo(() => (incomeSourcesQuery.data ?? []), [incomeSourcesQuery]);

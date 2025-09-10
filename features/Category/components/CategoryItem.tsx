@@ -4,7 +4,7 @@ import { Surface, Text, Switch, IconButton } from 'react-native-paper';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { useHaptics } from '@/contexts/HapticsProvider';
 import { Category } from '@/lib/types';
-import { CategoryIcon } from '../ui/CategoryIcon';
+import { CategoryIcon } from '@/components/ui/CategoryIcon';
 
 interface CategoryItemProps {
     category: Category;

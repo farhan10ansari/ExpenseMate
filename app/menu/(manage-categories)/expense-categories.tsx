@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { ThemedText } from '@/components/base/ThemedText';
-import { CategoryManagerScreen } from '@/components/New/CategoryManagerScreen';
+import { CategoryManagerScreen } from '@/features/Category/components/CategoryManagerScreen';
 import { View } from 'react-native';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { softDeleteExpensesByCategory } from '@/repositories/ExpenseRepo';

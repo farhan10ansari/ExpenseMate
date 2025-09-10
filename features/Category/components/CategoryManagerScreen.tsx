@@ -5,8 +5,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useIsFocused } from '@react-navigation/native';
 
 import { Category, CategoryFormData, CreateCategoryData, UpdateCategoryData } from '@/lib/types';
-import { CategoryList } from '@/components/New/CategoryList';
-import { CategoryFormDialog } from '@/components/New/CategoryFormDialog';
+import { CategoryList } from '@/features/Category/components/CategoryList';
+import { CategoryFormDialog } from './CategoryFormDialog';
 import { useConfirmation } from '@/components/main/ConfirmationDialog';
 import { ScreenWrapper } from '@/components/main/ScreenWrapper';
 import { useHaptics } from '@/contexts/HapticsProvider';

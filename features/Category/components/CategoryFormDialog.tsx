@@ -4,7 +4,7 @@ import { Portal, Dialog, TextInput, Text, Surface } from 'react-native-paper';
 import { IconSelector } from './IconSelector';
 import { CategoryFormData } from '@/lib/types';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
-import ThemedButton from '../ui/ThemedButton';
+import ThemedButton from '@/components/ui/ThemedButton';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { useHaptics } from '@/contexts/HapticsProvider';
 
