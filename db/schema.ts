@@ -1,5 +1,5 @@
 import { InferInsertModel, InferSelectModel } from 'drizzle-orm';
-import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { integer, primaryKey, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 
 /**
@@ -71,30 +71,19 @@ export type Income = InferInsertModel<typeof incomesSchema>;
 
 
 /**
- * Schema for expense categories
+ * Schema for all categories
  */
-export const expenseCategoriesSchema = sqliteTable('expense_categories', {
-  name: text('name').primaryKey().notNull(),
+export const categoriesSchema = sqliteTable('categories', {
+  name: text('name').notNull(),
   label: text('label').notNull(),
   icon: text('icon').notNull(),
   color: text('color').notNull(),
   enabled: integer('enabled', { mode: 'boolean' }).notNull().default(true),
   isCustom: integer('isCustom', { mode: 'boolean' }).notNull().default(true),
-});
+  type: text('type').$type<'expense-category' | 'income-source'>().notNull(),
+}, (table) => ([
+  primaryKey({ columns: [table.name, table.type] })
+]))
 
-/**
- * Schema for income sources
- */
-export const incomeSourcesSchema = sqliteTable('income_sources', {
-  name: text('name').primaryKey().notNull(),
-  label: text('label').notNull(),
-  icon: text('icon').notNull(),
-  color: text('color').notNull(),
-  enabled: integer('enabled', { mode: 'boolean' }).notNull().default(true),
-  isCustom: integer('isCustom', { mode: 'boolean' }).notNull().default(true),
-});
-
-export type ExpenseCategoryDB = InferInsertModel<typeof expenseCategoriesSchema>;
-export type ExpenseCategory = InferSelectModel<typeof expenseCategoriesSchema>;
-export type IncomeSourceDB = InferInsertModel<typeof incomeSourcesSchema>;
-export type IncomeSource = InferSelectModel<typeof incomeSourcesSchema>;
+export type CategoryDB = InferInsertModel<typeof categoriesSchema>;
+export type CategoryRes = InferSelectModel<typeof categoriesSchema>;

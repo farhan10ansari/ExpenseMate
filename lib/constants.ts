@@ -1,6 +1,7 @@
-import { Category, IconWithColor, PaymentMethod } from "./types";
+import { CategoryDB } from "@/db/schema";
+import { IconWithColor, PaymentMethod } from "./types";
 
-type CategoryData = Omit<Category, "enabled" | "isCustom">;
+type CategoryData = Omit<CategoryDB, 'type' | 'enabled' | 'isCustom'>
 
 export const DefaultExpenseCategories: CategoryData[] = [
     {

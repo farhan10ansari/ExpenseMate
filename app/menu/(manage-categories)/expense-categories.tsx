@@ -15,7 +15,7 @@ export default function ExpenseCategoriesScreen() {
     const [categories, setCategories] = React.useState<Category[]>([]);
 
     const handleGetCategories = useCallback(async () => {
-        const data = await getAllCategories('expense', true);
+        const data = await getAllCategories('expense-category', true);
         setCategories(data as Category[]);
     }, []);
 
@@ -34,7 +34,7 @@ export default function ExpenseCategoriesScreen() {
             queryClient.invalidateQueries({ queryKey: ['expenses'] });
             queryClient.invalidateQueries({ queryKey: ['expense'] });
             queryClient.invalidateQueries({ queryKey: ['stats', 'expense'] });
-            const { error } = await tryCatch(deleteCategory("expense", category));
+            const { error } = await tryCatch(deleteCategory("expense-category", category));
             if (error) {
                 console.error("Error deleting expense category:", error);
                 return;
@@ -48,7 +48,7 @@ export default function ExpenseCategoriesScreen() {
     }, []);
 
     const handleAddCategory = useCallback(async (data: CreateCategoryData) => {
-        const { data: newCategory, error } = await tryCatch(createNewCategory("expense", {
+        const { data: newCategory, error } = await tryCatch(createNewCategory("expense-category", {
             name: data.name,
             label: data.label,
             icon: data.icon as string,
@@ -63,7 +63,7 @@ export default function ExpenseCategoriesScreen() {
     }, []);
 
     const handleUpdateExpense = useCallback(async (name: string, updates: UpdateCategoryData) => {
-        const { data: updatedExpense, error } = await tryCatch(updateCategory("expense", name, {
+        const { data: updatedExpense, error } = await tryCatch(updateCategory("expense-category", name, {
             label: updates.label,
             icon: updates.icon as string,
             color: updates.color,

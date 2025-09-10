@@ -1,6 +1,6 @@
 import db from '@/db/client';
 import { expensesSchema, incomesSchema } from '@/db/schema';
-import { DefaultExpenseCategories, DefaultIncomeSources, paymentMethods } from '@/lib/constants';
+import { paymentMethods } from '@/lib/constants';
 import { Category } from '@/lib/types';
 // import { useExpenseCategories, useExpenseCategoriesStore } from '@/stores/useExpenseCategoriesStore';
 

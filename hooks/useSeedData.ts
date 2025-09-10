@@ -1,22 +1,29 @@
 import { useEffect, useState } from "react";
-import { seedDefaultExpenseCategoriesData, seedDefaultIncomeSourcesData } from '@/repositories/CategoryRepo';
+import { seedDefaultCategoriesData } from '@/repositories/CategoryRepo';
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
+import { DefaultExpenseCategories, DefaultIncomeSources } from "@/lib/constants";
 
 export type SeedConfig = {
-    key: string;
-    seedFn: () => Promise<void>;
+  key: string;
+  seedFn: () => Promise<void>;
 }
 
 export const SEED_CONFIG: SeedConfig[] = [
-    {
-        key: 'categories',
-        seedFn: seedDefaultExpenseCategoriesData
-    },
-    {
-        key: 'incomeSources',
-        seedFn: seedDefaultIncomeSourcesData
-    },
-    // Add more seed configurations as needed
+  {
+    key: 'categories',
+    seedFn: seedDefaultCategoriesData.bind(null, {
+      type: 'expense-category',
+      categories: DefaultExpenseCategories
+    })
+  },
+  {
+    key: 'incomeSources',
+    seedFn: seedDefaultCategoriesData.bind(null, {
+      type: 'income-source',
+      categories: DefaultIncomeSources
+    })
+  },
+  // Add more seed configurations as needed
 ];
 
 
@@ -27,9 +34,9 @@ type SeedResult = {
 
 const useSeedData = (migrationSuccess: boolean): SeedResult => {
   const [success, setSuccess] = useState(false);
-  const [error,   setError]   = useState<Error | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
-  const isDataSeeded   = usePersistentAppStore(s => s.isDataSeeded);
+  const isDataSeeded = usePersistentAppStore(s => s.isDataSeeded);
   const markDataSeeded = usePersistentAppStore(s => s.markDataSeeded);
 
   useEffect(() => {
@@ -38,7 +45,7 @@ const useSeedData = (migrationSuccess: boolean): SeedResult => {
     (async () => {
       try {
         for (const { key, seedFn } of SEED_CONFIG) {
-          if (isDataSeeded(key)) continue;             
+          if (isDataSeeded(key)) continue;
           await seedFn();
           markDataSeeded(key);                          // mark on success
         }

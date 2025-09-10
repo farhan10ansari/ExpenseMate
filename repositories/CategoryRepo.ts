@@ -1,97 +1,61 @@
-import { expenseCategoriesSchema, ExpenseCategory, IncomeSource, incomeSourcesSchema } from '@/db/schema';
-import { DefaultExpenseCategories, DefaultIncomeSources } from '@/lib/constants';
+import { categoriesSchema, CategoryRes, CategoryDB } from '@/db/schema';
 import db from '@/db/client';
-import { eq } from 'drizzle-orm';
-
-// Keep seed functions separate as requested
-export const seedDefaultExpenseCategoriesData = async (): Promise<void> => {
-    try {
-        await db
-            .insert(expenseCategoriesSchema)
-            .values(
-                DefaultExpenseCategories.map(category => ({
-                    name: category.name,
-                    label: category.label,
-                    icon: (category.icon as string),
-                    color: category.color,
-                    enabled: true,
-                    isCustom: false
-                }))
-            )
-            .onConflictDoNothing();
-
-        console.log('Default categories seeded successfully');
-    } catch (error) {
-        console.error('Error seeding default category data:', error);
-        throw error;
-    }
-};
-
-export const seedDefaultIncomeSourcesData = async (): Promise<void> => {
-    try {
-        await db
-            .insert(incomeSourcesSchema)
-            .values(
-                DefaultIncomeSources.map(source => ({
-                    name: source.name,
-                    label: source.label,
-                    icon: (source.icon as string),
-                    color: source.color,
-                    enabled: true,
-                    isCustom: false
-                }))
-            )
-            .onConflictDoNothing();
-        console.log('Default income sources seeded successfully');
-    } catch (error) {
-        console.error('Error seeding default income sources:', error);
-        throw error;
-    }
-};
+import { eq, and } from 'drizzle-orm';
 
 // Types
-type CreateCategoryData = {
-    name: string;
-    label: string;
-    icon: string;
-    color: string;
-}
+type CreateCategoryData = Omit<CategoryDB, 'type'>;
+type UpdateCategoryData = Partial<Pick<CategoryDB, 'label' | 'icon' | 'color' | 'enabled'>>;
+type Type = CategoryDB['type'];
 
-type UpdateCategoryData = Partial<{
-    label: string;
-    icon: string;
-    color: string;
-    enabled: boolean;
-}>
+export const seedDefaultCategoriesData = async ({ type, categories }: { type: Type, categories: Omit<CategoryDB, 'type' | 'enabled' | 'isCustom'>[] }): Promise<void> => {
+    try {
 
-type Type = 'expense' | 'income';
-type CategoryResult = ExpenseCategory | IncomeSource;
+        await db
+            .insert(categoriesSchema)
+            .values(
+                categories.map(item => ({
+                    name: item.name,
+                    type: type,
+                    label: item.label,
+                    icon: (item.icon as string),
+                    color: item.color,
+                    enabled: true,
+                    isCustom: false
+                }))
+            )
+            .onConflictDoNothing();
 
-// Helper function to get the correct schema and table
-const getSchemaAndTable = (type: Type) => {
-    return type === 'expense' 
-        ? { schema: expenseCategoriesSchema, tableName: 'expense category' }
-        : { schema: incomeSourcesSchema, tableName: 'income source' };
+        console.log(`Default ${type} data seeded successfully`);
+    } catch (error) {
+        console.error(`Error seeding default ${type} data:`, error);
+        throw error;
+    }
 };
 
 /**
- * Get all categories/sources
- */
+* Get all categories/sources
+*/
 export const getAllCategories = async (
     type: Type,
     includeDisabled: boolean = false
-): Promise<CategoryResult[]> => {
+): Promise<CategoryRes[]> => {
     try {
-        const { schema } = getSchemaAndTable(type);
-
         if (includeDisabled) {
-            return await db.select().from(schema);
+            return await db
+                .select()
+                .from(categoriesSchema)
+                .where(eq(categoriesSchema.type, type));
         }
 
         return await db
             .select()
-            .from(schema)
-            .where(eq(schema.enabled, true));
+            .from(categoriesSchema)
+            .where(
+                and(
+                    eq(categoriesSchema.type, type),
+                    eq(categoriesSchema.enabled, true)
+                )
+            );
     } catch (error) {
         console.error(`Error fetching ${type} categories:`, error);
         throw error;
@@ -104,27 +68,20 @@ export const getAllCategories = async (
 export const createNewCategory = async (
     type: Type,
     data: CreateCategoryData
-): Promise<CategoryResult> => {
+): Promise<CategoryRes> => {
     try {
-        const { schema, tableName } = getSchemaAndTable(type);
-        
         const newItem = {
             ...data,
+            type: type,
             enabled: true,
             isCustom: true,
         };
 
-        await db
-            .insert(schema)
-            .values(newItem);
-
-        // Return the created item
         const [createdItem] = await db
-            .select()
-            .from(schema)
-            .where(eq(schema.name, data.name));
+            .insert(categoriesSchema)
+            .values(newItem).returning();
 
-        console.log(`${tableName} '${data.name}' created successfully`);
+        console.log(`'${data.name}' created successfully`);
         return createdItem;
     } catch (error) {
         console.error(`Error creating ${type} category:`, error);
@@ -139,26 +96,26 @@ export const updateCategory = async (
     type: Type,
     name: string,
     data: UpdateCategoryData
-): Promise<CategoryResult> => {
+): Promise<CategoryRes> => {
     try {
-        const { schema, tableName } = getSchemaAndTable(type);
-
-        await db
-            .update(schema)
-            .set(data)
-            .where(eq(schema.name, name));
-
-        // Return the updated item
         const [updatedItem] = await db
-            .select()
-            .from(schema)
-            .where(eq(schema.name, name));
+            .update(categoriesSchema)
+            .set(data)
+            .where(
+                and(
+                    eq(categoriesSchema.name, name),
+                    eq(categoriesSchema.type, type)
+                )
+            ).returning();
 
+        console.log("x", updatedItem);
+
+        // Return the updated item or throw an error if not found
         if (!updatedItem) {
-            throw new Error(`${tableName} with name '${name}' not found`);
+            throw new Error(`Item with name '${name}' not found`);
         }
 
-        console.log(`${tableName} '${name}' updated successfully`);
+        console.log(`'${name}' updated successfully`);
         return updatedItem;
     } catch (error) {
         console.error(`Error updating ${type} category:`, error);
@@ -171,27 +128,35 @@ export const updateCategory = async (
  */
 export const deleteCategory = async (type: Type, name: string): Promise<void> => {
     try {
-        const { schema, tableName } = getSchemaAndTable(type);
-
         // First check if the item exists and is custom (deletable)
         const [item] = await db
             .select()
-            .from(schema)
-            .where(eq(schema.name, name));
+            .from(categoriesSchema)
+            .where(
+                and(
+                    eq(categoriesSchema.name, name),
+                    eq(categoriesSchema.type, type)
+                )
+            );
 
         if (!item) {
-            throw new Error(`${tableName} with name '${name}' not found`);
+            throw new Error(`Item with name '${name}' not found`);
         }
 
         if (!item.isCustom) {
-            throw new Error(`${tableName} '${name}' cannot be deleted`);
+            throw new Error(`'${name}' cannot be deleted`);
         }
 
         await db
-            .delete(schema)
-            .where(eq(schema.name, name));
+            .delete(categoriesSchema)
+            .where(
+                and(
+                    eq(categoriesSchema.name, name),
+                    eq(categoriesSchema.type, type)
+                )
+            );
 
-        console.log(`${tableName} '${name}' deleted successfully`);
+        console.log(`'${name}' deleted successfully`);
     } catch (error) {
         console.error(`Error deleting ${type} category:`, error);
         throw error;
@@ -203,12 +168,15 @@ export const deleteCategory = async (type: Type, name: string): Promise<void> =>
 //  */
 // export const categoryExists = async (type: Type, name: string): Promise<boolean> => {
 //     try {
-//         const { schema } = getSchemaAndTable(type);
-
 //         const [item] = await db
 //             .select()
-//             .from(schema)
-//             .where(eq(schema.name, name));
+//             .from(categoriesSchema)
+//             .where(
+//                 and(
+//                     eq(categoriesSchema.name, name),
+//                     eq(categoriesSchema.type, type)
+//                 )
+//             );
 
 //         return !!item;
 //     } catch (error) {
@@ -225,12 +193,15 @@ export const deleteCategory = async (type: Type, name: string): Promise<void> =>
 //     name: string
 // ): Promise<CategoryResult | null> => {
 //     try {
-//         const { schema } = getSchemaAndTable(type);
-
 //         const [item] = await db
 //             .select()
-//             .from(schema)
-//             .where(eq(schema.name, name));
+//             .from(categoriesSchema)
+//             .where(
+//                 and(
+//                     eq(categoriesSchema.name, name),
+//                     eq(categoriesSchema.type, type)
+//                 )
+//             );
 
 //         return item || null;
 //     } catch (error) {

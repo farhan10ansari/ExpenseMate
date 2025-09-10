@@ -15,7 +15,7 @@ export default function IncomeSourcesScreen() {
     const [sources, setSources] = React.useState<Category[]>([]);
 
     const handleGetSources = React.useCallback(async () => {
-        const data = await getAllCategories('income', true);
+        const data = await getAllCategories('income-source', true);
         setSources(data as Category[]);
     }, []);
 
@@ -33,7 +33,7 @@ export default function IncomeSourcesScreen() {
             queryClient.invalidateQueries({ queryKey: ['incomes'] });
             queryClient.invalidateQueries({ queryKey: ['income'] });
             queryClient.invalidateQueries({ queryKey: ['stats', 'income'] });
-            const { error } = await tryCatch(deleteCategory("income", source));
+            const { error } = await tryCatch(deleteCategory("income-source", source));
             if (error) {
                 console.error("Error deleting income source:", error);
                 return;
@@ -47,7 +47,7 @@ export default function IncomeSourcesScreen() {
     }, []);
 
     const handleAddCategory = useCallback(async (data: CreateCategoryData) => {
-        const { data: newCategory, error } = await tryCatch(createNewCategory("income", {
+        const { data: newCategory, error } = await tryCatch(createNewCategory("income-source", {
             name: data.name,
             label: data.label,
             icon: data.icon as string,
@@ -62,7 +62,7 @@ export default function IncomeSourcesScreen() {
     }, []);
 
     const handleUpdateIncome = useCallback(async (name: string, updates: UpdateCategoryData) => {
-        const { data: updatedSource, error } = await tryCatch(updateCategory("income", name, {
+        const { data: updatedSource, error } = await tryCatch(updateCategory("income-source", name, {
             label: updates.label,
             icon: updates.icon as string,
             color: updates.color,

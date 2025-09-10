@@ -1,11 +1,10 @@
 import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getAllCategories } from '@/repositories/CategoryRepo';
-import { ExpenseCategory, IncomeSource } from '@/db/schema';
 import { Category } from '@/lib/types';
 
-type ExpenseCategoriesContextType = ExpenseCategory[];
-type IncomeSourcesContextType = IncomeSource[];
+type ExpenseCategoriesContextType = Category[];
+type IncomeSourcesContextType = Category[];
 
 export const ExpenseCategoriesContext = createContext<ExpenseCategoriesContextType | undefined>(undefined);
 export const IncomeSourcesContext = createContext<IncomeSourcesContextType | undefined>(undefined);
@@ -14,12 +13,12 @@ export const IncomeSourcesContext = createContext<IncomeSourcesContextType | und
 export const CategoryDataProvider = ({ children }: { children: ReactNode }) => {
     const expenseCategoriesQuery = useQuery({
         queryKey: ['expenseCategories'],
-        queryFn: () => getAllCategories('expense', true),
+        queryFn: () => getAllCategories('expense-category', true),
     });
 
     const incomeSourcesQuery = useQuery({
         queryKey: ['incomeSources'],
-        queryFn: () => getAllCategories('income', true),
+        queryFn: () => getAllCategories('income-source', true),
     });
 
     const expenseContextValue: ExpenseCategoriesContextType = useMemo(() => (expenseCategoriesQuery.data ?? []), [expenseCategoriesQuery]);
@@ -37,7 +36,7 @@ export const CategoryDataProvider = ({ children }: { children: ReactNode }) => {
 
 
 // Public hooks (maintaining the same API)
-export const useExpenseCategories = (): ExpenseCategory[] => {
+export const useExpenseCategories = (): Category[] => {
     const context = useContext(ExpenseCategoriesContext);
     if (context === undefined) {
         throw new Error('useExpenseCategoriesContext must be used within CategoryDataProvider');
@@ -45,7 +44,7 @@ export const useExpenseCategories = (): ExpenseCategory[] => {
     return context;
 };
 
-export const useIncomeSources = (): IncomeSource[] => {
+export const useIncomeSources = (): Category[] => {
     const context = useContext(IncomeSourcesContext);
     if (context === undefined) {
         throw new Error('useIncomeSourcesContext must be used within CategoryDataProvider');
@@ -77,12 +76,12 @@ export const useIncomeSourceMapping = () => {
 };
 
 // Additional utility hooks
-export const useEnabledExpenseCategories = (): ExpenseCategory[] => {
+export const useEnabledExpenseCategories = (): Category[] => {
     const categories = useExpenseCategories();
     return useMemo(() => categories.filter(cat => cat.enabled), [categories]);
 };
 
-export const useEnabledIncomeSources = (): IncomeSource[] => {
+export const useEnabledIncomeSources = (): Category[] => {
     const sources = useIncomeSources();
     return useMemo(() => sources.filter(source => source.enabled), [sources]);
 };

@@ -1,13 +1,13 @@
 import { IconSource } from "react-native-paper/lib/typescript/components/Icon";
 
 export type Category = {
-  name: string;
-  label: string;
-  icon: IconSource;
-  color: string;
-  enabled: boolean;
-  isCustom?: boolean;
-};
+    isCustom: boolean;
+    enabled: boolean;
+    name: string;
+    label: string;
+    icon: IconSource;
+    color: string;
+}
 
 export type CategoryFormData = {
   title: string;

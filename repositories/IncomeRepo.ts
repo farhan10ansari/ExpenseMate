@@ -1,4 +1,4 @@
-import db from '@/db/client';              // Or your correct import style
+import db from '@/db/client';
 import { Income, incomesSchema } from '@/db/schema';
 import { and, asc, desc, eq, gte, lt, lte, sql } from 'drizzle-orm';
 import { subMonths, startOfMonth, endOfMonth, format } from 'date-fns';
