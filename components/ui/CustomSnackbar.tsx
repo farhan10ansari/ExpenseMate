@@ -40,8 +40,8 @@ function CustomSnackbar(props: CustomSnackbarProps) {
                 };
             case "info":
                 return {
-                    inverseSurface: colors.primary,
-                    inverseOnSurface: colors.onPrimary,
+                    inverseSurface: colors.secondary,
+                    inverseOnSurface: colors.onSecondary,
                 };
             case "warning":
                 return {

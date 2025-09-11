@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { AppState, StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
@@ -7,9 +7,6 @@ import { List, Switch } from "react-native-paper";
 import useSettings from "@/hooks/settings/useSettings";
 import { Currency, Language } from "@/lib/types";
 import { useLocalAuth } from "@/contexts/LocalAuthProvider";
-import { useQuery } from "@tanstack/react-query";
-import { getEnrolledLevelAsync } from "expo-local-authentication";
-import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import { useEffect } from "react";
 
 interface SettingOption {
@@ -358,9 +355,20 @@ function BiometricLoginSection() {
     },
   });
 
+
   useEffect(() => {
-    refresh()
-  }, [])
+    refresh();
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (nextAppState === 'active') {
+        // App has come to the foreground, refresh biometric support status
+        refresh();
+      }
+    });
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
 
   return (
     <View style={styles.sectionContainer}>

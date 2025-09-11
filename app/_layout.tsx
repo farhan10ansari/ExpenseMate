@@ -91,17 +91,17 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <AppThemeProvider>
           <HapticsProvider>
-            <LocalAuthProvider>
-              <CategoryDataProvider>
-                <GlobalSnackbarProvider>
-                  <ConfirmationProvider>
+            <GlobalSnackbarProvider>
+              <ConfirmationProvider>
+                <LocalAuthProvider>
+                  <CategoryDataProvider>
                     <MainLayout />
                     <GlobalLevelComponents />
                     <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
-                  </ConfirmationProvider>
-                </GlobalSnackbarProvider>
-              </CategoryDataProvider>
-            </LocalAuthProvider>
+                  </CategoryDataProvider>
+                </LocalAuthProvider>
+              </ConfirmationProvider>
+            </GlobalSnackbarProvider>
           </HapticsProvider>
         </AppThemeProvider>
       </QueryClientProvider>

@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { getEnrolledLevelAsync, SecurityLevel, authenticateAsync } from 'expo-local-authentication';
 import { BackHandler, ToastAndroid } from 'react-native';
 import AuthOverlay from '@/components/main/AuthOverlay';
+import { useSnackbar } from './GlobalSnackbarProvider';
 
 interface LocalAuthContextType {
   biometricLogin: boolean;
@@ -25,6 +26,7 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
   const updateSettings = usePersistentAppStore(state => state.updateSettings);
   const [isAuthenticated, setIsAuthenticated] = useState(biometricLogin ? false : true);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const { showSnackbar } = useSnackbar()
 
   const {
     data: securityLevel,
@@ -40,6 +42,16 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
     },
     retry: 2,
   });
+
+  const handleShowSnackbar = useCallback((message: string, type: 'error' | 'success' | 'info') => {
+    showSnackbar({
+      message,
+      duration: 2000,
+      type: type,
+      position: 'bottom',
+    });
+  }, [showSnackbar]);
+
 
   const handleAuthentication = useCallback(async () => {
     try {
@@ -97,20 +109,20 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
 
         if (authResult.success) {
           updateSettings('biometricLogin', true);
-          ToastAndroid.show('Secure login enabled', ToastAndroid.SHORT);
+          handleShowSnackbar('Secure login enabled', 'success');
         } else {
           refetch()
-          ToastAndroid.show('Failed to enable secure login. Try again.', ToastAndroid.SHORT);
+          handleShowSnackbar('Failed to enable secure login. Try again.', 'error');
         }
       } catch (error) {
         refetch()
         console.error('Error enabling secure login:', error);
-        ToastAndroid.show('Failed to enable secure login. Try again.', ToastAndroid.SHORT);
+        handleShowSnackbar('Failed to enable secure login. Try again.', 'error');
       }
     } else {
       // Disable secure login
       updateSettings('biometricLogin', false);
-      ToastAndroid.show('Secure login disabled', ToastAndroid.SHORT);
+      handleShowSnackbar('Secure login disabled', 'info');
     }
   }, [updateSettings]);
 
@@ -141,7 +153,7 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
     isAuthenticationSupported: isSupportedAuthType(securityLevel),
     handleBiometricLoginToggle,
     refresh: refetch,
-  }), [biometricLogin,isAuthenticated, securityLevel, handleBiometricLoginToggle, refetch]);
+  }), [biometricLogin, isAuthenticated, securityLevel, handleBiometricLoginToggle, refetch]);
 
   return (
     <LocalAuthContext.Provider value={authContextValue}>
