@@ -20,6 +20,7 @@ import { ThemedView } from '@/components/base/ThemedView';
 import { GlobalSnackbarProvider } from '@/contexts/GlobalSnackbarProvider';
 import useSeedData from '@/hooks/useSeedData';
 import { CategoryDataProvider } from '@/contexts/CategoryDataProvider';
+import { LocalAuthProvider } from '@/contexts/LocalAuthProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,7 +53,7 @@ export default function RootLayout() {
     if (loaded && success) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, success]);
 
   useEffect(() => {
     // hide splash on error for showing the error message
@@ -90,15 +91,17 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <AppThemeProvider>
           <HapticsProvider>
-            <CategoryDataProvider>
-              <GlobalSnackbarProvider>
-                <ConfirmationProvider>
-                  <MainLayout />
-                  <GlobalLevelComponents />
-                  <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
-                </ConfirmationProvider>
-              </GlobalSnackbarProvider>
-            </CategoryDataProvider>
+            <LocalAuthProvider>
+              <CategoryDataProvider>
+                <GlobalSnackbarProvider>
+                  <ConfirmationProvider>
+                    <MainLayout />
+                    <GlobalLevelComponents />
+                    <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
+                  </ConfirmationProvider>
+                </GlobalSnackbarProvider>
+              </CategoryDataProvider>
+            </LocalAuthProvider>
           </HapticsProvider>
         </AppThemeProvider>
       </QueryClientProvider>

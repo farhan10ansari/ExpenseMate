@@ -89,7 +89,6 @@ export interface PeriodIncomeStats {
 
 export type ColorType = "primary" | "secondary" | "tertiary";
 
-
 //Expense
 export type Expense = {
   id: number;
@@ -115,3 +114,7 @@ export type Income = {
   isTrashed: boolean;
   source: string;
 }
+
+// Settings types
+export type Language = "english" | "hindi" | "spanish";
+export type Currency = "rupees" | "usd" | "euro";

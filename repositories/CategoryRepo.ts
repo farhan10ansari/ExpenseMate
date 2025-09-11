@@ -9,7 +9,6 @@ type Type = CategoryDB['type'];
 
 export const seedDefaultCategoriesData = async ({ type, categories }: { type: Type, categories: Omit<CategoryDB, 'type' | 'enabled' | 'isCustom'>[] }): Promise<void> => {
     try {
-
         await db
             .insert(categoriesSchema)
             .values(
@@ -24,8 +23,6 @@ export const seedDefaultCategoriesData = async ({ type, categories }: { type: Ty
                 }))
             )
             .onConflictDoNothing();
-
-        console.log(`Default ${type} data seeded successfully`);
     } catch (error) {
         console.error(`Error seeding default ${type} data:`, error);
         throw error;
@@ -80,8 +77,6 @@ export const createNewCategory = async (
         const [createdItem] = await db
             .insert(categoriesSchema)
             .values(newItem).returning();
-
-        console.log(`'${data.name}' created successfully`);
         return createdItem;
     } catch (error) {
         console.error(`Error creating ${type} category:`, error);
@@ -108,14 +103,10 @@ export const updateCategory = async (
                 )
             ).returning();
 
-        console.log("x", updatedItem);
-
         // Return the updated item or throw an error if not found
         if (!updatedItem) {
             throw new Error(`Item with name '${name}' not found`);
         }
-
-        console.log(`'${name}' updated successfully`);
         return updatedItem;
     } catch (error) {
         console.error(`Error updating ${type} category:`, error);
@@ -155,8 +146,6 @@ export const deleteCategory = async (type: Type, name: string): Promise<void> =>
                     eq(categoriesSchema.type, type)
                 )
             );
-
-        console.log(`'${name}' deleted successfully`);
     } catch (error) {
         console.error(`Error deleting ${type} category:`, error);
         throw error;

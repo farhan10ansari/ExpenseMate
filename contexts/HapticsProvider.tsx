@@ -18,15 +18,12 @@ interface HapticsContextType {
 const HapticsContext = createContext<HapticsContextType | undefined>(undefined);
 
 // Optimized selectors for Zustand
-const selectHapticsEnabled = (state: any) => state.haptics.enabled;
-const selectHapticsIntensity = (state: any) => state.haptics.intensity;
-
 export const HapticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const isLowPowerMode = useLowPowerMode();
 
     // Use separate selectors to prevent unnecessary re-renders
-    const enabled = usePersistentAppStore(selectHapticsEnabled);
-    const intensity = usePersistentAppStore(selectHapticsIntensity);
+    const enabled = usePersistentAppStore(state => state.settings.haptics.enabled);
+    const intensity = usePersistentAppStore(state => state.settings.haptics.intensity);
 
     // Memoize derived state
     const canVibrate = useMemo(() =>
