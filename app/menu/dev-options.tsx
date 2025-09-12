@@ -1,7 +1,7 @@
 import { StyleSheet, View, KeyboardAvoidingView, Platform, Keyboard, ScrollView } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { tryCatch } from "@/lib/try-catch";
-import { seedDummyExpenses, seedDummyIncome } from "@/repositories/dev";
+import { seedDummyExpenses, seedDummyIncome } from "@/repositories/DevRepo";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button, TextInput } from "react-native-paper";

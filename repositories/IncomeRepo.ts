@@ -1,5 +1,5 @@
 import db from '@/db/client';
-import { IncomeDB, IncomeRes, incomesSchema } from '@/db/schema';
+import { IncomeRes, incomesSchema } from '@/db/schema';
 import { and, asc, desc, eq, gte, lt, lte, sql } from 'drizzle-orm';
 import { subMonths, startOfMonth, endOfMonth, format } from 'date-fns';
 import { StatsPeriod, PeriodIncomeStats } from '@/lib/types';
