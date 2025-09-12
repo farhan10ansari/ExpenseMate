@@ -297,13 +297,12 @@ const SwitchListItem = ({
 };
 
 
-function BiometricLoginSection() {
+function SecureLoginSection() {
   const { colors } = useAppTheme();
   const {
     biometricLogin,
     isAuthenticationSupported,
     handleBiometricLoginToggle,
-    refresh
   } = useLocalAuth();
 
   const styles = StyleSheet.create({
@@ -355,21 +354,6 @@ function BiometricLoginSection() {
     },
   });
 
-
-  useEffect(() => {
-    refresh();
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      if (nextAppState === 'active') {
-        // App has come to the foreground, refresh biometric support status
-        refresh();
-      }
-    });
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
-
   return (
     <View style={styles.sectionContainer}>
       <View style={styles.sectionHeader}>
@@ -380,7 +364,7 @@ function BiometricLoginSection() {
           style={styles.sectionIcon}
         />
         <ThemedText style={styles.sectionTitle}>
-          Biometric Login
+          Secure Login
         </ThemedText>
       </View>
 
@@ -580,7 +564,7 @@ export default function SettingsScreen() {
           haptics={haptics}
           handleHapticsToggle={handleHapticsToggle}
         />
-        <BiometricLoginSection />
+        <SecureLoginSection />
         <LanguageSection
           language={language}
           handleLanguageChange={handleLanguageChange}

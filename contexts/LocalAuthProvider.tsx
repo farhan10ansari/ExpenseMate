@@ -1,8 +1,8 @@
 import usePersistentAppStore from '@/stores/usePersistentAppStore';
 import { useQuery } from '@tanstack/react-query';
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { getEnrolledLevelAsync, SecurityLevel, authenticateAsync } from 'expo-local-authentication';
-import { BackHandler, ToastAndroid } from 'react-native';
+import { AppState, BackHandler, ToastAndroid } from 'react-native';
 import AuthOverlay from '@/components/main/AuthOverlay';
 import { useSnackbar } from './GlobalSnackbarProvider';
 
@@ -21,12 +21,18 @@ const isSupportedAuthType = (level: SecurityLevel | undefined) => {
   return [SecurityLevel.BIOMETRIC_STRONG, SecurityLevel.BIOMETRIC_WEAK, SecurityLevel.SECRET].includes(level);
 }
 
+const lockAfterMs = 5 * 60 * 1000; // 5 minutes
+
 export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) => {
   const biometricLogin = usePersistentAppStore(state => state.settings.biometricLogin);
   const updateSettings = usePersistentAppStore(state => state.updateSettings);
   const [isAuthenticated, setIsAuthenticated] = useState(biometricLogin ? false : true);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const { showSnackbar } = useSnackbar()
+
+  const appState = useRef(AppState.currentState);
+  const lastBackgroundAtRef = useRef<number | null>(null);
+  const tempAuthRef = useRef(false);
 
   const {
     data: securityLevel,
@@ -55,6 +61,7 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleAuthentication = useCallback(async () => {
     try {
+      tempAuthRef.current = true;
       setIsAuthenticating(true);
       const authResult = await authenticateAsync({
         promptMessage: 'Authenticate to access your expense manager',
@@ -94,6 +101,8 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
       BackHandler.exitApp();
     } finally {
       setIsAuthenticating(false);
+      // Give AppState a moment to settle after biometric overlay closes
+      setTimeout(() => { tempAuthRef.current = false; }, 1000);
     }
   }, []);
 
@@ -124,7 +133,37 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
       updateSettings('biometricLogin', false);
       handleShowSnackbar('Secure login disabled', 'info');
     }
-  }, [updateSettings]);
+  }, [updateSettings, refetch, handleShowSnackbar]);
+
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (next) => {
+      const prev = appState.current;
+      appState.current = next;
+
+      // When moving to background, record time unless we are showing biometric sheet
+      if (next === 'background' && !tempAuthRef.current) {
+        lastBackgroundAtRef.current = Date.now();
+      }
+
+      // When coming back to active from background, decide re-lock
+      if (next === 'active' && prev === 'background') {
+        // Refetch security level on app focus to ensure up-to-date status
+        refetch();
+
+        const last = lastBackgroundAtRef.current ?? 0;
+        const elapsed = Date.now() - last;
+        const shouldLockApp = elapsed >= lockAfterMs;
+        if (biometricLogin && shouldLockApp) {
+          // Time exceeded, re-lock
+          setIsAuthenticated(false);
+        }
+      }
+    });
+
+    return () => sub.remove();
+  }, [biometricLogin, refetch]);
+
+
 
   useEffect(() => {
     if (isAuthenticated) return;
