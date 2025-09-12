@@ -5,20 +5,6 @@ import { getPeriodStartEnd } from './lib/helpers';
 import { StatsPeriod, PeriodExpenseStats } from '@/lib/types';
 import { startOfMonth, endOfMonth, subMonths, format, differenceInMonths } from 'date-fns';
 
-// export interface NewExpense {
-//   amount: number;
-//   dateTime: Date | string;      // accept Date or ms-timestamp
-//   description?: string | null;
-//   paymentMethod?: string | null;
-//   category: string;
-//   recurring?: boolean;
-//   receipt?: string | null;
-//   currency?: string;
-// }
-
-// type CreateCategoryData = Omit<CategoryDB, 'type'>;
-// type UpdateCategoryData = Partial<Pick<CategoryDB, 'label' | 'icon' | 'color' | 'enabled'>>;
-
 type CreateExpenseData = Omit<ExpenseDB, 'id' | 'isTrashed'>;
 type UpdateExpenseData = Omit<ExpenseDB, 'id' | 'isTrashed'>;
 
@@ -221,24 +207,30 @@ export const updateExpenseById = async (id: string | number, expense: UpdateExpe
     ? expense.dateTime
     : new Date(expense.dateTime);
 
-  const result = await db
-    .update(expensesSchema)
-    .set({
-      amount: expense.amount,
-      dateTime: dt,
-      description: expense.description,
-      paymentMethod: expense.paymentMethod,
-      category: expense.category,
-      recurring: expense.recurring,
-      receipt: expense.receipt,
-      currency: expense.currency,
-    })
-    .where(eq(expensesSchema.id, numericId))
-    .run();
+  try {
+    const result = await db
+      .update(expensesSchema)
+      .set({
+        amount: expense.amount,
+        dateTime: dt,
+        description: expense.description,
+        paymentMethod: expense.paymentMethod,
+        category: expense.category,
+        recurring: expense.recurring,
+        receipt: expense.receipt,
+        currency: expense.currency,
+      })
+      .where(eq(expensesSchema.id, numericId))
+      .run();
 
-  if (result.changes === 0) {
-    throw new Error(`Expense with ID ${id} not found or no changes made.`);
+    if (result.changes === 0) {
+      throw new Error(`Expense with ID ${id} not found or no changes made.`);
+    }
+  } catch (err) {
+    console.error("Error updating expense:", err);
   }
+
+
 }
 
 // Insights 
