@@ -21,6 +21,7 @@ import { GlobalSnackbarProvider } from '@/contexts/GlobalSnackbarProvider';
 import useSeedData from '@/hooks/useSeedData';
 import { CategoryDataProvider } from '@/contexts/CategoryDataProvider';
 import { LocalAuthProvider } from '@/contexts/LocalAuthProvider';
+import { uiLog as log } from '@/lib/logger';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -48,25 +49,29 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
+  // hide splash when everything is ready
   useEffect(() => {
-    // hide splash when everything is ready
     if (loaded && success) {
+      log.debug("RootLayout: assets loaded and migrations successful, hiding splash");
       SplashScreen.hideAsync();
     }
   }, [loaded, success]);
 
+
+  // hide splash on error for showing the error message
   useEffect(() => {
-    // hide splash on error for showing the error message
     if (error && success && seedSuccess) {
+      log.warn("RootLayout: hiding splash to show error UI");
       SplashScreen.hideAsync();
     }
-  }, [error]);
+  }, [error, success, seedSuccess]);
 
   if (!loaded) {
     return null;
   }
 
   if (error || seedError) {
+    log.error("RootLayout: rendering error UI", { migrationError: error?.message, seedError: seedError?.message });
     return (
       <AppThemeProvider>
         <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
@@ -77,6 +82,7 @@ export default function RootLayout() {
   }
 
   if (!success) {
+    log.info("RootLayout: rendering migrations/seeding progress UI");
     return (
       <AppThemeProvider>
         <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} >
@@ -86,6 +92,7 @@ export default function RootLayout() {
     );
   }
 
+  log.debug("RootLayout: rendering main app UI");
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>

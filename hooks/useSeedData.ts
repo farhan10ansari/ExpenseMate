@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { seedDefaultCategoriesData } from '@/repositories/CategoryRepo';
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import { DefaultExpenseCategories, DefaultIncomeSources } from "@/lib/constants";
+import { uiLog as log } from "@/lib/logger";
 
 export type SeedConfig = {
   key: string;
@@ -26,7 +27,6 @@ export const SEED_CONFIG: SeedConfig[] = [
   // Add more seed configurations as needed
 ];
 
-
 type SeedResult = {
   success: boolean;      // true ⇢ all seed tasks finished without error
   error: Error | null;   // non-null ⇢ something failed
@@ -40,18 +40,29 @@ const useSeedData = (migrationSuccess: boolean): SeedResult => {
   const markDataSeeded = usePersistentAppStore(s => s.markDataSeeded);
 
   useEffect(() => {
-    if (!migrationSuccess || success || error) return;  // nothing to do
+    // nothing to do
+    if (!migrationSuccess || success || error) {
+      log.debug("useSeedData: skip seeding", { migrationSuccess, success, hasError: !!error });
+      return;
+    }
 
     (async () => {
       try {
+        log.debug("useSeedData: start seeding");
         for (const { key, seedFn } of SEED_CONFIG) {
-          if (isDataSeeded(key)) continue;
+          if (isDataSeeded(key)) {
+            log.debug("useSeedData: already seeded - skip", { key });
+            continue;
+          }
+          log.debug("useSeedData: seeding task start", { key });
           await seedFn();
           markDataSeeded(key);                          // mark on success
+          log.debug("useSeedData: seeding task done", { key });
         }
         setSuccess(true);                               // everything passed
+        log.info("useSeedData: seeding completed");
       } catch (e) {
-        console.error("Seeding error:", e);
+        log.error("useSeedData: seeding failed", { error: String(e) });
         setError(e as Error);                           // expose the failure
       }
     })();

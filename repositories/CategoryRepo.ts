@@ -1,6 +1,7 @@
 import { categoriesSchema, CategoryRes, CategoryDB } from '@/db/schema';
 import db from '@/db/client';
 import { eq, and } from 'drizzle-orm';
+import { dbLog as log } from '@/lib/logger';
 
 // Types
 type CreateCategoryData = Omit<CategoryDB, 'type'>;
@@ -9,6 +10,7 @@ type Type = CategoryDB['type'];
 
 export const seedDefaultCategoriesData = async ({ type, categories }: { type: Type, categories: Omit<CategoryDB, 'type' | 'enabled' | 'isCustom'>[] }): Promise<void> => {
     try {
+        log.debug("seedDefaultCategoriesData: start", { type, count: categories.length });
         await db
             .insert(categoriesSchema)
             .values(
@@ -23,11 +25,13 @@ export const seedDefaultCategoriesData = async ({ type, categories }: { type: Ty
                 }))
             )
             .onConflictDoNothing();
+        log.debug("seedDefaultCategoriesData: done", { type });
     } catch (error) {
-        console.error(`Error seeding default ${type} data:`, error);
+        log.error(`seedDefaultCategoriesData: failed`, { type, error: String(error) });
         throw error;
     }
 };
+
 
 /**
 * Get all categories/sources
@@ -37,14 +41,18 @@ export const getAllCategories = async (
     includeDisabled: boolean = false
 ): Promise<CategoryRes[]> => {
     try {
+        log.debug("getAllCategories: start", { type, includeDisabled });
+
         if (includeDisabled) {
-            return await db
+            const rows = await db
                 .select()
                 .from(categoriesSchema)
                 .where(eq(categoriesSchema.type, type));
+            log.debug("getAllCategories: done", { count: rows.length, includeDisabled });
+            return rows;
         }
 
-        return await db
+        const rows = await db
             .select()
             .from(categoriesSchema)
             .where(
@@ -53,11 +61,14 @@ export const getAllCategories = async (
                     eq(categoriesSchema.enabled, true)
                 )
             );
+        log.debug("getAllCategories: done", { count: rows.length, includeDisabled });
+        return rows;
     } catch (error) {
-        console.error(`Error fetching ${type} categories:`, error);
+        log.error(`getAllCategories: failed`, { type, includeDisabled, error: String(error) });
         throw error;
     }
 };
+
 
 /**
  * Create a new category/source
@@ -67,6 +78,8 @@ export const createNewCategory = async (
     data: CreateCategoryData
 ): Promise<CategoryRes> => {
     try {
+        log.debug("createNewCategory: start", { type, name: data.name });
+
         const newItem = {
             ...data,
             type: type,
@@ -77,12 +90,15 @@ export const createNewCategory = async (
         const [createdItem] = await db
             .insert(categoriesSchema)
             .values(newItem).returning();
+
+        log.debug("createNewCategory: done", { type, name: data.name });
         return createdItem;
     } catch (error) {
-        console.error(`Error creating ${type} category:`, error);
+        log.error(`createNewCategory: failed`, { type, name: data.name, error: String(error) });
         throw error;
     }
 };
+
 
 /**
  * Update an existing category/source (name cannot be updated)
@@ -93,6 +109,8 @@ export const updateCategory = async (
     data: UpdateCategoryData
 ): Promise<CategoryRes> => {
     try {
+        log.debug("updateCategory: start", { type, name });
+
         const [updatedItem] = await db
             .update(categoriesSchema)
             .set(data)
@@ -107,18 +125,23 @@ export const updateCategory = async (
         if (!updatedItem) {
             throw new Error(`Item with name '${name}' not found`);
         }
+
+        log.debug("updateCategory: done", { type, name });
         return updatedItem;
     } catch (error) {
-        console.error(`Error updating ${type} category:`, error);
+        log.error(`updateCategory: failed`, { type, name, error: String(error) });
         throw error;
     }
 };
+
 
 /**
  * Delete a category/source
  */
 export const deleteCategory = async (type: Type, name: string): Promise<void> => {
     try {
+        log.debug("deleteCategory: start", { type, name });
+
         // First check if the item exists and is custom (deletable)
         const [item] = await db
             .select()
@@ -146,11 +169,14 @@ export const deleteCategory = async (type: Type, name: string): Promise<void> =>
                     eq(categoriesSchema.type, type)
                 )
             );
+
+        log.debug("deleteCategory: done", { type, name });
     } catch (error) {
-        console.error(`Error deleting ${type} category:`, error);
+        log.error(`deleteCategory: failed`, { type, name, error: String(error) });
         throw error;
     }
 };
+
 
 // /**
 //  * Check if category/source name exists
@@ -173,6 +199,7 @@ export const deleteCategory = async (type: Type, name: string): Promise<void> =>
 //         throw error;
 //     }
 // };
+
 
 // /**
 //  * Get a single category/source by name

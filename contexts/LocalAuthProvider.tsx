@@ -5,6 +5,7 @@ import { getEnrolledLevelAsync, SecurityLevel, authenticateAsync } from 'expo-lo
 import { AppState, BackHandler, ToastAndroid } from 'react-native';
 import AuthOverlay from '@/components/main/AuthOverlay';
 import { useSnackbar } from './GlobalSnackbarProvider';
+import { authLog as log } from '@/lib/logger';
 
 interface LocalAuthContextType {
   biometricLogin: boolean;
@@ -44,6 +45,7 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
     queryKey: ['security', 'supportedAuthTypes'],
     queryFn: async () => {
       const types = await getEnrolledLevelAsync();
+      log.debug("LocalAuth: fetched security level", { level: types });
       return types;
     },
     retry: 2,
@@ -58,9 +60,9 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
     });
   }, [showSnackbar]);
 
-
   const handleAuthentication = useCallback(async () => {
     try {
+      log.debug("LocalAuth: authentication start");
       tempAuthRef.current = true;
       setIsAuthenticating(true);
       const authResult = await authenticateAsync({
@@ -71,20 +73,23 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
       });
       if (authResult.success) {
         setIsAuthenticated(true);
+        log.info("LocalAuth: authentication success");
       } else {
         // Handle authentication failure
         if (authResult.error === 'user_cancel' || authResult.error === 'app_cancel') {
+          log.warn("LocalAuth: authentication cancelled", { error: authResult.error });
           // BackHandler.exitApp();
           // User cancelled, try again
           // setTimeout(() => handleAuthentication(), 500);
         } else if (authResult.error === 'lockout') {
+          log.error("LocalAuth: biometric lockout");
           ToastAndroid.show(
             'Too Many Attempts: Biometric authentication locked. Try again later.',
             ToastAndroid.LONG
           );
           BackHandler.exitApp();
         } else {
-          // Other errors, show message and retry
+          log.warn("LocalAuth: authentication failed", { error: authResult.error });
           ToastAndroid.show(
             'Authentication Failed: Please try again',
             ToastAndroid.SHORT
@@ -93,7 +98,7 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
         }
       }
     } catch (error) {
-      console.error('Authentication error:', error);
+      log.error('LocalAuth: authentication error', { error: String(error) });
       ToastAndroid.show(
         'Authentication Error: Unable to authenticate. Closing app.',
         ToastAndroid.SHORT
@@ -103,12 +108,14 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
       setIsAuthenticating(false);
       // Give AppState a moment to settle after biometric overlay closes
       setTimeout(() => { tempAuthRef.current = false; }, 1000);
+      log.debug("LocalAuth: authentication finished");
     }
   }, []);
 
   const handleBiometricLoginToggle = useCallback(async (enabled: boolean) => {
     if (enabled) {
       try {
+        log.debug("LocalAuth: enable secure login - start");
         const authResult = await authenticateAsync({
           promptMessage: 'Authenticate to enable Secure login',
           cancelLabel: 'Cancel',
@@ -119,19 +126,22 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
         if (authResult.success) {
           updateSettings('biometricLogin', true);
           handleShowSnackbar('Secure login enabled', 'success');
+          log.info("LocalAuth: enable secure login - success");
         } else {
           refetch()
           handleShowSnackbar('Failed to enable secure login. Try again.', 'error');
+          log.warn("LocalAuth: enable secure login - failed", { error: authResult.error });
         }
       } catch (error) {
         refetch()
-        console.error('Error enabling secure login:', error);
+        log.error('LocalAuth: enable secure login - error', { error: String(error) });
         handleShowSnackbar('Failed to enable secure login. Try again.', 'error');
       }
     } else {
       // Disable secure login
       updateSettings('biometricLogin', false);
       handleShowSnackbar('Secure login disabled', 'info');
+      log.info("LocalAuth: secure login disabled");
     }
   }, [updateSettings, refetch, handleShowSnackbar]);
 
@@ -143,6 +153,7 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
       // When moving to background, record time unless we are showing biometric sheet
       if (next === 'background' && !tempAuthRef.current) {
         lastBackgroundAtRef.current = Date.now();
+        log.debug("LocalAuth: app moved to background");
       }
 
       // When coming back to active from background, decide re-lock
@@ -153,17 +164,18 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
         const last = lastBackgroundAtRef.current ?? 0;
         const elapsed = Date.now() - last;
         const shouldLockApp = elapsed >= lockAfterMs;
+        log.debug("LocalAuth: app active after background", { elapsed, shouldLockApp });
+
         if (biometricLogin && shouldLockApp) {
           // Time exceeded, re-lock
           setIsAuthenticated(false);
+          log.info("LocalAuth: relocking due to inactivity");
         }
       }
     });
 
     return () => sub.remove();
   }, [biometricLogin, refetch]);
-
-
 
   useEffect(() => {
     if (isAuthenticated) return;
@@ -181,7 +193,9 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
         ToastAndroid.LONG
       );
       updateSettings('biometricLogin', false);
+      log.warn("LocalAuth: device security removed, disabling biometric login");
     } else if (isSupportedAuthType(securityLevel)) {
+      log.debug("LocalAuth: triggering authentication");
       handleAuthentication();
     }
   }, [isAuthenticated, securityLevel, isLoading, isError, error, biometricLogin, handleAuthentication, updateSettings]);
@@ -206,8 +220,6 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
     </LocalAuthContext.Provider>
   );
 };
-
-
 
 // useAuth hook
 export const useLocalAuth = () => {
