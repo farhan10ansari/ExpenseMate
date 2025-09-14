@@ -10,10 +10,11 @@ import { useExpenseCategoryMapping } from "@/contexts/CategoryDataProvider";
 type Props = {
     expenseStats?: PeriodExpenseStats;
     showTitle?: boolean;
+    isLoading?: boolean;
 }
 
 
-export default function ExpenseStats({ expenseStats, showTitle = false }: Props) {
+export default function ExpenseStats({ expenseStats, showTitle = false, isLoading = false }: Props) {
     const { colors } = useAppTheme();
     const categoryMapping = useExpenseCategoryMapping()
 
@@ -36,12 +37,14 @@ export default function ExpenseStats({ expenseStats, showTitle = false }: Props)
                     icon={<FontAwesome name="rupee" size={24} color={colors.onPrimary} />}
                     backgroundColor={colors.primary}
                     textColor={colors.onPrimary}
+                    isLoading={isLoading}
                 />
                 <StatsCard
                     title="Expense Count"
                     value={expenseStats?.count ?? 0}
                     icon={<AntDesign name="minuscircleo" size={20} color={colors.tertiary} />}
                     textColor={colors.tertiary}
+                    isLoading={isLoading}
                 />
             </View>
             <View style={styles.row}>
@@ -51,6 +54,7 @@ export default function ExpenseStats({ expenseStats, showTitle = false }: Props)
                     value={expenseStats?.avgPerDay ?? 0}
                     icon={<MaterialIcons name="trending-up" size={24} color={colors.tertiary} />}
                     textColor={colors.text}
+                    isLoading={isLoading}
                 />
                 <StatsCard
                     title="Top Income Source"
@@ -60,6 +64,7 @@ export default function ExpenseStats({ expenseStats, showTitle = false }: Props)
                     value={topCategory?.label ?? 'No data'}
                     icon={<MaterialCommunityIcons name="source-branch" size={24} color={colors.tertiary} />}
                     textColor={colors.text}
+                    isLoading={isLoading}
                 />
             </View>
             <StatsCard
@@ -74,6 +79,7 @@ export default function ExpenseStats({ expenseStats, showTitle = false }: Props)
                 }
                 icon={<MaterialCommunityIcons name="chart-timeline-variant" size={24} color={colors.tertiary} />}
                 textColor={colors.text}
+                isLoading={isLoading}
             />
         </View>
     )

@@ -8,15 +8,22 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Category, CreateCategoryData, UpdateCategoryData } from '@/lib/types';
 import { createNewCategory, deleteCategory, getAllCategories, updateCategory } from '@/repositories/CategoryRepo';
 import { tryCatch } from '@/lib/try-catch';
+import { ThemedView } from '@/components/base/ThemedView';
 
 export default function IncomeSourcesScreen() {
     const { colors } = useAppTheme();
     const queryClient = useQueryClient();
     const [sources, setSources] = React.useState<Category[]>([]);
+    const [error, setError] = React.useState<Error | null>(null);
 
     const handleGetSources = React.useCallback(async () => {
-        const data = await getAllCategories('income-source', true);
-        setSources(data as Category[]);
+        setError(null);
+        try {
+            const data = await getAllCategories('income-source', true);
+            setSources(data as Category[]);
+        } catch (error: any) {
+            setError(error);
+        }
     }, []);
 
     React.useEffect(() => {
@@ -75,6 +82,10 @@ export default function IncomeSourcesScreen() {
         setSources(prevCategories => prevCategories.map((category) => (category.name === name ? updatedSource : category)));
         handleGetSources();
     }, []);
+
+    if (error) {
+        return <ThemedView><ThemedText centered>Error: {error?.message}</ThemedText></ThemedView>;
+    }
 
     return (
         <CategoryManagerScreen

@@ -27,12 +27,12 @@ export default function HomeScreen() {
   const queryClient = useQueryClient();
   const { hapticImpact } = useHaptics();
 
-  const { data: expenseStats } = useQuery({
+  const { data: expenseStats, isLoading: isExpenseStatsLoading } = useQuery({
     queryKey: ['stats', 'expense', 'stats-in-a-period', expensesPeriod],
     queryFn: () => getExpenseStatsByPeriod(expensesPeriod),
   });
 
-  const { data: incomeStats } = useQuery({
+  const { data: incomeStats, isLoading: isIncomeStatsLoading } = useQuery({
     queryKey: ['stats', 'income', 'stats-in-a-period', expensesPeriod],
     queryFn: () => getIncomeStatsByPeriod(expensesPeriod),
   });
@@ -66,13 +66,13 @@ export default function HomeScreen() {
       contentContainerStyle={styles.scrollContainer}
     >
       <PeriodCard />
-      <FinancialSummaryStats expenseStats={expenseStats} incomeStats={incomeStats} />
+      <FinancialSummaryStats expenseStats={expenseStats} incomeStats={incomeStats} isLoading={isExpenseStatsLoading || isIncomeStatsLoading} />
       <View style={styles.section}>
-        <ExpenseStats expenseStats={expenseStats} showTitle />
+        <ExpenseStats expenseStats={expenseStats} isLoading={isExpenseStatsLoading} showTitle />
         <MoreStatsButton routeName="/stats/expenses" color={colors.primary} />
       </View>
       <View style={styles.section}>
-        <IncomeStats incomeStats={incomeStats} showTitle />
+        <IncomeStats incomeStats={incomeStats} showTitle isLoading={isIncomeStatsLoading} />
         <MoreStatsButton routeName="/stats/incomes" color={colors.primary} />
       </View>
     </ScreenWrapper>

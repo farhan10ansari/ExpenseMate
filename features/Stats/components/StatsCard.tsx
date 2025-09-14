@@ -3,6 +3,7 @@ import { View, StyleProp, StyleSheet, TextStyle } from "react-native";
 import { Card, IconButton, Portal, Dialog } from "react-native-paper";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
+
 type StatsCardProps = {
     title: string;
     value: React.ReactNode | string | number;
@@ -22,7 +23,10 @@ type StatsCardProps = {
     infoIcon?: React.ReactElement<React.ComponentProps<typeof IconButton>>;
     /** Optional: Color for the info icon */
     infoIconColor?: string;
+    /** Loading state to show skeleton */
+    isLoading?: boolean;
 };
+
 const StatsCard = ({
     title,
     value,
@@ -34,7 +38,8 @@ const StatsCard = ({
     titleStyle,
     description,
     infoIcon,
-    infoIconColor
+    infoIconColor,
+    isLoading = false
 }: StatsCardProps) => {
     const { colors } = useAppTheme();
     const [showDesc, setShowDesc] = useState(false);
@@ -51,6 +56,16 @@ const StatsCard = ({
         }
         return item;
     };
+
+    // Skeleton loading bars
+    const renderSkeleton = () => (
+        <View style={styles.cardValueContainer}>
+            <View style={[styles.skeletonBar, styles.skeletonShort, { backgroundColor: colors.outline }]} />
+            <View style={[styles.skeletonBar, styles.skeletonMedium, { backgroundColor: colors.outline }]} />
+            <View style={[styles.skeletonBar, styles.skeletonShort, { backgroundColor: colors.outline }]} />
+        </View>
+    );
+
     return (
         <Card style={[styles.card, backgroundColor && { backgroundColor }]}>
             {/* Info Icon (top right, only if description is provided) */}
@@ -83,13 +98,18 @@ const StatsCard = ({
                     {title}
                 </ThemedText>
             </View>
-            <View style={styles.cardValueContainer}>
-                {prefix && renderTextOrNode(prefix)}
-                <ThemedText style={[styles.cardValue, { color: resolvedTextColor }]}>
-                    {value}
-                </ThemedText>
-                {suffix && renderTextOrNode(suffix)}
-            </View>
+            
+            {/* Show skeleton when loading, otherwise show actual content */}
+            {isLoading ? renderSkeleton() : (
+                <View style={styles.cardValueContainer}>
+                    {prefix && renderTextOrNode(prefix)}
+                    <ThemedText style={[styles.cardValue, { color: resolvedTextColor }]}>
+                        {value}
+                    </ThemedText>
+                    {suffix && renderTextOrNode(suffix)}
+                </View>
+            )}
+
             {/* Info dialog */}
             {!!description && (
                 <Portal>
@@ -148,6 +168,18 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: -8,
         right: -8,
+    },
+    // Skeleton styles
+    skeletonBar: {
+        height: 12,
+        borderRadius: 6,
+        opacity: 0.3,
+    },
+    skeletonShort: {
+        width: 20,
+    },
+    skeletonMedium: {
+        width: 60,
     },
 });
 

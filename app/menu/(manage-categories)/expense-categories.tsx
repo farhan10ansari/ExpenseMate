@@ -8,15 +8,22 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Category, CreateCategoryData, UpdateCategoryData } from '@/lib/types';
 import { createNewCategory, deleteCategory, getAllCategories, updateCategory } from '@/repositories/CategoryRepo';
 import { tryCatch } from '@/lib/try-catch';
+import { ThemedView } from '@/components/base/ThemedView';
 
 export default function ExpenseCategoriesScreen() {
     const { colors } = useAppTheme();
     const queryClient = useQueryClient();
     const [categories, setCategories] = React.useState<Category[]>([]);
+    const [error, setError] = React.useState<Error | null>(null);
 
     const handleGetCategories = useCallback(async () => {
-        const data = await getAllCategories('expense-category', true);
-        setCategories(data as Category[]);
+        setError(null);
+        try {
+            const data = await getAllCategories('expense-category', true);
+            setCategories(data as Category[]);
+        } catch (error: any) {
+            setError(error);
+        }
     }, []);
 
     React.useEffect(() => {
@@ -76,6 +83,10 @@ export default function ExpenseCategoriesScreen() {
         setCategories(prevCategories => prevCategories.map((category) => (category.name === name ? updatedExpense : category)));
         handleGetCategories();
     }, []);
+
+    if (error) {
+        return <ThemedView><ThemedText centered>Error: {error?.message}</ThemedText></ThemedView>;
+    }
 
     return (
         <CategoryManagerScreen

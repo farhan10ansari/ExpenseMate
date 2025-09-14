@@ -12,15 +12,19 @@ import usePersistentAppStore from "@/stores/usePersistentAppStore";
 
 type Props = {
     expenseStats?: PeriodExpenseStats,
-    incomeStats?: PeriodIncomeStats
+    incomeStats?: PeriodIncomeStats,
+    isLoading?: boolean,
 }
 
-function FinancialSummaryStatsBase({ expenseStats, incomeStats }: Props) {
+function FinancialSummaryStatsBase({ expenseStats, incomeStats, isLoading }: Props) {
     const { colors } = useAppTheme();
     const showNegativeStats = usePersistentAppStore((state) => state.uiFlags.showNegativeStats);
 
     const financialSummary = useMemo(() => {
-        if (!expenseStats || !incomeStats) return null;
+        if (!expenseStats || !incomeStats) return {
+            netIncome: 0,
+            savingsRate: 0,
+        };
         return getFinancialSummary(expenseStats, incomeStats);
     }, [expenseStats, incomeStats]);
 
@@ -54,6 +58,7 @@ function FinancialSummaryStatsBase({ expenseStats, incomeStats }: Props) {
                             />
                         ) : undefined
                     }
+                    isLoading={isLoading}
                 />
                 <StatsCard
                     title="Savings Rate"
@@ -63,6 +68,7 @@ function FinancialSummaryStatsBase({ expenseStats, incomeStats }: Props) {
                     textColor={colors.tertiary}
                     description={<SavingsRateDescription />}
                     infoIconColor={colors.onSurface}
+                    isLoading={isLoading}
                 />
             </View>
         </View>

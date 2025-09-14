@@ -1,4 +1,5 @@
 import { useHaptics } from '@/contexts/HapticsProvider';
+import usePreFetchData from '@/hooks/usePreFetchData';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Tabs, useRouter } from 'expo-router';
@@ -10,6 +11,9 @@ function TabLayout() {
   const router = useRouter();
   const { colors } = useAppTheme();
   const { hapticSelect } = useHaptics();
+  
+  // Pre-fetch data for different tabs
+  usePreFetchData();
 
   const handleNavigateToNewTransaction = useCallback(() => {
     hapticSelect();
