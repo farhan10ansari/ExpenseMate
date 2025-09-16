@@ -26,6 +26,7 @@ type PersistentAppStore = {
     uiFlags: {
         showDevOptions: boolean;
         showNegativeStats: boolean;
+        onboardingCompleted: boolean;
     };
     updateUIFlag: (flag: keyof PersistentAppStore['uiFlags'], value: boolean) => void;
 
@@ -64,6 +65,7 @@ const usePersistentAppStore = create<PersistentAppStore>()(persist(
         uiFlags: {
             showDevOptions: false,
             showNegativeStats: true,
+            onboardingCompleted: false,
         },
         updateUIFlag: (flag, value) => set((state) => ({
             uiFlags: {

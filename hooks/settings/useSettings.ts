@@ -23,9 +23,11 @@ const useSettings = () => {
     }, [hapticImpact, updateSettings]);
 
     const handleHapticsToggle = useCallback((enabled: boolean) => {
+        console.log("Toggling haptics to", enabled);
         const newHaptics = { ...haptics, enabled };
         updateSettings('haptics', newHaptics);
         if (enabled) {
+            console.log("Haptics enabled, triggering impact");
             hapticImpact(undefined, true);
         }
     }, [haptics, updateSettings, hapticImpact]);

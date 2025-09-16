@@ -6,6 +6,8 @@ import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useHaptics } from "@/contexts/HapticsProvider";
+import ThemeSelector from "@/components/main/ThemeSelector";
+import { themeOptions } from "@/lib/constants";
 
 export default function ThemesScreen() {
   const { colors } = useAppTheme();
@@ -63,25 +65,8 @@ export default function ThemesScreen() {
           <ThemedText style={dynamicStyles.descriptionText}>
             Choose your preferred theme for the app. System theme will automatically switch between light and dark based on your device settings.
           </ThemedText>
+          <ThemeSelector />
 
-          <View style={styles.themeButtonsContainer}>
-            {themeOptions.map((option) => (
-              <Button
-                key={option.key}
-                mode={theme === option.key ? "contained" : "outlined"}
-                style={styles.themeButton}
-                onPress={() => {
-                  hapticImpact();
-                  setTheme(option.key);
-                }}
-                icon={option.icon}
-                contentStyle={{ flexDirection: "column", paddingVertical: 12 }}
-                labelStyle={{ fontSize: 14, marginTop: 4 }}
-              >
-                {option.label}
-              </Button>
-            ))}
-          </View>
         </View>
 
         {/* Current Selection Info */}
@@ -125,34 +110,6 @@ const styles = StyleSheet.create({
   },
   sectionIcon: {
     marginRight: 12,
-  },
-  themeButtonsContainer: {
-    flexDirection: "row",
-    gap: 12,
-    marginTop: 8,
-  },
-  themeButton: {
-    flex: 1,
-  },
+  }
 })
 
-const themeOptions = [
-  {
-    key: "light" as const,
-    label: "Light",
-    icon: "weather-sunny",
-    description: "Always use light theme",
-  },
-  {
-    key: "dark" as const,
-    label: "Dark",
-    icon: "weather-night",
-    description: "Always use dark theme",
-  },
-  {
-    key: "system" as const,
-    label: "System",
-    icon: "theme-light-dark",
-    description: "Follow system preference",
-  },
-];

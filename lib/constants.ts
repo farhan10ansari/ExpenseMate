@@ -1,5 +1,5 @@
 import { CategoryDB } from "@/db/schema";
-import { IconWithColor, PaymentMethod } from "./types";
+import { CurrencyOption, IconWithColor, LanguageOption, PaymentMethod } from "./types";
 
 type CategoryData = Omit<CategoryDB, 'type' | 'enabled' | 'isCustom'>
 
@@ -250,3 +250,71 @@ export const ICON_COLORS: IconWithColor[] = [
     { icon: 'flag', color: '#61a9daff' },
     { icon: 'shield', color: '#7dddb0ff' }
 ] as const;
+
+
+export const themeOptions = [
+    {
+        key: "light" as const,
+        label: "Light",
+        icon: "weather-sunny",
+        description: "Always use light theme",
+    },
+    {
+        key: "dark" as const,
+        label: "Dark",
+        icon: "weather-night",
+        description: "Always use dark theme",
+    },
+    {
+        key: "system" as const,
+        label: "System",
+        icon: "theme-light-dark",
+        description: "Follow system preference",
+    },
+];
+
+
+export const LANGUAGE_OPTIONS: LanguageOption[] = [
+  {
+    key: "english",
+    label: "English",
+    description: "Default language",
+    available: true,
+  },
+  {
+    key: "hindi",
+    label: "हिन्दी (Hindi)",
+    description: "Coming soon",
+    available: false,
+  },
+  {
+    key: "spanish",
+    label: "Español (Spanish)",
+    description: "Coming soon",
+    available: false,
+  },
+];
+
+export const CURRENCY_OPTIONS: CurrencyOption[] = [
+  {
+    key: "rupees",
+    label: "Indian Rupee (₹)",
+    description: "INR - Default currency",
+    symbol: "₹",
+    available: true,
+  },
+  {
+    key: "usd",
+    label: "US Dollar ($)",
+    description: "USD - Coming soon",
+    symbol: "$",
+    available: false,
+  },
+  {
+    key: "euro",
+    label: "Euro (€)",
+    description: "EUR - Coming soon",
+    symbol: "€",
+    available: false,
+  },
+];

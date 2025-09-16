@@ -118,3 +118,16 @@ export type Income = {
 // Settings types
 export type Language = "english" | "hindi" | "spanish";
 export type Currency = "rupees" | "usd" | "euro";
+
+export interface SettingOption {
+  label: string;
+  description: string;
+  available: boolean;
+}
+export interface LanguageOption extends SettingOption {
+  key: Language;
+}
+export interface CurrencyOption extends SettingOption {
+  key: Currency;
+  symbol: string;
+}

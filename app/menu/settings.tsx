@@ -1,4 +1,4 @@
-import { AppState, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
@@ -7,66 +7,11 @@ import { List, Switch } from "react-native-paper";
 import useSettings from "@/hooks/settings/useSettings";
 import { Currency, Language } from "@/lib/types";
 import { useLocalAuth } from "@/contexts/LocalAuthProvider";
-import { useEffect } from "react";
-
-interface SettingOption {
-  label: string;
-  description: string;
-  available: boolean;
-}
-interface LanguageOption extends SettingOption {
-  key: Language;
-}
-interface CurrencyOption extends SettingOption {
-  key: Currency;
-  symbol: string;
-}
-
-const LANGUAGE_OPTIONS: LanguageOption[] = [
-  {
-    key: "english",
-    label: "English",
-    description: "Default language",
-    available: true,
-  },
-  {
-    key: "hindi",
-    label: "हिन्दी (Hindi)",
-    description: "Coming soon",
-    available: false,
-  },
-  {
-    key: "spanish",
-    label: "Español (Spanish)",
-    description: "Coming soon",
-    available: false,
-  },
-];
-
-const CURRENCY_OPTIONS: CurrencyOption[] = [
-  {
-    key: "rupees",
-    label: "Indian Rupee (₹)",
-    description: "INR - Default currency",
-    symbol: "₹",
-    available: true,
-  },
-  {
-    key: "usd",
-    label: "US Dollar ($)",
-    description: "USD - Coming soon",
-    symbol: "$",
-    available: false,
-  },
-  {
-    key: "euro",
-    label: "Euro (€)",
-    description: "EUR - Coming soon",
-    symbol: "€",
-    available: false,
-  },
-];
-
+import usePersistentAppStore from "@/stores/usePersistentAppStore";
+import SettingSwitchListItem from "@/components/main/SettingSwitchListItem";
+import SettingOptionListItem from "@/components/main/SettingOptionListItem";
+import { CURRENCY_OPTIONS, LANGUAGE_OPTIONS } from "@/lib/constants";
+import SettingButton from "@/components/main/SettingButton";
 
 
 // UI Components
@@ -130,169 +75,6 @@ const SettingSection = ({ icon, title, description, children }: SettingSectionPr
       </ThemedText>
       {children}
     </View>
-  );
-};
-
-interface OptionListItemProps {
-  option: LanguageOption | CurrencyOption;
-  isSelected: boolean;
-  onPress: () => void;
-  colors: any;
-  leftIcon?: string;
-}
-
-const OptionListItem = ({ option, isSelected, onPress, colors, leftIcon }: OptionListItemProps) => {
-  const styles = StyleSheet.create({
-    listItem: {
-      paddingHorizontal: 0,
-      paddingVertical: 8,
-      backgroundColor: colors.inverseOnSurface,
-      borderRadius: 8,
-      marginBottom: 8,
-    },
-    listItemTitle: {
-      fontSize: 16,
-      fontWeight: "500",
-      color: colors.text,
-    },
-    listItemDescription: {
-      fontSize: 14,
-      color: colors.muted,
-    },
-    comingSoonBadge: {
-      backgroundColor: colors.primaryContainer,
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-      borderRadius: 12,
-      alignSelf: "flex-start",
-    },
-    checkIconContainer: {
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-      borderRadius: 12,
-      alignSelf: "flex-start",
-    },
-    comingSoonText: {
-      color: colors.onPrimaryContainer,
-      fontSize: 12,
-      fontWeight: "600",
-    },
-  });
-
-  return (
-    <List.Item
-      key={option.key}
-      title={option.label}
-      description={option.description}
-      titleStyle={[
-        styles.listItemTitle,
-        !option.available && { opacity: 0.6 }
-      ]}
-      descriptionStyle={styles.listItemDescription}
-      style={styles.listItem}
-      left={(props) => (
-        <List.Icon
-          {...props}
-          icon={leftIcon || (option.available ? "check-circle" : "clock-outline")}
-          color={option.available ? colors.primary : colors.muted}
-        />
-      )}
-      right={() => (
-        <>
-          {isSelected && option.available && (
-            <View style={styles.checkIconContainer}>
-              <MaterialCommunityIcons
-                name="check"
-                size={20}
-                color={colors.primary}
-              />
-            </View>
-          )}
-          {!option.available && (
-            <View style={styles.comingSoonBadge}>
-              <ThemedText style={styles.comingSoonText}>
-                Soon
-              </ThemedText>
-            </View>
-          )}
-        </>
-      )}
-      onPress={onPress}
-      disabled={!option.available}
-    />
-  );
-};
-
-interface SwitchListItemProps {
-  title: string;
-  description: string;
-  value: boolean;
-  onValueChange: (value: boolean) => void;
-  leftIcon: string;
-  disabled?: boolean;
-  onPress?: () => void;
-}
-
-const SwitchListItem = ({
-  title,
-  description,
-  value,
-  onValueChange,
-  leftIcon,
-  disabled = false,
-  onPress
-}: SwitchListItemProps) => {
-  const { colors } = useAppTheme();
-  const styles = StyleSheet.create({
-    listItem: {
-      paddingHorizontal: 0,
-      paddingVertical: 8,
-      backgroundColor: colors.inverseOnSurface,
-      borderRadius: 8,
-      marginBottom: 8,
-    },
-    listItemTitle: {
-      fontSize: 16,
-      fontWeight: "500",
-      color: colors.text,
-    },
-    listItemDescription: {
-      fontSize: 14,
-      color: colors.muted,
-    },
-  });
-
-  return (
-    <List.Item
-      title={title}
-      description={description}
-      titleStyle={[
-        styles.listItemTitle,
-        disabled && { opacity: 0.6 }
-      ]}
-      descriptionStyle={styles.listItemDescription}
-      style={styles.listItem}
-      left={(props) => (
-        <List.Icon
-          {...props}
-          icon={leftIcon}
-          color={value && !disabled ? colors.primary : colors.muted}
-        />
-      )}
-      right={() => (
-        <Switch
-          value={value && !disabled}
-          onValueChange={onValueChange}
-          disabled={disabled}
-          style={{
-            transform: [{ scale: 0.9 }],
-            opacity: disabled ? 0.6 : 1
-          }}
-        />
-      )}
-      onPress={onPress || (() => !disabled && onValueChange(!value))}
-      disabled={disabled}
-    />
   );
 };
 
@@ -438,7 +220,7 @@ const LanguageSection = ({ language, handleLanguageChange }: LanguageSectionProp
       description="Select your preferred language for the app interface. More languages will be added in future updates."
     >
       {LANGUAGE_OPTIONS.map((option) => (
-        <OptionListItem
+        <SettingOptionListItem
           key={option.key}
           option={option}
           isSelected={language === option.key}
@@ -465,7 +247,7 @@ const CurrencySection = ({ currency, handleCurrencyChange }: CurrencySectionProp
       description="Choose your default currency for displaying amounts. Additional currencies will be supported soon."
     >
       {CURRENCY_OPTIONS.map((option) => (
-        <OptionListItem
+        <SettingOptionListItem
           key={option.key}
           option={option}
           isSelected={currency === option.key}
@@ -483,14 +265,14 @@ interface HapticsSectionProps {
   handleHapticsToggle: (enabled: boolean) => void;
 }
 
-const HapticsSection = ({ haptics, handleHapticsToggle }: HapticsSectionProps) => {
+export const HapticsSection = ({ haptics, handleHapticsToggle }: HapticsSectionProps) => {
   return (
     <SettingSection
       icon="vibrate"
       title="Haptic Feedback"
       description="Control vibration feedback when interacting with the app."
     >
-      <SwitchListItem
+      <SettingSwitchListItem
         title="Enable Haptic Feedback"
         description="Feel vibrations when using the app"
         value={haptics.enabled}
@@ -500,6 +282,7 @@ const HapticsSection = ({ haptics, handleHapticsToggle }: HapticsSectionProps) =
     </SettingSection>
   );
 };
+
 
 const ComingSoonSection = () => {
   const { colors } = useAppTheme();
@@ -535,8 +318,11 @@ const ComingSoonSection = () => {
   );
 };
 
+
+
 // Main Component
 export default function SettingsScreen() {
+  const updateUIFlag = usePersistentAppStore(state => state.updateUIFlag);
   const {
     language,
     currency,
@@ -545,6 +331,8 @@ export default function SettingsScreen() {
     handleCurrencyChange,
     handleHapticsToggle,
   } = useSettings();
+
+
 
   const styles = StyleSheet.create({
     container: {
@@ -556,6 +344,16 @@ export default function SettingsScreen() {
   return (
     <ScreenWrapper background="card" withScrollView>
       <View style={styles.container}>
+        <SettingSection
+          icon="account-cog-outline"
+          title="Show Onboarding"
+          description="Revisit the onboarding screens to learn about the app features and setup."
+        >
+          <SettingButton
+            title="Revisit Onboarding"
+            onPress={() => updateUIFlag('onboardingCompleted', false)}
+          />
+        </SettingSection>
         <CurrencySection
           currency={currency}
           handleCurrencyChange={handleCurrencyChange}
