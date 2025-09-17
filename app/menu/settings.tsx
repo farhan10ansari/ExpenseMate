@@ -12,6 +12,7 @@ import SettingSwitchListItem from "@/components/main/SettingSwitchListItem";
 import SettingOptionListItem from "@/components/main/SettingOptionListItem";
 import { CURRENCY_OPTIONS, LANGUAGE_OPTIONS } from "@/lib/constants";
 import SettingButton from "@/components/main/SettingButton";
+import SettingSecureLoginToggle from "@/components/main/SettingSecureLoginToggle";
 
 
 // UI Components
@@ -81,12 +82,6 @@ const SettingSection = ({ icon, title, description, children }: SettingSectionPr
 
 function SecureLoginSection() {
   const { colors } = useAppTheme();
-  const {
-    biometricLogin,
-    isAuthenticationSupported,
-    handleBiometricLoginToggle,
-  } = useLocalAuth();
-
   const styles = StyleSheet.create({
     sectionContainer: {
       backgroundColor: colors.surface,
@@ -118,22 +113,6 @@ function SecureLoginSection() {
       lineHeight: 20,
       marginBottom: 16,
     },
-    listItem: {
-      paddingHorizontal: 0,
-      paddingVertical: 8,
-      backgroundColor: colors.inverseOnSurface,
-      borderRadius: 8,
-      marginBottom: 8,
-    },
-    listItemTitle: {
-      fontSize: 16,
-      fontWeight: "500",
-      color: colors.text,
-    },
-    listItemDescription: {
-      fontSize: 14,
-      color: colors.muted,
-    },
   });
 
   return (
@@ -149,61 +128,14 @@ function SecureLoginSection() {
           Secure Login
         </ThemedText>
       </View>
-
       <ThemedText style={styles.descriptionText}>
         Use fingerprint, face recognition, or device passcode to secure your app login.
       </ThemedText>
-
-      <List.Item
-        title="Enable Secure Login"
-        description={
-          !isAuthenticationSupported
-            ? "Secure Login not supported on this device. Please set up device security (PIN, Pattern, Password, or Biometrics) to enable."
-            : "Use biometrics or device lock to unlock the app"
-        }
-        titleStyle={[
-          styles.listItemTitle,
-          !isAuthenticationSupported && { opacity: 0.6 }
-        ]}
-        descriptionStyle={styles.listItemDescription}
-        style={styles.listItem}
-        descriptionNumberOfLines={5}
-        left={(props) => (
-          <List.Icon
-            {...props}
-            icon={
-              isAuthenticationSupported
-                ? (biometricLogin ? "fingerprint" : "fingerprint-off")
-                : "fingerprint-off"
-            }
-            color={
-              (isAuthenticationSupported && biometricLogin)
-                ? colors.primary
-                : colors.muted
-            }
-          />
-        )}
-        right={() => (
-          <Switch
-            value={biometricLogin}
-            onValueChange={handleBiometricLoginToggle}
-            disabled={!isAuthenticationSupported}
-            style={{
-              transform: [{ scale: 0.9 }],
-              opacity: (!isAuthenticationSupported) ? 0.6 : 1
-            }}
-          />
-        )}
-        onPress={() => {
-          if (isAuthenticationSupported) {
-            handleBiometricLoginToggle(!biometricLogin);
-          }
-        }}
-        disabled={!isAuthenticationSupported}
-      />
+      <SettingSecureLoginToggle />
     </View>
   );
 }
+
 
 interface LanguageSectionProps {
   language: Language;

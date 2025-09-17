@@ -79,7 +79,13 @@ export default function OnboardingScreen() {
     hapticNotify('success');
     updateUIFlag('onboardingCompleted', true);
     log.info("Onboarding completed, navigating to main app");
-  }, [router]);
+  }, [updateUIFlag, hapticNotify]);
+
+  const onSkip = useCallback(() => {
+    hapticNotify('success');
+    updateUIFlag('onboardingCompleted', true);
+    log.info("Onboarding skipped, navigating to main app");
+  }, [updateUIFlag, hapticNotify]);
 
 
   return (
@@ -87,7 +93,7 @@ export default function OnboardingScreen() {
       <View style={{ alignItems: 'flex-end', marginTop: 20, marginRight: 10 }}>
         <Button
           mode="text"
-          onPress={onFinish}
+          onPress={onSkip}
           labelStyle={{ color: theme.colors.primary, fontSize: 16 }}
         >
           Skip

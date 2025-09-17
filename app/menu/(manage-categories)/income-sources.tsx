@@ -39,7 +39,9 @@ export default function IncomeSourcesScreen() {
             // Then, delete the source from the store
             queryClient.invalidateQueries({ queryKey: ['incomes'] });
             queryClient.invalidateQueries({ queryKey: ['income'] });
-            queryClient.invalidateQueries({ queryKey: ['stats', 'income'] });
+            queryClient.invalidateQueries({ queryKey: ['stats', 'incomes'] });
+            queryClient.invalidateQueries({ queryKey: ["stats", "available-periods"] });
+
             const { error } = await tryCatch(deleteCategory("income-source", source));
             if (error) {
                 console.error("Error deleting income source:", error);

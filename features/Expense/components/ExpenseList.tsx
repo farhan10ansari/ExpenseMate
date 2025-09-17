@@ -107,11 +107,11 @@ export default function ExpensesList({
         try {
             await refetch();
             // Also refresh available months
-            await queryClient.refetchQueries({ queryKey: ["availableExpenseMonths"] });
+            await queryClient.refetchQueries({ queryKey: ["expenses", "availableExpenseMonths"] });
         } finally {
             setIsRefreshing(false);
         }
-    }, [refetch, hapticImpact, queryClient]);
+    }, [hapticImpact, refetch, queryClient]);
 
     const handleEndReached = useCallback(() => {
         if (hasNextPage && !isFetchingNextPage && selectedOffsetMonth === null) {

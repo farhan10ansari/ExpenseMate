@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Button, IconButton, Menu } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Href, useNavigation, useRouter } from 'expo-router';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { ScreenWrapper } from '@/components/main/ScreenWrapper';
 import PeriodCard from '@/features/Stats/components/PeriodCard';
@@ -24,16 +24,15 @@ export default function HomeScreen() {
   const { colors } = useAppTheme();
   const expensesPeriod = useStatsStore((state) => state.period);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const queryClient = useQueryClient();
   const { hapticImpact } = useHaptics();
 
-  const { data: expenseStats, isLoading: isExpenseStatsLoading } = useQuery({
-    queryKey: ['stats', 'expense', 'stats-in-a-period', expensesPeriod],
+  const { data: expenseStats, isLoading: isExpenseStatsLoading, refetch: refetchExpenseStats } = useQuery({
+    queryKey: ['stats', 'expenses', 'stats-in-a-period', expensesPeriod],
     queryFn: () => getExpenseStatsByPeriod(expensesPeriod),
   });
 
-  const { data: incomeStats, isLoading: isIncomeStatsLoading } = useQuery({
-    queryKey: ['stats', 'income', 'stats-in-a-period', expensesPeriod],
+  const { data: incomeStats, isLoading: isIncomeStatsLoading, refetch: refetchIncomeStats } = useQuery({
+    queryKey: ['stats', 'incomes', 'stats-in-a-period', expensesPeriod],
     queryFn: () => getIncomeStatsByPeriod(expensesPeriod),
   });
 
@@ -42,12 +41,8 @@ export default function HomeScreen() {
     hapticImpact();
     try {
       await Promise.all([
-        queryClient.refetchQueries({
-          queryKey: ['stats', 'expense'],
-        }),
-        queryClient.refetchQueries({
-          queryKey: ['stats', 'income'],
-        }),
+        refetchExpenseStats(),
+        refetchIncomeStats(),
       ]);
     } finally {
       setIsRefreshing(false);

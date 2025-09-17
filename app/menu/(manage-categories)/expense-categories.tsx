@@ -40,7 +40,9 @@ export default function ExpenseCategoriesScreen() {
             // Then, delete the category from the store
             queryClient.invalidateQueries({ queryKey: ['expenses'] });
             queryClient.invalidateQueries({ queryKey: ['expense'] });
-            queryClient.invalidateQueries({ queryKey: ['stats', 'expense'] });
+            queryClient.invalidateQueries({ queryKey: ['stats', 'expenses'] });
+            queryClient.invalidateQueries({ queryKey: ["stats", "available-periods"] });
+
             const { error } = await tryCatch(deleteCategory("expense-category", category));
             if (error) {
                 console.error("Error deleting expense category:", error);

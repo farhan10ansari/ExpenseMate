@@ -11,7 +11,7 @@ interface LocalAuthContextType {
   biometricLogin: boolean;
   isAuthenticated: boolean;
   isAuthenticationSupported: boolean;
-  handleBiometricLoginToggle: (enabled: boolean) => Promise<void>;
+  handleBiometricLoginToggle: (enabled: boolean, showSuccessSnackbar?: boolean) => Promise<void>;
   refresh: () => void;
 }
 
@@ -112,7 +112,7 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
     }
   }, []);
 
-  const handleBiometricLoginToggle = useCallback(async (enabled: boolean) => {
+  const handleBiometricLoginToggle = useCallback(async (enabled: boolean, showSuccessSnackbar: boolean = true) => {
     if (enabled) {
       try {
         log.debug("LocalAuth: enable secure login - start");
@@ -125,7 +125,9 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
 
         if (authResult.success) {
           updateSettings('biometricLogin', true);
-          handleShowSnackbar('Secure login enabled', 'success');
+          if (showSuccessSnackbar) {
+            handleShowSnackbar('Secure login enabled', 'success');
+          }
           log.info("LocalAuth: enable secure login - success");
         } else {
           refetch()
@@ -140,7 +142,9 @@ export const LocalAuthProvider = ({ children }: { children: React.ReactNode }) =
     } else {
       // Disable secure login
       updateSettings('biometricLogin', false);
-      handleShowSnackbar('Secure login disabled', 'info');
+      if (showSuccessSnackbar) {
+        handleShowSnackbar('Secure login disabled', 'info');
+      }
       log.info("LocalAuth: secure login disabled");
     }
   }, [updateSettings, refetch, handleShowSnackbar]);

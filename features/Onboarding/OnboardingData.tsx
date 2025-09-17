@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import ThemeSelector from '@/components/main/ThemeSelector';
 import useSettings from '@/hooks/settings/useSettings';
 import SettingSwitchListItem from '@/components/main/SettingSwitchListItem';
+import SettingSecureLoginToggle from '@/components/main/SettingSecureLoginToggle';
 
 export interface OnboardingStep {
   id: string;
@@ -48,14 +49,14 @@ export const useOnboardingData = () => {
       type: 'intro',
       title: 'Track Every Transaction',
       description: 'Easily manage your incomes and expenses with customizable categories and payment methods. All data stored locally for your privacy.',
-      icon: <Icon source={"chart-bar"} size={120} color={theme.colors.primary} />
+      icon: <Icon source="chart-bar" size={120} color={theme.colors.primary} />
     },
     {
       id: '3',
       type: 'intro',
       title: 'Smart Insights',
       description: 'Analyze spending patterns and track your financial progress with our intuitive, fast interface. View detailed statistics across different time periods.',
-      icon: <Icon source={"lightbulb-on-outline"} size={120} color={"orange"} />
+      icon: <Icon source="lightbulb-on-outline" size={120} color={"orange"} />
     },
     {
       id: '4',
@@ -64,7 +65,7 @@ export const useOnboardingData = () => {
       description: 'Choose your preferred theme for the app. System theme will automatically switch between light and dark based on your device settings.',
       settingKey: 'theme',
       component: <ThemeSelector />,
-      icon: <Icon source={"palette-outline"} size={120} color={theme.colors.primary} />
+      icon: <Icon source="palette-outline" size={120} color={theme.colors.primary} />
     },
     // {
     //   id: '5',
@@ -108,10 +109,20 @@ export const useOnboardingData = () => {
         onValueChange={handleHapticsToggle}
         leftIcon={haptics.enabled ? "vibrate" : "vibrate-off"}
       />,
-      icon: <Icon source={"vibrate"} size={120} color={theme.colors.primary} />,
+      icon: <Icon source="vibrate" size={120} color={theme.colors.primary} />,
     },
     {
       id: '8',
+      type: 'setting',
+      title: 'Secure Login',
+      description: 'Enable secure login using biometrics or device passcode.',
+      settingKey: 'secureLogin',
+      component: <SettingSecureLoginToggle showSuccessSnackbar={false} />,
+
+      icon: <Icon source="fingerprint" size={120} color={theme.colors.primary} />,
+    },
+    {
+      id: '9',
       type: 'intro',
       title: 'All Set!',
       description: `You're all set to take control of your finances with ${APP_NAME}. Let's get started!`,

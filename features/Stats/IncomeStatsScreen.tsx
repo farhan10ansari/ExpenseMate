@@ -1,7 +1,7 @@
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import { getIncomeStatsByPeriod } from "@/repositories/IncomeRepo";
 import useStatsStore from "@/stores/useStatsStore";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import PeriodCard from "./components/PeriodCard";
@@ -18,18 +18,17 @@ export default function IncomeStatsScreen() {
     const incomesPeriod = useStatsStore((state) => state.period);
     const insets = useSafeAreaInsets();
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const queryClient = useQueryClient();
 
     // Income stats query
-    const { data: incomeStats } = useQuery({
-        queryKey: ['stats', 'income', 'stats-in-a-period', incomesPeriod],
+    const { data: incomeStats, refetch } = useQuery({
+        queryKey: ['stats', 'incomes', 'stats-in-a-period', incomesPeriod],
         queryFn: () => getIncomeStatsByPeriod(incomesPeriod),
     });
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
         try {
-            await queryClient.refetchQueries({ queryKey: ['stats', 'income'] });
+            await refetch();
         } finally {
             setIsRefreshing(false);
         }

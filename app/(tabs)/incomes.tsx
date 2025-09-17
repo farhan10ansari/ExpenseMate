@@ -52,7 +52,8 @@ export default function IncomesScreen() {
     isLoading,
     isFetchingNextPage,
     isError,
-    error
+    error,
+    refetch
   } = useInfiniteQuery({
     queryKey: ["incomes"],
     queryFn: ({ pageParam = 0 }) => getIncomesByMonthPaginated({ offsetMonth: pageParam }),
@@ -86,11 +87,11 @@ export default function IncomesScreen() {
     setIsRefreshing(true);
     hapticImpact();
     try {
-      await queryClient.refetchQueries({ queryKey: ["incomes"] });
+      await refetch();
     } finally {
       setIsRefreshing(false);
     }
-  }, [hapticImpact, queryClient]);
+  }, [hapticImpact, refetch]);
 
   const handleEndReached = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {

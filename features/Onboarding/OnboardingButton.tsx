@@ -69,11 +69,11 @@ export default function OnboardingButton({
   }, [currentIndex, length]);
 
   const onPress = useCallback(() => {
-    hapticImpact();
     log.info("OnboardingButton pressed", { currentIndex: currentIndex.value, length });
     if (currentIndex.value === length - 1) {
       onFinish();
     } else {
+      hapticImpact();
       flatListRef?.current?.scrollToIndex({
         index: currentIndex.value + 1,
         animated: true,

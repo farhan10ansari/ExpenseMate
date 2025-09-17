@@ -12,6 +12,7 @@ import { useHaptics } from "@/contexts/HapticsProvider";
 import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
 import { validateExpenseData, validateIncomeData } from "@/lib/validations";
 import { Expense, Income } from "@/lib/types";
+import { CustomSnackbarProps } from "@/components/ui/CustomSnackbar";
 
 export function useTransactionForm() {
     const navigation = useNavigation();
@@ -21,17 +22,17 @@ export function useTransactionForm() {
     const { keyboardHeight, setKeyboardHeight } = useKeyboardHeight();
     const { showSnackbar } = useSnackbar();
 
-    const showErrorSnackbar = (message: string) => {
+    const showErrorSnackbar = (message: string, position: CustomSnackbarProps["position"] = "bottom") => {
         showSnackbar({
             message,
             duration: 3000,
             type: 'error',
-            position: 'bottom',
+            position,
             offset: keyboardHeight,
         });
     };
 
-    const showSuccessAndNavigate = (message: string, queryKeys: string[], delay = 300) => {
+    const showSuccessAndNavigate = (message: string, position: CustomSnackbarProps["position"] = "bottom", delay = 300) => {
         hapticNotify('success');
         setKeyboardHeight(0);
         navigation.goBack();
@@ -41,15 +42,9 @@ export function useTransactionForm() {
             actionLabel: 'Dismiss',
             actionIcon: 'close',
             type: 'success',
-            position: 'bottom',
-            offset: 70,
+            position,
+            offset: position === 'top' ? 10 : 70,
         }, delay);
-
-        // Invalidate related queries
-        queryKeys.forEach(key => {
-            queryClient.invalidateQueries({ queryKey: [key] });
-        });
-        queryClient.invalidateQueries({ queryKey: ['stats'] });
     };
 
     // Check if expense data has changed
@@ -103,7 +98,10 @@ export function useTransactionForm() {
             return;
         }
 
-        showSuccessAndNavigate('Expense added', ['expenses']);
+        showSuccessAndNavigate('Expense added');
+        queryClient.invalidateQueries({ queryKey: ['expenses'] });
+        queryClient.invalidateQueries({ queryKey: ['stats', 'expenses'] });
+        queryClient.invalidateQueries({ queryKey: ["stats", "available-periods"] });
         // sortExpenseCategoriesByUsage();
     };
 
@@ -134,7 +132,10 @@ export function useTransactionForm() {
             return;
         }
 
-        showSuccessAndNavigate('Income added', ['incomes']);
+        showSuccessAndNavigate('Income added');
+        queryClient.invalidateQueries({ queryKey: ['incomes'] });
+        queryClient.invalidateQueries({ queryKey: ['stats', 'incomes'] });
+        queryClient.invalidateQueries({ queryKey: ["stats", "available-periods"] });
         // sortIncomeSourcesByUsage();
     };
 
@@ -169,7 +170,12 @@ export function useTransactionForm() {
             return;
         }
 
-        showSuccessAndNavigate('Expense updated', ['expenses', `expense-${id}`, 'stats']);
+        showSuccessAndNavigate('Expense updated', 'top');
+        queryClient.invalidateQueries({ queryKey: ['expenses'] });
+        queryClient.invalidateQueries({ queryKey: ['stats', 'expenses'] });
+        queryClient.invalidateQueries({ queryKey: ["stats", "available-periods"] });
+        queryClient.invalidateQueries({ queryKey: ['expense', id] })
+
     };
 
     const handleUpdateIncome = async (id: string, existingIncome: Income, updatedIncome: IncomeData) => {
@@ -205,7 +211,11 @@ export function useTransactionForm() {
             return;
         }
 
-        showSuccessAndNavigate('Income updated', ['incomes', `income-${id}`, 'stats']);
+        showSuccessAndNavigate('Income updated', 'top');
+        queryClient.invalidateQueries({ queryKey: ['incomes'] });
+        queryClient.invalidateQueries({ queryKey: ['stats', 'incomes'] });
+        queryClient.invalidateQueries({ queryKey: ["stats", "available-periods"] });
+        queryClient.invalidateQueries({ queryKey: ['income', id] })
     };
 
     return {
