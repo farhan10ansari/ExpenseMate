@@ -100,6 +100,7 @@ export default function IncomeInfoScreen() {
             hapticNotify("success");
             queryClient.invalidateQueries({ queryKey: ['incomes'] });
             queryClient.invalidateQueries({ queryKey: ['stats', 'incomes'] });
+            queryClient.invalidateQueries({ queryKey: ["stats", "available-periods"] });
             navigation.goBack();
 
             showSnackbar({

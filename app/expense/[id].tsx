@@ -104,6 +104,7 @@ export default function ExpenseInfoScreen() {
             hapticNotify("success");
             queryClient.invalidateQueries({ queryKey: ['expenses'] });
             queryClient.invalidateQueries({ queryKey: ['stats', 'expenses'] });
+            queryClient.invalidateQueries({ queryKey: ["stats", "available-periods"] });
             navigation.goBack()
             showSnackbar({
                 message: 'Expense deleted',
