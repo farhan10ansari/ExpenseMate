@@ -42,7 +42,6 @@ export default function RootLayout() {
   // drizzle studio for debugging during development
   useDrizzleStudio(expoClient);
   const theme = usePersistentAppStore(state => state.theme);
-  const onboardingCompleted = usePersistentAppStore(state => state.uiFlags.onboardingCompleted);
   // drizzle migrations for schema changes
   const { success, error } = useMigrations(db, migrations);
 
@@ -106,11 +105,7 @@ export default function RootLayout() {
                 <LocalAuthProvider>
                   <CategoryDataProvider>
                     <MainLayout />
-                    {
-                      !onboardingCompleted && <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000 }}>
-                        <OnboardingScreen />
-                      </View>
-                    }
+                    <OnboardingScreen />
                     <GlobalLevelComponents />
                     <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
                   </CategoryDataProvider>

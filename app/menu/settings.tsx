@@ -276,6 +276,15 @@ export default function SettingsScreen() {
   return (
     <ScreenWrapper background="card" withScrollView>
       <View style={styles.container}>
+        <CurrencySection
+          currency={currency}
+          handleCurrencyChange={handleCurrencyChange}
+        />
+        <HapticsSection
+          haptics={haptics}
+          handleHapticsToggle={handleHapticsToggle}
+        />
+        <SecureLoginSection />
         <SettingSection
           icon="account-cog-outline"
           title="Show Onboarding"
@@ -286,15 +295,6 @@ export default function SettingsScreen() {
             onPress={() => updateUIFlag('onboardingCompleted', false)}
           />
         </SettingSection>
-        <CurrencySection
-          currency={currency}
-          handleCurrencyChange={handleCurrencyChange}
-        />
-        <HapticsSection
-          haptics={haptics}
-          handleHapticsToggle={handleHapticsToggle}
-        />
-        <SecureLoginSection />
         <LanguageSection
           language={language}
           handleLanguageChange={handleLanguageChange}

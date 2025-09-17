@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 9999,
+        zIndex: 99999,
     },
     authContent: {
         padding: 48,

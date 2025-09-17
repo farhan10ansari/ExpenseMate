@@ -19,13 +19,14 @@ import { uiLog as log } from '@/lib/logger';
 
 export default function OnboardingScreen() {
   const theme = useTheme();
-  const router = useRouter();
   const x = useSharedValue(0);
   const flatListIndex = useSharedValue(0);
   const flatListRef = useAnimatedRef<Animated.FlatList<OnboardingStep>>();
   const updateUIFlag = usePersistentAppStore(state => state.updateUIFlag);
   const onboardingData = useOnboardingData();
   const { hapticNotify } = useHaptics();
+  const onboardingCompleted = usePersistentAppStore(state => state.uiFlags.onboardingCompleted);
+
 
   const [settings, setSettings] = useState({
     theme: 'system',
@@ -87,51 +88,61 @@ export default function OnboardingScreen() {
     log.info("Onboarding skipped, navigating to main app");
   }, [updateUIFlag, hapticNotify]);
 
-
+  if (onboardingCompleted) return null;
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <View style={{ alignItems: 'flex-end', marginTop: 20, marginRight: 10 }}>
-        <Button
-          mode="text"
-          onPress={onSkip}
-          labelStyle={{ color: theme.colors.primary, fontSize: 16 }}
-        >
-          Skip
-        </Button>
-      </View>
-
-      <Animated.FlatList
-        ref={flatListRef}
-        onScroll={scrollHandler}
-        scrollEventThrottle={16}
-        horizontal
-        pagingEnabled
-        data={onboardingData}
-        keyExtractor={(item) => item.id}
-        bounces={false}
-        showsHorizontalScrollIndicator={false}
-        renderItem={renderItem}
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={{
-          minimumViewTime: 300,
-          viewAreaCoveragePercentThreshold: 50,
-        }}
-      />
-
-      <View style={styles.bottomContainer}>
-        <PaginationDots length={onboardingData.length} x={x} />
-        <OnboardingButton
-          currentIndex={flatListIndex}
-          length={onboardingData.length}
-          flatListRef={flatListRef}
-          onFinish={onFinish}
+    <View style={styles.mainContainer}>
+      <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={{ alignItems: 'flex-end', marginTop: 20, marginRight: 10 }}>
+          <Button
+            mode="text"
+            onPress={onSkip}
+            labelStyle={{ color: theme.colors.primary, fontSize: 16 }}
+          >
+            Skip
+          </Button>
+        </View>
+        <Animated.FlatList
+          ref={flatListRef}
+          onScroll={scrollHandler}
+          scrollEventThrottle={16}
+          horizontal
+          pagingEnabled
+          data={onboardingData}
+          keyExtractor={(item) => item.id}
+          bounces={false}
+          showsHorizontalScrollIndicator={false}
+          renderItem={renderItem}
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={{
+            minimumViewTime: 300,
+            viewAreaCoveragePercentThreshold: 50,
+          }}
         />
-      </View>
-    </SafeAreaView>
+
+        <View style={styles.bottomContainer}>
+          <PaginationDots length={onboardingData.length} x={x} />
+          <OnboardingButton
+            currentIndex={flatListIndex}
+            length={onboardingData.length}
+            flatListRef={flatListRef}
+            onFinish={onFinish}
+          />
+        </View>
+      </SafeAreaView>
+    </View>
+
   );
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 9999,
+  },
   container: {
     flex: 1,
   },
