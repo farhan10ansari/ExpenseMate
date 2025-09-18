@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import { View, StyleSheet, ViewToken } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, useTheme } from 'react-native-paper';
-import { useRouter } from 'expo-router';
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -18,6 +17,12 @@ import { uiLog as log } from '@/lib/logger';
 
 
 export default function OnboardingScreen() {
+  const onboardingCompleted = usePersistentAppStore(state => state.uiFlags.onboardingCompleted);
+  if (onboardingCompleted) return null;
+  return <OnboardingSteps />;
+}
+
+export function OnboardingSteps() {
   const theme = useTheme();
   const x = useSharedValue(0);
   const flatListIndex = useSharedValue(0);
@@ -25,7 +30,6 @@ export default function OnboardingScreen() {
   const updateUIFlag = usePersistentAppStore(state => state.updateUIFlag);
   const onboardingData = useOnboardingData();
   const { hapticNotify } = useHaptics();
-  const onboardingCompleted = usePersistentAppStore(state => state.uiFlags.onboardingCompleted);
 
 
   const [settings, setSettings] = useState({
@@ -88,7 +92,6 @@ export default function OnboardingScreen() {
     log.info("Onboarding skipped, navigating to main app");
   }, [updateUIFlag, hapticNotify]);
 
-  if (onboardingCompleted) return null;
   return (
     <View style={styles.mainContainer}>
       <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
