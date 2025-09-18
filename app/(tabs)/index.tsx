@@ -1,7 +1,6 @@
 import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, IconButton, Menu } from 'react-native-paper';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Button, Icon, IconButton, Menu } from 'react-native-paper';
 import { Href, useNavigation, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 
@@ -144,7 +143,7 @@ const MoreStatsButton = React.memo(function MoreStatsButton({
       <Button
         mode="text"
         compact
-        icon={() => <MaterialIcons name="chevron-right" size={20} color={color} />}
+        icon={() => <Icon source="chevron-right" size={20} color={color} />}
         contentStyle={styles.moreStatsButtonContent}
         labelStyle={styles.moreStatsButtonLabel}
         textColor={color}

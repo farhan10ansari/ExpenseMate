@@ -1,7 +1,6 @@
 import { CurrencyOption, LanguageOption } from "@/lib/types";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { StyleSheet, View } from "react-native";
-import { List } from "react-native-paper";
+import { Icon, List } from "react-native-paper";
 import { ThemedText } from "@/components/base/ThemedText";
 
 interface SettingOptionListItemProps {
@@ -72,8 +71,8 @@ const SettingOptionListItem = ({ option, isSelected, onPress, colors, leftIcon }
         <>
           {isSelected && option.available && (
             <View style={styles.checkIconContainer}>
-              <MaterialCommunityIcons
-                name="check"
+              <Icon
+                source="check"
                 size={20}
                 color={colors.primary}
               />

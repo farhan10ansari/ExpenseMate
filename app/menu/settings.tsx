@@ -2,20 +2,17 @@ import { StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { List, Switch } from "react-native-paper";
 import useSettings from "@/hooks/settings/useSettings";
 import { Currency, Language } from "@/lib/types";
-import { useLocalAuth } from "@/contexts/LocalAuthProvider";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import SettingSwitchListItem from "@/components/main/SettingSwitchListItem";
 import SettingOptionListItem from "@/components/main/SettingOptionListItem";
 import { CURRENCY_OPTIONS, LANGUAGE_OPTIONS } from "@/lib/constants";
 import SettingButton from "@/components/main/SettingButton";
 import SettingSecureLoginToggle from "@/components/main/SettingSecureLoginToggle";
+import { Icon } from "react-native-paper";
 
 
-// UI Components
 interface SettingSectionProps {
   icon: string;
   title: string;
@@ -41,9 +38,7 @@ const SettingSection = ({ icon, title, description, children }: SettingSectionPr
       flexDirection: "row",
       alignItems: "center",
       marginBottom: 16,
-    },
-    sectionIcon: {
-      marginRight: 12,
+      gap: 12,
     },
     sectionTitle: {
       fontSize: 18,
@@ -61,11 +56,10 @@ const SettingSection = ({ icon, title, description, children }: SettingSectionPr
   return (
     <View style={styles.sectionContainer}>
       <View style={styles.sectionHeader}>
-        <MaterialCommunityIcons
-          name={icon as any}
+        <Icon
+          source={icon}
           size={24}
           color={colors.primary}
-          style={styles.sectionIcon}
         />
         <ThemedText style={styles.sectionTitle}>
           {title}
@@ -98,6 +92,7 @@ function SecureLoginSection() {
       flexDirection: "row",
       alignItems: "center",
       marginBottom: 16,
+      gap: 12,
     },
     sectionIcon: {
       marginRight: 12,
@@ -118,11 +113,10 @@ function SecureLoginSection() {
   return (
     <View style={styles.sectionContainer}>
       <View style={styles.sectionHeader}>
-        <MaterialCommunityIcons
-          name="fingerprint"
+        <Icon
+          source="fingerprint"
           size={24}
           color={colors.primary}
-          style={styles.sectionIcon}
         />
         <ThemedText style={styles.sectionTitle}>
           Secure Login

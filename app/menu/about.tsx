@@ -3,11 +3,11 @@ import { View, StyleSheet, Pressable } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import * as Linking from "expo-linking";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import { useHaptics } from "@/contexts/HapticsProvider";
 import { useSnackbar } from "@/contexts/GlobalSnackbarProvider";
+import { Icon } from "react-native-paper";
 
 const APP_NAME = process.env.EXPO_PUBLIC_APP_NAME;
 const APP_VERSION = process.env.EXPO_PUBLIC_APP_VERSION;
@@ -93,6 +93,7 @@ export default function AboutScreen() {
             flexDirection: "row",
             alignItems: "center",
             marginBottom: 16,
+            gap: 12,
         },
         sectionIcon: {
             marginRight: 12,
@@ -154,11 +155,10 @@ export default function AboutScreen() {
                 {/* App Information Section */}
                 <View style={styles.sectionContainer}>
                     <View style={styles.sectionHeader}>
-                        <MaterialCommunityIcons
-                            name="information-outline"
+                        <Icon
+                            source="information-outline"
                             size={24}
                             color={colors.primary}
-                            style={styles.sectionIcon}
                         />
                         <ThemedText style={styles.sectionTitle}>
                             App Information
@@ -166,11 +166,10 @@ export default function AboutScreen() {
                     </View>
 
                     <View style={styles.appInfoContainer}>
-                        <MaterialCommunityIcons
-                            name="wallet"
+                        <Icon
+                            source="wallet"
                             size={48}
                             color={colors.primary}
-                            style={styles.appLogoIcon}
                         />
                         <ThemedText style={styles.appName}>{APP_NAME}</ThemedText>
                         <ThemedText style={styles.appAuthor}>by {APP_AUTHOR}</ThemedText>
@@ -186,11 +185,10 @@ export default function AboutScreen() {
                 {/* Version Section */}
                 <View style={styles.sectionContainer}>
                     <View style={styles.sectionHeader}>
-                        <MaterialCommunityIcons
-                            name="tag-outline"
+                        <Icon
+                            source="tag-outline"
                             size={24}
                             color={colors.primary}
-                            style={styles.sectionIcon}
                         />
                         <ThemedText style={styles.sectionTitle}>
                             Version Details
@@ -216,11 +214,10 @@ export default function AboutScreen() {
                 {/* Social Section */}
                 <View style={styles.sectionContainer}>
                     <View style={styles.sectionHeader}>
-                        <MaterialCommunityIcons
-                            name="account-group"
+                        <Icon
+                            source="account-group"
                             size={24}
                             color={colors.primary}
-                            style={styles.sectionIcon}
                         />
                         <ThemedText style={styles.sectionTitle}>
                             Social & Community
@@ -250,11 +247,10 @@ export default function AboutScreen() {
                 {/* Contact Section */}
                 <View style={styles.sectionContainer}>
                     <View style={styles.sectionHeader}>
-                        <MaterialCommunityIcons
-                            name="email-outline"
+                        <Icon
+                            source="email-outline"
                             size={24}
                             color={colors.primary}
-                            style={styles.sectionIcon}
                         />
                         <ThemedText style={styles.sectionTitle}>
                             Get in Touch
@@ -302,9 +298,9 @@ function AboutItem({ icon, title, description, onPress, children }: AboutItemPro
             flexDirection: "row",
             alignItems: "flex-start",
             padding: 12,
+            gap: 12,
         },
-        itemIcon: {
-            marginRight: 12,
+        iconWrapper: {
             marginTop: 2,
         },
         itemContent: {
@@ -334,12 +330,13 @@ function AboutItem({ icon, title, description, onPress, children }: AboutItemPro
                 }}
             >
                 <View style={styles.itemPressable}>
-                    <MaterialCommunityIcons
-                        name={icon as any}
-                        size={20}
-                        color={colors.secondary}
-                        style={styles.itemIcon}
-                    />
+                    <View style={styles.iconWrapper}>
+                        <Icon
+                            source={icon}
+                            size={20}
+                            color={colors.secondary}
+                        />
+                    </View>
                     <View style={styles.itemContent}>
                         <ThemedText style={styles.itemTitle}>
                             {title}

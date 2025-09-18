@@ -4,10 +4,9 @@ import { tryCatch } from "@/lib/try-catch";
 import { seedDummyExpenses, seedDummyIncome } from "@/repositories/DevRepo";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Button, TextInput } from "react-native-paper";
+import { Button, Icon, TextInput } from "react-native-paper";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import { useRouter } from "expo-router";
 import { useHaptics } from "@/contexts/HapticsProvider";
@@ -135,12 +134,13 @@ export default function DevOptionsScreen() {
           >
             {/* Warning Section */}
             <View style={[styles.warningContainer, { backgroundColor: colors.errorContainer }]}>
-              <MaterialCommunityIcons
-                name="alert-circle"
-                size={20}
-                color={colors.onErrorContainer}
-                style={styles.warningIcon}
-              />
+              <View style={styles.warningIconWrapper}>
+                <Icon
+                  source="alert-circle"
+                  size={20}
+                  color={colors.onErrorContainer}
+                />
+              </View>
               <ThemedText style={[styles.warningText, { color: colors.onErrorContainer }]}>
                 This section is for development purposes only. Use dummy data to test the app functionality.
               </ThemedText>
@@ -149,11 +149,10 @@ export default function DevOptionsScreen() {
             {/* Dummy Expenses Section */}
             <View style={[styles.sectionContainer, { backgroundColor: colors.surface, shadowColor: colors.shadow }]}>
               <View style={styles.sectionHeader}>
-                <MaterialCommunityIcons
-                  name="receipt"
+                <Icon
+                  source="receipt"
                   size={24}
                   color={colors.primary}
-                  style={styles.sectionIcon}
                 />
                 <ThemedText style={[styles.sectionTitle, { color: colors.primary }]}>
                   Add Dummy Expenses
@@ -190,11 +189,10 @@ export default function DevOptionsScreen() {
             {/* Dummy Incomes Section */}
             <View style={[styles.sectionContainer, { backgroundColor: colors.surface, shadowColor: colors.shadow }]}>
               <View style={styles.sectionHeader}>
-                <MaterialCommunityIcons
-                  name="cash-plus"
+                <Icon
+                  source="cash-plus"
                   size={24}
                   color={colors.primary}
-                  style={styles.sectionIcon}
                 />
                 <ThemedText style={[styles.sectionTitle, { color: colors.primary }]}>
                   Add Dummy Incomes
@@ -231,11 +229,10 @@ export default function DevOptionsScreen() {
             {/* Disable Dev Options Section */}
             <View style={[styles.sectionContainer, styles.disableSection, { backgroundColor: colors.surface, shadowColor: colors.shadow, borderColor: colors.error }]}>
               <View style={styles.sectionHeader}>
-                <MaterialCommunityIcons
-                  name="close-circle"
+                <Icon
+                  source="close-circle"
                   size={20}
                   color={colors.error}
-                  style={styles.sectionIcon}
                 />
                 <ThemedText style={[styles.sectionTitle, { color: colors.error, fontSize: 16 }]}>
                   Disable Dev Options
@@ -290,9 +287,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 16,
-  },
-  sectionIcon: {
-    marginRight: 12,
+    gap: 12,
   },
   sectionTitle: {
     fontSize: 18,
@@ -310,9 +305,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     flexDirection: "row",
     alignItems: "flex-start",
+    gap: 8,
   },
-  warningIcon: {
-    marginRight: 8,
+  warningIconWrapper: {
     marginTop: 2,
   },
   warningText: {

@@ -2,9 +2,8 @@ import React from "react";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { Pressable, StyleSheet } from "react-native";
-import { Card } from "react-native-paper";
+import { Card, Icon } from "react-native-paper";
 import { useRouter } from "expo-router";
-import { FontAwesome } from "@expo/vector-icons";
 import useStatsStore from "@/stores/useStatsStore";
 import { useQueryClient } from "@tanstack/react-query";
 import { getAvailablePeriodsWithData } from "@/repositories/CommonRepo";
@@ -48,7 +47,7 @@ const PeriodCard = () => {
                     <ThemedText type="defaultSemiBold">
                         {`${period.primaryLabel} ${period.secondaryLabel ? `${period.secondaryLabel}` : ''}`}
                     </ThemedText>
-                    <FontAwesome name="chevron-down" size={18} color={colors.primary} />
+                    <Icon source="chevron-down" size={24} color={colors.primary} />
                 </Card.Content>
             </Pressable>
         </Card>

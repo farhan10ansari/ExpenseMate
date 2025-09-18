@@ -1,19 +1,15 @@
 import { StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
-import { Button } from "react-native-paper";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useHaptics } from "@/contexts/HapticsProvider";
 import ThemeSelector from "@/components/main/ThemeSelector";
 import { themeOptions } from "@/lib/constants";
+import { Icon } from "react-native-paper";
 
 export default function ThemesScreen() {
   const { colors } = useAppTheme();
   const theme = usePersistentAppStore(state => state.theme);
-  const setTheme = usePersistentAppStore(state => state.setTheme);
-  const { hapticImpact } = useHaptics()
 
   const dynamicStyles = StyleSheet.create({
     sectionContainer: {
@@ -51,11 +47,10 @@ export default function ThemesScreen() {
         {/* Theme Selection Section */}
         <View style={dynamicStyles.sectionContainer}>
           <View style={styles.sectionHeader}>
-            <MaterialCommunityIcons
-              name="palette"
+            <Icon
+              source="palette"
               size={24}
               color={colors.primary}
-              style={styles.sectionIcon}
             />
             <ThemedText style={dynamicStyles.sectionTitle}>
               App Appearance
@@ -72,11 +67,10 @@ export default function ThemesScreen() {
         {/* Current Selection Info */}
         <View style={dynamicStyles.sectionContainer}>
           <View style={styles.sectionHeader}>
-            <MaterialCommunityIcons
-              name="information-outline"
+            <Icon
+              source="information-outline"
               size={20}
               color={colors.secondary}
-              style={styles.sectionIcon}
             />
             <ThemedText style={[dynamicStyles.sectionTitle, { fontSize: 16 }]}>
               Current Selection
@@ -107,9 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 16,
+    gap: 12,
   },
-  sectionIcon: {
-    marginRight: 12,
-  }
 })
 

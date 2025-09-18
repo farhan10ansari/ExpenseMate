@@ -1,17 +1,16 @@
 import { useHaptics } from '@/contexts/HapticsProvider';
 import usePreFetchData from '@/hooks/usePreFetchData';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Tabs, useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { IconButton } from 'react-native-paper';
+import { Icon, IconButton } from 'react-native-paper';
 
 function TabLayout() {
   const router = useRouter();
   const { colors } = useAppTheme();
   const { hapticSelect } = useHaptics();
-  
+
   // Pre-fetch data for different tabs
   usePreFetchData();
 
@@ -44,21 +43,21 @@ function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="home" color={color} />,
+          tabBarIcon: ({ color }) => <Icon size={28} source="home" color={color} />,
         }}
       />
       <Tabs.Screen
         name="expenses"
         options={{
           title: 'Expenses',
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="money" color={color} />,
+          tabBarIcon: ({ color }) => <Icon size={28} source="cash" color={color} />,
         }}
       />
       <Tabs.Screen
         name="circle"
         options={{
           title: 'Transaction',
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="add" color={color} />,
+          tabBarIcon: ({ color }) => <Icon size={28} source="add" color={color} />,
           tabBarButton: renderCustomTabButton,
         }}
       />
@@ -66,14 +65,14 @@ function TabLayout() {
         name="incomes"
         options={{
           title: 'Incomes',
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="currency-rupee" color={color} />,
+          tabBarIcon: ({ color }) => <Icon size={28} source="currency-inr" color={color} />,
         }}
       />
       <Tabs.Screen
         name="menu"
         options={{
           title: 'Menu',
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="menu" color={color} />,
+          tabBarIcon: ({ color }) => <Icon size={28} source="menu" color={color} />,
         }}
       />
     </Tabs>

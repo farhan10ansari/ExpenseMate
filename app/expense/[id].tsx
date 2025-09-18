@@ -7,11 +7,10 @@ import { paymentMethodsMapping } from "@/lib/constants";
 import { extractDateLabel, extractTimeString } from "@/lib/functions";
 import { softDeleteExpenseById, getExpenseById } from "@/repositories/ExpenseRepo";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { FontAwesome } from "@expo/vector-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { Button } from "react-native-paper";
+import { Button, Icon } from "react-native-paper";
 import { ScrollView as GestureScrollView } from "react-native-gesture-handler";
 import { tryCatch } from "@/lib/try-catch";
 import FormSheetHeader from "@/components/main/FormSheetHeader";
@@ -62,7 +61,7 @@ export default function ExpenseInfoScreen() {
         amountContentContainer: {
             flexDirection: 'row',
             alignItems: 'center',
-            gap: 5,
+            gap: 0,
         },
         buttonContainer: {
             paddingVertical: 30,
@@ -168,7 +167,7 @@ export default function ExpenseInfoScreen() {
                                 label="Amount"
                                 content={
                                     <View style={styles.amountContentContainer}>
-                                        <FontAwesome name="rupee" size={24} color={colors.primary} />
+                                        <Icon source="currency-inr" size={24} color={colors.primary} />
                                         <ThemedText type="defaultSemiBold" color={colors.primary} fontSize={24}>
                                             {expense?.amount ? expense.amount.toLocaleString() : "Not Provided"}
                                         </ThemedText>

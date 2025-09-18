@@ -1,6 +1,6 @@
 import AnimatedNumber from "@/components/main/AnimatedNumber";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { FontAwesome } from "@expo/vector-icons";
+import { Icon } from "react-native-paper";
 
 
 type Props = {
@@ -12,7 +12,7 @@ const FormatCurrency = ({ amount }: Props) => {
 
     return (
         <>
-            <FontAwesome name="rupee" size={18} color={colors.text} />
+            <Icon source="currency-inr" size={18} color={colors.text} />
             <AnimatedNumber
                 fontStyle={{
                     fontSize: 20,
@@ -34,7 +34,7 @@ const FormatCurrencyPrimary = ({ amount }: Props) => {
     const { colors } = useAppTheme();
     return (
         <>
-            <FontAwesome name="rupee" size={18} color={colors.onPrimary} />
+            <Icon source="currency-inr" size={18} color={colors.onPrimary} />
             <AnimatedNumber
                 fontStyle={{
                     fontSize: 20,

@@ -1,8 +1,6 @@
 import React, { useMemo } from "react";
 import { View, StyleSheet } from "react-native";
-import { FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { IconButton } from "react-native-paper";
-
+import { Icon, IconButton } from "react-native-paper";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import StatsCard from "./components/StatsCard";
@@ -42,9 +40,9 @@ function FinancialSummaryStatsBase({ expenseStats, incomeStats, isLoading }: Pro
             <View style={styles.row}>
                 <StatsCard
                     title="Net Income"
-                    prefix={<FontAwesome name="rupee" size={18} color={colors.onPrimary} />}
+                    prefix={<Icon source="currency-inr" size={18} color={colors.onPrimary} />}
                     value={financialSummary.netIncome}
-                    icon={<MaterialIcons name="account-balance-wallet" size={24} color={colors.onPrimary} />}
+                    icon={<Icon source="wallet" size={24} color={colors.onPrimary} />}
                     backgroundColor={netIncomeColor}
                     textColor={colors.onPrimary}
                     description={<NetIncomeDescription />}
@@ -64,7 +62,7 @@ function FinancialSummaryStatsBase({ expenseStats, incomeStats, isLoading }: Pro
                     title="Savings Rate"
                     value={financialSummary.savingsRate}
                     suffix="%"
-                    icon={<MaterialCommunityIcons name="piggy-bank" size={24} color={colors.tertiary} />}
+                    icon={<Icon source="piggy-bank" size={24} color={colors.tertiary} />}
                     textColor={colors.tertiary}
                     description={<SavingsRateDescription />}
                     infoIconColor={colors.onSurface}

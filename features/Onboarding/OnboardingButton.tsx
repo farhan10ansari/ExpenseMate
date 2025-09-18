@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import { StyleSheet, Text, Pressable } from 'react-native';
-import { useTheme } from 'react-native-paper';
-import { Ionicons } from '@expo/vector-icons';
+import { Icon, useTheme } from 'react-native-paper';
 import Animated, {
   SharedValue,
   useAnimatedStyle,
@@ -97,9 +96,9 @@ export default function OnboardingButton({
       </Animated.View>
 
       <Animated.View style={[styles.iconContainer, iconAnimatedStyle]}>
-        <Ionicons
-          name="arrow-forward"
-          size={20}
+        <Icon
+          source="arrow-right"
+          size={24}
           color={theme.colors.onPrimary}
         />
       </Animated.View>

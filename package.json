@@ -14,7 +14,6 @@
     "build:development": "eas build -p android --profile development"
   },
   "dependencies": {
-    "@expo/vector-icons": "^14.1.0",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/material-top-tabs": "^7.3.6",

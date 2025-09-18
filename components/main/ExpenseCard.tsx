@@ -7,10 +7,10 @@ import CustomChip from "@/components/ui/CustomChip";
 import { memo } from "react";
 import { extractDateLabel, extractTimeString } from "@/lib/functions";
 import { useLocalization } from "@/hooks/useLocalization";
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Color from "color";
 import { useExpenseCategoryMapping } from "@/contexts/CategoryDataProvider";
 import { Category, Expense } from "@/lib/types";
+import { Icon } from "react-native-paper";
 
 type ExpenseCardProps = {
     expense: Expense;
@@ -61,7 +61,6 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
         amountContainer: {
             flexDirection: "row",
             alignItems: "center",
-            gap: 4,
         },
         amountText: {
             fontWeight: "bold",
@@ -93,7 +92,7 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
             >
                 <View style={styles.topRow}>
                     <View style={styles.amountContainer}>
-                        <FontAwesome name="rupee" size={20} color={colors.primary} />
+                        <Icon source="currency-inr" size={20} color={colors.primary} />
                         <ThemedText type="title" style={styles.amountText}>
                             {expense.amount}
                         </ThemedText>

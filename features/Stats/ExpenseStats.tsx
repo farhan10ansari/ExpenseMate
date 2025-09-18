@@ -3,9 +3,9 @@ import { PeriodExpenseStats } from "@/lib/types";
 import styles from "./styles";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import StatsCard from "./components/StatsCard";
-import { AntDesign, FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { View } from "react-native";
 import { useExpenseCategoryMapping } from "@/contexts/CategoryDataProvider";
+import { Icon } from "react-native-paper";
 
 type Props = {
     expenseStats?: PeriodExpenseStats;
@@ -32,9 +32,9 @@ export default function ExpenseStats({ expenseStats, showTitle = false, isLoadin
             <View style={styles.row}>
                 <StatsCard
                     title="Total Expenses"
-                    prefix={<FontAwesome name="rupee" size={18} color={colors.onPrimary} />}
+                    prefix={<Icon source="currency-inr" size={18} color={colors.onPrimary} />}
                     value={expenseStats?.total ?? 0}
-                    icon={<FontAwesome name="rupee" size={24} color={colors.onPrimary} />}
+                    icon={<Icon source="currency-inr" size={24} color={colors.onPrimary} />}
                     backgroundColor={colors.primary}
                     textColor={colors.onPrimary}
                     isLoading={isLoading}
@@ -42,7 +42,7 @@ export default function ExpenseStats({ expenseStats, showTitle = false, isLoadin
                 <StatsCard
                     title="Expense Count"
                     value={expenseStats?.count ?? 0}
-                    icon={<AntDesign name="minuscircleo" size={20} color={colors.tertiary} />}
+                    icon={<Icon source="minus-circle-outline" size={20} color={colors.tertiary} />}
                     textColor={colors.tertiary}
                     isLoading={isLoading}
                 />
@@ -50,9 +50,9 @@ export default function ExpenseStats({ expenseStats, showTitle = false, isLoadin
             <View style={styles.row}>
                 <StatsCard
                     title="Daily Avg"
-                    prefix={<FontAwesome name="rupee" size={18} color={colors.text} />}
+                    prefix={<Icon source="currency-inr" size={18} color={colors.text} />}
                     value={expenseStats?.avgPerDay ?? 0}
-                    icon={<MaterialIcons name="trending-up" size={24} color={colors.tertiary} />}
+                    icon={<Icon source="trending-up" size={24} color={colors.tertiary} />}
                     textColor={colors.text}
                     isLoading={isLoading}
                 />
@@ -62,7 +62,7 @@ export default function ExpenseStats({ expenseStats, showTitle = false, isLoadin
                         fontSize: 12
                     }}
                     value={topCategory?.label ?? 'No data'}
-                    icon={<MaterialCommunityIcons name="source-branch" size={24} color={colors.tertiary} />}
+                    icon={<Icon source="source-branch" size={24} color={colors.tertiary} />}
                     textColor={colors.text}
                     isLoading={isLoading}
                 />
@@ -71,13 +71,13 @@ export default function ExpenseStats({ expenseStats, showTitle = false, isLoadin
                 title="Max/Min Spend"
                 value={
                     <>
-                        <FontAwesome name="rupee" size={18} color={colors.text} />
+                        <Icon source="currency-inr" size={18} color={colors.text} />
                         {expenseStats?.max ?? 0}/
-                        <FontAwesome name="rupee" size={18} color={colors.text} />
+                        <Icon source="currency-inr" size={18} color={colors.text} />
                         {expenseStats?.min ?? 0}
                     </>
                 }
-                icon={<MaterialCommunityIcons name="chart-timeline-variant" size={24} color={colors.tertiary} />}
+                icon={<Icon source="chart-timeline-variant" size={24} color={colors.tertiary} />}
                 textColor={colors.text}
                 isLoading={isLoading}
             />

@@ -2,8 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Button } from "react-native-paper";
+import { Button, Icon } from "react-native-paper";
 
 interface ErrorStateProps {
     title?: string;
@@ -36,7 +35,7 @@ export default function ErrorState({
             paddingHorizontal: 24,
             paddingVertical: 32,
         },
-        icon: {
+        iconWrapper: {
             marginBottom: 16,
         },
         title: {
@@ -78,12 +77,13 @@ export default function ErrorState({
 
     return (
         <View style={[styles.container, style]}>
-            <MaterialCommunityIcons
-                name={icon as any}
+            <View style={styles.iconWrapper}>
+                <Icon
+                source={icon as any}
                 size={48}
                 color={colors.error}
-                style={styles.icon}
             />
+            </View>
 
             <ThemedText style={styles.title}>
                 {title}

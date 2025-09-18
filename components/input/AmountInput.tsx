@@ -1,9 +1,9 @@
 import { amountInputRegex } from "@/lib/utils";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { FontAwesome } from "@expo/vector-icons";
 import { useRef } from "react";
 import { NativeSyntheticEvent, Pressable, StyleSheet, TextInput, TextInputFocusEventData } from "react-native";
 import { ColorType } from "@/lib/types";
+import { Icon } from "react-native-paper";
 
 export type AmountInputProps = {
     amount: string;
@@ -35,7 +35,7 @@ export default function AmountInput({ amount, setAmount, onFocus, onBlur, colorT
 
     return (
         <Pressable style={styles.inputContainer} onPress={() => inputRef.current?.focus()}>
-            <FontAwesome name="rupee" size={20} color={colors.text} />
+            <Icon source="currency-inr" size={24} color={colors.text} />
             <TextInput
                 // autoFocus
                 ref={inputRef}

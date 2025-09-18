@@ -6,9 +6,9 @@ import CustomChip from "@/components/ui/CustomChip";
 import { memo } from "react";
 import { extractDateLabel, extractTimeString } from "@/lib/functions";
 import { useLocalization } from "@/hooks/useLocalization";
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Color from 'color';
 import { useIncomeSourceMapping } from "@/contexts/CategoryDataProvider";
+import { Icon } from "react-native-paper";
 
 type IncomeCardProps = {
     income: Income;
@@ -59,8 +59,6 @@ function IncomeCard({ income, onPress }: IncomeCardProps) {
         amountContainer: {
             flexDirection: "row",
             alignItems: "center", // Changed from "center" to "baseline" for better alignment
-            gap: 4, // Reduced from 5 to 4
-
         },
         amountText: {
             fontWeight: "bold",
@@ -92,7 +90,7 @@ function IncomeCard({ income, onPress }: IncomeCardProps) {
             >
                 <View style={styles.topRow}>
                     <View style={styles.amountContainer}>
-                        <FontAwesome name="rupee" size={20} color={colors.tertiary} />
+                        <Icon source="currency-inr" size={20} color={colors.tertiary} />
                         <ThemedText type="title" style={styles.amountText}>
                             {income.amount}
                         </ThemedText>

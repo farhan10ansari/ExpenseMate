@@ -1,15 +1,15 @@
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { memo } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useHaptics } from "@/contexts/HapticsProvider";
+import { Icon } from "react-native-paper";
 
 const CustomBackButton = (({ onPress }: { onPress: () => void }) => {
     const { colors } = useAppTheme();
     const { hapticImpact } = useHaptics();
 
     const styles = StyleSheet.create({
-        container:{
+        container: {
             borderRadius: 50,
             overflow: "hidden",
         },
@@ -32,7 +32,7 @@ const CustomBackButton = (({ onPress }: { onPress: () => void }) => {
         <View style={styles.container}>
             <Pressable
                 style={styles.backButton}
-                onPress={()=>{
+                onPress={() => {
                     hapticImpact();
                     onPress();
                 }}
@@ -42,8 +42,8 @@ const CustomBackButton = (({ onPress }: { onPress: () => void }) => {
                 }}
                 hitSlop={8}
             >
-                <MaterialCommunityIcons
-                    name="chevron-left"
+                <Icon
+                    source="chevron-left"
                     size={24}
                     color={colors.onSurfaceVariant}
                 />
