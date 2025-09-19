@@ -60,13 +60,13 @@ export default function HomeScreen() {
       contentContainerStyle={styles.scrollContainer}
     >
       <PeriodCard />
-      <FinancialSummaryStats expenseStats={expenseStats} incomeStats={incomeStats} isLoading={isExpenseStatsLoading || isIncomeStatsLoading} />
+      <FinancialSummaryStats expenseStats={expenseStats} incomeStats={incomeStats} />
       <View style={styles.section}>
-        <ExpenseStats expenseStats={expenseStats} isLoading={isExpenseStatsLoading} showTitle />
+        <ExpenseStats expenseStats={expenseStats} showTitle />
         <MoreStatsButton routeName="/stats/expenses" color={colors.primary} />
       </View>
       <View style={styles.section}>
-        <IncomeStats incomeStats={incomeStats} showTitle isLoading={isIncomeStatsLoading} />
+        <IncomeStats incomeStats={incomeStats} showTitle />
         <MoreStatsButton routeName="/stats/incomes" color={colors.primary} />
       </View>
     </ScreenWrapper>
