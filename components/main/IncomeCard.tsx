@@ -45,7 +45,7 @@ function IncomeCard({ income, onPress }: IncomeCardProps) {
             overflow: "hidden",
         },
         card: {
-            height: 80, // Reduced from 100 to 80
+            height: 72, // Reduced from 100 to 80
             paddingVertical: 12, // More balanced vertical padding
             paddingHorizontal: 16, // More balanced horizontal padding
             borderWidth: 1,
@@ -65,7 +65,7 @@ function IncomeCard({ income, onPress }: IncomeCardProps) {
         },
         amountText: {
             fontWeight: "bold",
-            fontSize: 20, // Reduced from 24 to 20
+            fontSize: 16, // Reduced from 24 to 20
             color: colors.tertiary,
             lineHeight: 20, // Explicit line height for consistent alignment
         },

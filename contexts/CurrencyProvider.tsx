@@ -1,11 +1,11 @@
-import { CurrencyCode, CurrencyData, getCurrencyData, getCurrencyLocale, LocaleValue } from '@/lib/currencies';
+import { CurrencyCode, CurrencyData, getCurrencyData, getCurrencyInfo, getCurrencyLocale, LocaleValue } from '@/lib/currencies';
 import usePersistentAppStore from '@/stores/usePersistentAppStore';
 import React, { createContext, useContext, ReactNode, useCallback, useMemo, useEffect } from 'react';
 import { getLocales } from 'expo-localization';
 type CurrencyContextType = {
     currencyCode: CurrencyCode;
     currencyLocale: LocaleValue;
-    currencyData: CurrencyData;
+    currencyData: CurrencyData & { decimalPlaces: number };
     updateCurrency: (newCurrency: CurrencyCode) => void;
     updateCurrencyLocale: (newLocale: LocaleValue) => void;
     formatCurrency: (amount: number) => string;
@@ -34,8 +34,12 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
         return new Intl.NumberFormat(currencyLocale, { style: 'currency', currency: currencyCode }).format(amount);
     }, [currencyLocale, currencyCode]);
 
-    const currencyData = useMemo(() => (getCurrencyData(currencyCode)), [currencyCode])
-    // const currencyInfo = useMemo(() => (getCurrencyInfo(currency)), [currency])
+    const currencyData = useMemo(() => {
+        return {
+            ...getCurrencyData(currencyCode),
+            decimalPlaces: getCurrencyInfo(currencyCode, currencyLocale)?.decimalPlaces ?? 2
+        }
+    }, [currencyCode, currencyLocale])
 
     useEffect(() => {
         // Ensure that currencyCode and currencyLocale are always set

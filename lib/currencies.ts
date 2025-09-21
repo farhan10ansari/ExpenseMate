@@ -1439,73 +1439,20 @@ export const getCurrencyLocale = (code: CurrencyCode) => {
 };
 
 
-// export function getCurrencyInfo(code: string, locale = "en-US") {
-//     try {
-//         // Create formatter for currency style
-//         const formatter = new Intl.NumberFormat(locale, {
-//             style: "currency",
-//             currency: code,
-//         });
+export function getCurrencyInfo(code: string, locale: string) {
+    try {
+        // Create formatter for currency style
+        const formatter = new Intl.NumberFormat(locale, {
+            style: "currency",
+            currency: code,
+        });
 
-//         // Extract resolved options
-//         const opts = formatter.resolvedOptions();
-
-//         // Format a sample number
-//         const sampleNumber = 1234.56;
-//         const formatted = formatter.format(sampleNumber);
-
-//         // Extract currency symbol by removing digits, punctuation and spaces
-//         const symbolMatch = formatted.match(/[^\d\s.,]+/);
-//         const symbol = symbolMatch ? symbolMatch[0] : "";
-
-//         // Determine symbol position (before or after number)
-//         const isPrefix = formatted.startsWith(symbol);
-//         const symbolPosition = isPrefix ? "before" : "after";
-
-//         // Get decimal and thousand separators from decimal formatter parts
-//         let decimalSeparator = ".";
-//         let thousandSeparator = ",";
-//         try {
-//             const parts = new Intl.NumberFormat(locale, {
-//                 style: "decimal",
-//                 minimumFractionDigits: 2,
-//                 maximumFractionDigits: 2,
-//             }).formatToParts(sampleNumber);
-
-//             for (const p of parts) {
-//                 if (p.type === "decimal") decimalSeparator = p.value;
-//                 else if (p.type === "group") thousandSeparator = p.value;
-//             }
-//         } catch {
-//             // fallback to defaults if Intl parts fail
-//         }
-
-//         // Get currency display name safely
-//         let name = code;
-//         try {
-//             if (typeof Intl.DisplayNames === "function") {
-//                 const displayNames = new Intl.DisplayNames([locale], { type: "currency" });
-//                 name = displayNames.of(code) || code;
-//             }
-//         } catch {
-//             // fallback to code if display name fails
-//         }
-
-//         return {
-//             code,
-//             name,
-//             symbol,
-//             symbolPosition,
-//             decimalPlaces: opts.minimumFractionDigits ?? 2,
-//             decimalSeparator,
-//             thousandSeparator,
-//             sampleFormat: formatted,
-//         };
-//     } catch (error) {
-//         console.error("Error in getCurrencyInfo:", error);
-//         return null;
-//     }
-// }
-
-// export const formatCurrency = (amount: number, code: string, locale: string) =>
-//     new Intl.NumberFormat(locale, { style: 'currency', currency: code }).format(amount);
+        const opts = formatter.resolvedOptions();
+        return {
+            decimalPlaces: opts.maximumFractionDigits,
+        }
+    } catch (error) {
+        console.error("Error in getCurrencyInfo:", error);
+        return null;
+    }
+}

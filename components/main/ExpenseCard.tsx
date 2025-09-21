@@ -45,7 +45,7 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
             overflow: "hidden",
         },
         card: {
-            height: 80,
+            height: 72,
             paddingVertical: 12,
             paddingHorizontal: 16,
             borderWidth: 1,
@@ -65,7 +65,7 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
         },
         amountText: {
             fontWeight: "bold",
-            fontSize: 20,
+            fontSize: 16,
             color: colors.primary,
             lineHeight: 20,
         },

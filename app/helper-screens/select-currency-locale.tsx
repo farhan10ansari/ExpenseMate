@@ -37,9 +37,9 @@ export default function AllLocalesScreen() {
     const onSelect = useCallback(
         (selectedLocale: LocaleValue) => {
             updateCurrencyLocale(selectedLocale);
-            setTimeout(() => {
-                router.back();
-            }, 500);
+            // setTimeout(() => {
+            //     router.back();
+            // }, 500);
         },
         [updateCurrencyLocale, router]
     );

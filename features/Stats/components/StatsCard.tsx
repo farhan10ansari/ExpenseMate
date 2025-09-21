@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 4,
     },
     cardTitle: {
-        fontSize: 16,
+        fontSize: 14,
     },
     cardValueContainer: {
         flexDirection: "row",
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
         height: 24,
     },
     cardValue: {
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: "700",
     },
     infoIconContainer: {

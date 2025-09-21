@@ -1,9 +1,10 @@
-import { amountInputRegex } from "@/lib/utils";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { useRef } from "react";
 import { NativeSyntheticEvent, Pressable, StyleSheet, TextInput, TextInputFocusEventData } from "react-native";
 import { ColorType } from "@/lib/types";
 import { Icon } from "react-native-paper";
+import { useCurrency } from "@/contexts/CurrencyProvider";
+
 
 export type AmountInputProps = {
     amount: string;
@@ -13,10 +14,18 @@ export type AmountInputProps = {
     colorType?: ColorType
 };
 
+
 export default function AmountInput({ amount, setAmount, onFocus, onBlur, colorType = "primary" }: AmountInputProps) {
     const { colors } = useAppTheme();
+    const { currencyData } = useCurrency();
+    const decimalPlaces = currencyData.decimalPlaces;
 
     const inputRef = useRef<TextInput>(null);
+
+    // Create dynamic regex based on decimal places
+    
+    const amountInputRegex = new RegExp(`^\\d{0,8}(\\.\\d{0,${decimalPlaces}})?$`);
+
 
     const styles = StyleSheet.create({
         inputContainer: {
@@ -32,6 +41,7 @@ export default function AmountInput({ amount, setAmount, onFocus, onBlur, colorT
             fontSize: 60,
         }
     });
+
 
     return (
         <Pressable style={styles.inputContainer} onPress={() => inputRef.current?.focus()}>
