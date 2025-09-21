@@ -6,6 +6,7 @@ import { ThemedText } from '@/components/base/ThemedText';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { ExpenseCategoryStat } from '@/lib/types';
 import { useExpenseCategoryMapping } from "@/contexts/CategoryDataProvider";
+import { useCurrency } from '@/contexts/CurrencyProvider';
 
 type CategoryBreakdownData = { data?: ExpenseCategoryStat[] };
 
@@ -14,6 +15,7 @@ export default function CategoryBreakdownChart({ data }: CategoryBreakdownData) 
   const { width: windowWidth } = useWindowDimensions();
   const chartSize = windowWidth - 54;
   const categoryMapping = useExpenseCategoryMapping()
+  const { formatCurrency, currencyData } = useCurrency()
 
 
   const [showAbsolute, setShowAbsolute] = useState(true);
@@ -40,7 +42,7 @@ export default function CategoryBreakdownChart({ data }: CategoryBreakdownData) 
         return {
           value: showAbsolute ? absVal : pctVal,
           color: cfg.color ?? colors.tertiary,
-          text: showAbsolute ? `₹${absVal}` : `${pctVal}%`,
+          text: showAbsolute ? formatCurrency(absVal) : `${pctVal}%`,
           label: cfg.label ?? cat.category,
           frontColor: cfg.color ?? colors.tertiary // for bar chart
         };
@@ -78,13 +80,13 @@ export default function CategoryBreakdownChart({ data }: CategoryBreakdownData) 
               android_ripple={{ color: colors.backdrop }}
               onPress={() => setChartType('pie')}
               style={styles.toggleBtn}>
-              <Text style={{ color: chartType === 'pie' ? colors.tertiary : colors.text }}>Pie</Text>
+              <ThemedText color={chartType === 'pie' ? colors.tertiary : colors.text}>Pie</ThemedText>
             </Pressable>
             <Pressable
               android_ripple={{ color: colors.backdrop }}
               onPress={() => setChartType('bar')}
               style={styles.toggleBtn}>
-              <Text style={{ color: chartType === 'bar' ? colors.tertiary : colors.text }}>Bar</Text>
+              <ThemedText color={chartType === 'bar' ? colors.tertiary : colors.text}>Bar</ThemedText>
             </Pressable>
           </View>
           <View style={styles.switchContainer}>
@@ -152,7 +154,7 @@ export default function CategoryBreakdownChart({ data }: CategoryBreakdownData) 
               xAxisLabelTextStyle={[{ color: colors.text, fontSize: 10 }, { transform: [{ rotate: '-90deg' }] }]}
               xAxisLabelsVerticalShift={40}
               yAxisTextStyle={{ color: colors.text, fontSize: 10 }}
-              yAxisLabelSuffix={showAbsolute ? '₹' : '%'}
+              yAxisLabelSuffix={showAbsolute ? currencyData.symbol : '%'}
               yAxisLabelWidth={60}
             />
           )}

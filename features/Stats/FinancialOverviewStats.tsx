@@ -7,6 +7,7 @@ import StatsCard from "./components/StatsCard";
 import { getFinancialSummary } from "@/lib/helpers";
 import { PeriodExpenseStats, PeriodIncomeStats } from "@/lib/types";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
+import { useCurrency } from "@/contexts/CurrencyProvider";
 
 type Props = {
     expenseStats?: PeriodExpenseStats,
@@ -17,6 +18,7 @@ type Props = {
 function FinancialSummaryStatsBase({ expenseStats, incomeStats, isLoading }: Props) {
     const { colors } = useAppTheme();
     const showNegativeStats = usePersistentAppStore((state) => state.uiFlags.showNegativeStats);
+    const { formatCurrency } = useCurrency()
 
     const financialSummary = useMemo(() => {
         if (!expenseStats || !incomeStats) return {
@@ -40,8 +42,7 @@ function FinancialSummaryStatsBase({ expenseStats, incomeStats, isLoading }: Pro
             <View style={styles.row}>
                 <StatsCard
                     title="Net Income"
-                    prefix={<Icon source="currency-inr" size={18} color={colors.onPrimary} />}
-                    value={financialSummary.netIncome}
+                    value={formatCurrency(financialSummary.netIncome)}
                     icon={<Icon source="wallet" size={24} color={colors.onPrimary} />}
                     backgroundColor={netIncomeColor}
                     textColor={colors.onPrimary}

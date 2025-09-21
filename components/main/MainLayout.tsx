@@ -107,6 +107,14 @@ export default function MainLayout() {
           ...formSheetFitContent,
         }}
       />
+      <Stack.Screen
+        name="helper-screens/select-currency"
+        options={{ title: 'Select Currency' }}
+      />
+      <Stack.Screen
+        name="helper-screens/select-currency-locale"
+        options={{ title: 'Select Currency Locale' }}
+      />
 
       {/* Menu Screens */}
       <Stack.Screen
@@ -139,7 +147,10 @@ export default function MainLayout() {
           // headerLeft: () => <CustomBackButton } />
         }}
       />
-
+      <Stack.Screen
+        name="menu/currency-settings"
+        options={{ title: 'Currency Settings' }}
+      />
       {/* Stats Screens */}
       <Stack.Screen
         name="stats/expenses"

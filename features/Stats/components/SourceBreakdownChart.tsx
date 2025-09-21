@@ -6,6 +6,7 @@ import { ThemedText } from '@/components/base/ThemedText';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { IncomeSourceStat } from '@/lib/types';
 import { useIncomeSourceMapping } from "@/contexts/CategoryDataProvider";
+import { useCurrency } from '@/contexts/CurrencyProvider';
 
 type IncomeBreakdownData = { data?: IncomeSourceStat[] };
 
@@ -15,6 +16,8 @@ export default function IncomeSourceBreakdownChart({ data }: IncomeBreakdownData
   const chartSize = windowWidth - 54;
   // Get the source mapping
   const sourceMapping = useIncomeSourceMapping()
+  const { formatCurrency, currencyData } = useCurrency()
+
 
   const [showAbsolute, setShowAbsolute] = useState(true);
   const [chartType, setChartType] = useState<'pie' | 'bar'>('pie');
@@ -40,7 +43,7 @@ export default function IncomeSourceBreakdownChart({ data }: IncomeBreakdownData
         return {
           value: showAbsolute ? absVal : pctVal,
           color: cfg.color ?? colors.primary,
-          text: showAbsolute ? `₹${absVal}` : `${pctVal}%`,
+          text: showAbsolute ? formatCurrency(absVal) : `${pctVal}%`,
           label: cfg.label ?? src.source,
           frontColor: cfg.color ?? colors.primary // for bar chart
         };
@@ -77,14 +80,14 @@ export default function IncomeSourceBreakdownChart({ data }: IncomeBreakdownData
               onPress={() => setChartType('pie')}
               style={styles.toggleBtn}
             >
-              <Text style={{ color: chartType === 'pie' ? colors.tertiary : colors.text }}>Pie</Text>
+              <ThemedText color={chartType === 'pie' ? colors.tertiary : colors.text}>Pie</ThemedText>
             </Pressable>
             <Pressable
               android_ripple={{ color: colors.backdrop }}
               onPress={() => setChartType('bar')}
               style={styles.toggleBtn}
             >
-              <Text style={{ color: chartType === 'bar' ? colors.tertiary : colors.text }}>Bar</Text>
+              <ThemedText color={chartType === 'bar' ? colors.tertiary : colors.text}>Bar</ThemedText>
             </Pressable>
           </View>
           <View style={styles.switchContainer}>
@@ -150,7 +153,7 @@ export default function IncomeSourceBreakdownChart({ data }: IncomeBreakdownData
               xAxisLabelTextStyle={[{ color: colors.text, fontSize: 10 }, { transform: [{ rotate: '-90deg' }] }]}
               xAxisLabelsVerticalShift={40}
               yAxisTextStyle={{ color: colors.text, fontSize: 10 }}
-              yAxisLabelSuffix={showAbsolute ? '₹' : '%'}
+              yAxisLabelSuffix={showAbsolute ? currencyData.symbol : '%'}
               yAxisLabelWidth={60}
             />
           )}

@@ -28,7 +28,6 @@
     "expo-battery": "~9.1.4",
     "expo-blur": "~14.1.5",
     "expo-constants": "~17.1.7",
-    "expo-dev-client": "~5.2.4",
     "expo-drizzle-studio-plugin": "^0.2.0",
     "expo-font": "~13.3.2",
     "expo-haptics": "~14.1.4",

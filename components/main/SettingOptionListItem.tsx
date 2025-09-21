@@ -1,10 +1,10 @@
-import { CurrencyOption, LanguageOption } from "@/lib/types";
+import {  LanguageOption } from "@/lib/types";
 import { StyleSheet, View } from "react-native";
 import { Icon, List } from "react-native-paper";
 import { ThemedText } from "@/components/base/ThemedText";
 
 interface SettingOptionListItemProps {
-  option: LanguageOption | CurrencyOption;
+  option: LanguageOption;
   isSelected: boolean;
   onPress: () => void;
   colors: any;

@@ -5,6 +5,7 @@ import { ThemedText } from '@/components/base/ThemedText';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
 import { useIncomeSourceMapping } from "@/contexts/CategoryDataProvider";
 import { CategoryIcon } from '@/components/ui/CategoryIcon';
+import { useCurrency } from '@/contexts/CurrencyProvider';
 
 interface IncomeSourceStat {
   source: string;
@@ -24,6 +25,8 @@ export default function IncomeSourcesBreakdownCard({
   const { colors } = useAppTheme();
   // Get the source mapping
   const sourceMapping = useIncomeSourceMapping()
+  const { formatCurrency } = useCurrency()
+
 
   if (!data || data.length === 0) {
     return (
@@ -69,7 +72,7 @@ export default function IncomeSourcesBreakdownCard({
                 </ThemedText>
               </View>
               <View style={styles.rightContainer}>
-                <ThemedText style={[styles.amountText, { color: colors.text }]}>₹{item.total.toLocaleString()}</ThemedText>
+                <ThemedText style={[styles.amountText, { color: colors.text }]}>{formatCurrency(item.total)}</ThemedText>
                 <ThemedText style={[styles.percentageText, { color: colors.text }]}>
                   {percentage}% <ThemedText style={{ color: colors.muted }}>({item.count} txns)</ThemedText>
                 </ThemedText>

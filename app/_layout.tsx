@@ -23,7 +23,7 @@ import { CategoryDataProvider } from '@/contexts/CategoryDataProvider';
 import { LocalAuthProvider } from '@/contexts/LocalAuthProvider';
 import { uiLog as log } from '@/lib/logger';
 import OnboardingScreen from '@/features/Onboarding/Onboarding';
-import { View } from 'react-native';
+import { CurrencyProvider } from '@/contexts/CurrencyProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -100,18 +100,20 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <AppThemeProvider>
           <HapticsProvider>
-            <GlobalSnackbarProvider>
-              <ConfirmationProvider>
-                <LocalAuthProvider>
-                  <CategoryDataProvider>
-                    <MainLayout />
-                    <OnboardingScreen />
-                    <GlobalLevelComponents />
-                    <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
-                  </CategoryDataProvider>
-                </LocalAuthProvider>
-              </ConfirmationProvider>
-            </GlobalSnackbarProvider>
+            <CurrencyProvider>
+              <GlobalSnackbarProvider>
+                <ConfirmationProvider>
+                  <LocalAuthProvider>
+                    <CategoryDataProvider>
+                      <MainLayout />
+                      <OnboardingScreen />
+                      <GlobalLevelComponents />
+                      <StatusBar style={theme === "system" ? "auto" : (theme === "light" ? "dark" : "light")} />
+                    </CategoryDataProvider>
+                  </LocalAuthProvider>
+                </ConfirmationProvider>
+              </GlobalSnackbarProvider>
+            </CurrencyProvider>
           </HapticsProvider>
         </AppThemeProvider>
       </QueryClientProvider>

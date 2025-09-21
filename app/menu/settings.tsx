@@ -3,75 +3,17 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { useAppTheme } from "@/themes/providers/AppThemeProviders";
 import { ScreenWrapper } from "@/components/main/ScreenWrapper";
 import useSettings from "@/hooks/settings/useSettings";
-import { Currency, Language } from "@/lib/types";
+import { Language } from "@/lib/types";
 import usePersistentAppStore from "@/stores/usePersistentAppStore";
 import SettingSwitchListItem from "@/components/main/SettingSwitchListItem";
 import SettingOptionListItem from "@/components/main/SettingOptionListItem";
-import { CURRENCY_OPTIONS, LANGUAGE_OPTIONS } from "@/lib/constants";
+import { LANGUAGE_OPTIONS } from "@/lib/constants";
 import SettingButton from "@/components/main/SettingButton";
 import SettingSecureLoginToggle from "@/components/main/SettingSecureLoginToggle";
 import { Icon } from "react-native-paper";
+import SettingSection from "@/components/main/SettingSection";
 
 
-interface SettingSectionProps {
-  icon: string;
-  title: string;
-  description: string;
-  children: React.ReactNode;
-}
-
-const SettingSection = ({ icon, title, description, children }: SettingSectionProps) => {
-  const { colors } = useAppTheme();
-  const styles = StyleSheet.create({
-    sectionContainer: {
-      backgroundColor: colors.surface,
-      borderRadius: 12,
-      padding: 16,
-      marginBottom: 20,
-      elevation: 2,
-      shadowColor: colors.shadow,
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.1,
-      shadowRadius: 2,
-    },
-    sectionHeader: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginBottom: 16,
-      gap: 12,
-    },
-    sectionTitle: {
-      fontSize: 18,
-      fontWeight: "600",
-      color: colors.primary,
-    },
-    descriptionText: {
-      color: colors.muted,
-      fontSize: 14,
-      lineHeight: 20,
-      marginBottom: 16,
-    },
-  });
-
-  return (
-    <View style={styles.sectionContainer}>
-      <View style={styles.sectionHeader}>
-        <Icon
-          source={icon}
-          size={24}
-          color={colors.primary}
-        />
-        <ThemedText style={styles.sectionTitle}>
-          {title}
-        </ThemedText>
-      </View>
-      <ThemedText style={styles.descriptionText}>
-        {description}
-      </ThemedText>
-      {children}
-    </View>
-  );
-};
 
 
 function SecureLoginSection() {
@@ -158,33 +100,6 @@ const LanguageSection = ({ language, handleLanguageChange }: LanguageSectionProp
   );
 };
 
-interface CurrencySectionProps {
-  currency: Currency;
-  handleCurrencyChange: (currencyKey: Currency) => void;
-}
-
-const CurrencySection = ({ currency, handleCurrencyChange }: CurrencySectionProps) => {
-  const { colors } = useAppTheme();
-
-  return (
-    <SettingSection
-      icon="currency-rupee"
-      title="Currency"
-      description="Choose your default currency for displaying amounts. Additional currencies will be supported soon."
-    >
-      {CURRENCY_OPTIONS.map((option) => (
-        <SettingOptionListItem
-          key={option.key}
-          option={option}
-          isSelected={currency === option.key}
-          onPress={() => option.available && handleCurrencyChange(option.key)}
-          colors={colors}
-          leftIcon={option.available ? "currency-sign" : "clock-outline"}
-        />
-      ))}
-    </SettingSection>
-  );
-};
 
 interface HapticsSectionProps {
   haptics: any;
@@ -251,14 +166,10 @@ export default function SettingsScreen() {
   const updateUIFlag = usePersistentAppStore(state => state.updateUIFlag);
   const {
     language,
-    currency,
     haptics,
     handleLanguageChange,
-    handleCurrencyChange,
     handleHapticsToggle,
   } = useSettings();
-
-
 
   const styles = StyleSheet.create({
     container: {
@@ -270,10 +181,6 @@ export default function SettingsScreen() {
   return (
     <ScreenWrapper background="card" withScrollView>
       <View style={styles.container}>
-        <CurrencySection
-          currency={currency}
-          handleCurrencyChange={handleCurrencyChange}
-        />
         <HapticsSection
           haptics={haptics}
           handleHapticsToggle={handleHapticsToggle}

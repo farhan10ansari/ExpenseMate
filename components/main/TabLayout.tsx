@@ -1,3 +1,4 @@
+import { useCurrency } from '@/contexts/CurrencyProvider';
 import { useHaptics } from '@/contexts/HapticsProvider';
 import usePreFetchData from '@/hooks/usePreFetchData';
 import { useAppTheme } from '@/themes/providers/AppThemeProviders';
@@ -10,6 +11,7 @@ function TabLayout() {
   const router = useRouter();
   const { colors } = useAppTheme();
   const { hapticSelect } = useHaptics();
+  const { currencyData } = useCurrency();
 
   // Pre-fetch data for different tabs
   usePreFetchData();
@@ -50,7 +52,7 @@ function TabLayout() {
         name="expenses"
         options={{
           title: 'Expenses',
-          tabBarIcon: ({ color }) => <Icon size={28} source="cash" color={color} />,
+          tabBarIcon: ({ color }) => <Icon size={28} source={currencyData.icon ? currencyData.icon : "currency-usd"} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -65,7 +67,7 @@ function TabLayout() {
         name="incomes"
         options={{
           title: 'Incomes',
-          tabBarIcon: ({ color }) => <Icon size={28} source="currency-inr" color={color} />,
+          tabBarIcon: ({ color }) => <Icon size={28} source="cash" color={color} />,
         }}
       />
       <Tabs.Screen

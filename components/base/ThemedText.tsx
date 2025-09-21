@@ -6,6 +6,7 @@ export type ThemedTextProps = TextProps & {
   lightColor?: string; // Optional color for light theme. If provided, it will override the color prop in light mode
   darkColor?: string; // Optional color for dark theme. If provided, it will override the color prop in dark mode
   fontSize?: number; // Optional font size, can be used to override default sizes
+  fontWeight?: '100' | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900" | "black" | "bold" | "condensed"; // Optional font weight, can be used to override default weights
   type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
   centered?: boolean;
 };
@@ -16,6 +17,7 @@ export function ThemedText({
   lightColor,
   darkColor,
   fontSize,
+  fontWeight,
   type = 'default',
   centered = false,
   ...rest
@@ -37,6 +39,7 @@ export function ThemedText({
         darkColor ? { color: darkColor } : undefined,
         fontSize ? { fontSize } : undefined,
         centered ? { textAlign: 'center' } : undefined,
+        fontWeight ? { fontWeight } : undefined,
       ]}
       {...rest}
     />

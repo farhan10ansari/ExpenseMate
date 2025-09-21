@@ -1,11 +1,18 @@
-import { Currency, Language } from '@/lib/types';
+import { CurrencyCode, LocaleValue } from '@/lib/currencies';
+import { Language } from '@/lib/types';
 import Storage from 'expo-sqlite/kv-store';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from "zustand/middleware";
+import { getLocales } from 'expo-localization';
+
+const localeDate = getLocales()[0]
+const defaultLocale = localeDate?.languageTag as LocaleValue ?? "en-IN";
+const defaultCurrency = localeDate?.currencyCode as CurrencyCode ?? "INR";
 
 type AppSettings = {
     language: Language;
-    currency: Currency;
+    currencyCode: CurrencyCode; // e.g., "USD"
+    currencyLocale: LocaleValue; // e.g., "en-US". Used only for formatting amounts
     biometricLogin: boolean;
     haptics: {
         enabled: boolean;
@@ -38,7 +45,8 @@ type PersistentAppStore = {
 
 const defaultSettings: AppSettings = {
     language: "english",
-    currency: "rupees",
+    currencyCode: defaultCurrency,
+    currencyLocale: defaultLocale,
     biometricLogin: false,
     haptics: {
         enabled: true,

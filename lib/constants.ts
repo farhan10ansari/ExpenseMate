@@ -1,5 +1,5 @@
 import { CategoryDB } from "@/db/schema";
-import { CurrencyOption, IconWithColor, LanguageOption, PaymentMethod } from "./types";
+import { IconWithColor, LanguageOption, PaymentMethod } from "./types";
 
 type CategoryData = Omit<CategoryDB, 'type' | 'enabled' | 'isCustom'>
 
@@ -275,46 +275,22 @@ export const themeOptions = [
 
 
 export const LANGUAGE_OPTIONS: LanguageOption[] = [
-  {
-    key: "english",
-    label: "English",
-    description: "Default language",
-    available: true,
-  },
-  {
-    key: "hindi",
-    label: "हिन्दी (Hindi)",
-    description: "Coming soon",
-    available: false,
-  },
-  {
-    key: "spanish",
-    label: "Español (Spanish)",
-    description: "Coming soon",
-    available: false,
-  },
-];
-
-export const CURRENCY_OPTIONS: CurrencyOption[] = [
-  {
-    key: "rupees",
-    label: "Indian Rupee (₹)",
-    description: "INR - Default currency",
-    symbol: "₹",
-    available: true,
-  },
-  {
-    key: "usd",
-    label: "US Dollar ($)",
-    description: "USD - Coming soon",
-    symbol: "$",
-    available: false,
-  },
-  {
-    key: "euro",
-    label: "Euro (€)",
-    description: "EUR - Coming soon",
-    symbol: "€",
-    available: false,
-  },
+    {
+        key: "english",
+        label: "English",
+        description: "Default language",
+        available: true,
+    },
+    {
+        key: "hindi",
+        label: "हिन्दी (Hindi)",
+        description: "Coming soon",
+        available: false,
+    },
+    {
+        key: "spanish",
+        label: "Español (Spanish)",
+        description: "Coming soon",
+        available: false,
+    },
 ];

@@ -136,6 +136,12 @@ const menuSections: MenuSection[] = [
         icon: "shape-outline",
         route: "/menu/(manage-categories)/expense-categories",
       },
+      {
+        title: "Manage Currency Settings",
+        description: "Change currency and formatting",
+        icon: "currency-usd",
+        route: "/menu/currency-settings",
+      }
     ]
   }
 ]

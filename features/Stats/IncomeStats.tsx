@@ -6,6 +6,7 @@ import { View } from "react-native";
 import { PeriodIncomeStats } from "@/lib/types";
 import { useIncomeSourceMapping } from "@/contexts/CategoryDataProvider";
 import { Icon } from "react-native-paper";
+import { useCurrency } from "@/contexts/CurrencyProvider";
 
 type Props = {
     incomeStats?: PeriodIncomeStats;
@@ -15,8 +16,8 @@ type Props = {
 
 export default function IncomeStats({ incomeStats, showTitle = false, isLoading = false }: Props) {
     const { colors } = useAppTheme();
-
-    const sourceMapping = useIncomeSourceMapping()
+    const { formatCurrency } = useCurrency();
+    const sourceMapping = useIncomeSourceMapping();
 
     const topSource = incomeStats?.topSource
         ? sourceMapping.get(incomeStats?.topSource) : null;
@@ -33,9 +34,8 @@ export default function IncomeStats({ incomeStats, showTitle = false, isLoading 
             <View style={styles.row}>
                 <StatsCard
                     title="Total Income"
-                    prefix={<Icon source="currency-inr" size={18} color={colors.onTertiary} />}
-                    value={incomeStats?.total ?? 0}
-                    icon={<Icon source="finance" size={24} color={colors.onTertiary} />}
+                    value={formatCurrency(incomeStats?.total ?? 0)}
+                    icon={<Icon source="cash-plus" size={24} color={colors.onTertiary} />}
                     backgroundColor={colors.tertiary}
                     textColor={colors.onTertiary}
                     isLoading={isLoading}
@@ -54,8 +54,7 @@ export default function IncomeStats({ incomeStats, showTitle = false, isLoading 
                     titleStyle={{
                         fontSize: 12
                     }}
-                    prefix={<Icon source="currency-inr" size={18} color={colors.text} />}
-                    value={incomeStats?.avgPerDay ?? 0}
+                    value={formatCurrency(incomeStats?.avgPerDay ?? 0)}
                     icon={<Icon source="trending-up" size={24} color={colors.tertiary} />}
                     textColor={colors.text}
                     isLoading={isLoading}
@@ -75,10 +74,7 @@ export default function IncomeStats({ incomeStats, showTitle = false, isLoading 
                 title="Max/Min Income"
                 value={
                     <>
-                        <Icon source="currency-inr" size={18} color={colors.text} />
-                        {incomeStats?.max ?? 0}/
-                        <Icon source="currency-inr" size={18} color={colors.text} />
-                        {incomeStats?.min ?? 0}
+                        {formatCurrency(incomeStats?.max ?? 0)}/{formatCurrency(incomeStats?.min ?? 0)}
                     </>
                 }
                 icon={<Icon source="chart-timeline-variant" size={24} color={colors.tertiary} />}

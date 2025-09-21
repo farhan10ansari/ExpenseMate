@@ -1,4 +1,5 @@
 import { IconSource } from "react-native-paper/lib/typescript/components/Icon";
+import { CurrencyCode } from "./currencies";
 
 export type Category = {
   isCustom: boolean;
@@ -117,7 +118,7 @@ export type Income = {
 
 // Settings types
 export type Language = "english" | "hindi" | "spanish";
-export type Currency = "rupees" | "usd" | "euro";
+// export type Currency = "INR" | "USD" | "EUR";
 
 export interface SettingOption {
   label: string;
@@ -126,8 +127,4 @@ export interface SettingOption {
 }
 export interface LanguageOption extends SettingOption {
   key: Language;
-}
-export interface CurrencyOption extends SettingOption {
-  key: Currency;
-  symbol: string;
 }

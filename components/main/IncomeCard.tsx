@@ -9,6 +9,7 @@ import { useLocalization } from "@/hooks/useLocalization";
 import Color from 'color';
 import { useIncomeSourceMapping } from "@/contexts/CategoryDataProvider";
 import { Icon } from "react-native-paper";
+import { useCurrency } from "@/contexts/CurrencyProvider";
 
 type IncomeCardProps = {
     income: Income;
@@ -19,6 +20,8 @@ type IncomeCardProps = {
 function IncomeCard({ income, onPress }: IncomeCardProps) {
     const { dark, colors } = useAppTheme();
     const { uses24HourClock } = useLocalization();
+    const { formatCurrency } = useCurrency()
+
 
     // Get the source mapping
     const sourceMapping = useIncomeSourceMapping()
@@ -90,9 +93,8 @@ function IncomeCard({ income, onPress }: IncomeCardProps) {
             >
                 <View style={styles.topRow}>
                     <View style={styles.amountContainer}>
-                        <Icon source="currency-inr" size={20} color={colors.tertiary} />
                         <ThemedText type="title" style={styles.amountText}>
-                            {income.amount}
+                            {formatCurrency(income.amount)}
                         </ThemedText>
                     </View>
                     <View style={styles.chipsContainer}>

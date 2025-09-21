@@ -6,6 +6,7 @@ import StatsCard from "./components/StatsCard";
 import { View } from "react-native";
 import { useExpenseCategoryMapping } from "@/contexts/CategoryDataProvider";
 import { Icon } from "react-native-paper";
+import { useCurrency } from "@/contexts/CurrencyProvider";
 
 type Props = {
     expenseStats?: PeriodExpenseStats;
@@ -17,7 +18,7 @@ type Props = {
 export default function ExpenseStats({ expenseStats, showTitle = false, isLoading = false }: Props) {
     const { colors } = useAppTheme();
     const categoryMapping = useExpenseCategoryMapping()
-
+    const { formatCurrency, currencyData } = useCurrency()
 
     const topCategory = expenseStats?.topCategory
         ? categoryMapping.get(expenseStats?.topCategory) : null
@@ -32,9 +33,8 @@ export default function ExpenseStats({ expenseStats, showTitle = false, isLoadin
             <View style={styles.row}>
                 <StatsCard
                     title="Total Expenses"
-                    prefix={<Icon source="currency-inr" size={18} color={colors.onPrimary} />}
-                    value={expenseStats?.total ?? 0}
-                    icon={<Icon source="currency-inr" size={24} color={colors.onPrimary} />}
+                    value={formatCurrency(expenseStats?.total ?? 0)}
+                    icon={<Icon source={currencyData.icon ? currencyData.icon : "cash-minus"} size={24} color={colors.onPrimary} />}
                     backgroundColor={colors.primary}
                     textColor={colors.onPrimary}
                     isLoading={isLoading}
@@ -50,8 +50,7 @@ export default function ExpenseStats({ expenseStats, showTitle = false, isLoadin
             <View style={styles.row}>
                 <StatsCard
                     title="Daily Avg"
-                    prefix={<Icon source="currency-inr" size={18} color={colors.text} />}
-                    value={expenseStats?.avgPerDay ?? 0}
+                    value={formatCurrency(expenseStats?.avgPerDay ?? 0)}
                     icon={<Icon source="trending-up" size={24} color={colors.tertiary} />}
                     textColor={colors.text}
                     isLoading={isLoading}
@@ -71,10 +70,7 @@ export default function ExpenseStats({ expenseStats, showTitle = false, isLoadin
                 title="Max/Min Spend"
                 value={
                     <>
-                        <Icon source="currency-inr" size={18} color={colors.text} />
-                        {expenseStats?.max ?? 0}/
-                        <Icon source="currency-inr" size={18} color={colors.text} />
-                        {expenseStats?.min ?? 0}
+                        {formatCurrency(expenseStats?.max ?? 0)}/{formatCurrency(expenseStats?.min ?? 0)}
                     </>
                 }
                 icon={<Icon source="chart-timeline-variant" size={24} color={colors.tertiary} />}

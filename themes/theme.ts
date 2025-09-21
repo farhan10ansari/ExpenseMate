@@ -128,7 +128,7 @@ export const customLightTheme = {
     ...CombinedDefaultTheme.colors,
     ...myLightTheme.colors,
     //custom
-    ...colors,
+    // ...colors,
     background: 'rgb(242, 242, 242)',
     card: 'rgb(255, 255, 255)',
     text: 'rgb(28, 28, 30)',
@@ -148,7 +148,7 @@ export const customDarkTheme = {
     ...CombinedDarkTheme.colors,
     ...myDarkTheme.colors,
     //custom
-    ...colors,
+    // ...colors,
     background: 'rgb(1, 1, 1)',
     card: 'rgb(34, 34, 34)',
     text: 'rgb(229, 229, 231)',

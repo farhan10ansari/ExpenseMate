@@ -10,7 +10,7 @@ import { useLocalization } from "@/hooks/useLocalization";
 import Color from "color";
 import { useExpenseCategoryMapping } from "@/contexts/CategoryDataProvider";
 import { Category, Expense } from "@/lib/types";
-import { Icon } from "react-native-paper";
+import { useCurrency } from "@/contexts/CurrencyProvider";
 
 type ExpenseCardProps = {
     expense: Expense;
@@ -20,6 +20,7 @@ type ExpenseCardProps = {
 function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
     const { dark, colors } = useAppTheme();
     const { uses24HourClock } = useLocalization()
+    const { formatCurrency } = useCurrency()
 
     // Get the category mapping from the categories store
     const categoryMapping = useExpenseCategoryMapping()
@@ -92,9 +93,8 @@ function ExpenseCard({ expense, onPress }: ExpenseCardProps) {
             >
                 <View style={styles.topRow}>
                     <View style={styles.amountContainer}>
-                        <Icon source="currency-inr" size={20} color={colors.primary} />
                         <ThemedText type="title" style={styles.amountText}>
-                            {expense.amount}
+                            {formatCurrency(expense.amount)}
                         </ThemedText>
                     </View>
                     <View style={styles.chipsContainer}>
